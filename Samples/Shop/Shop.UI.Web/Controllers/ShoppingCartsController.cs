@@ -1,0 +1,82 @@
+﻿using Shop.Core.Domain.ShoppingCarts;
+using Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles;
+using Shop.Core.Reports.ShoppingCarts.Transient;
+using Shop.ReadModel.ShoppingCarts;
+using Shop.Web.UI.Commands.ShoppingCarts;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Http;
+
+namespace Shop.Web.UI.Controllers
+{
+    [RoutePrefix("api/shoppingcarts")]
+    public class ShoppingCartsController : ApiController
+    {
+        // GET api/<controller>
+        //[Route("get")]
+        public async Task<IEnumerable<ShoppingCartViewModel>> Get(string customerId = null, int? page = null, int? pageSize = null)
+        {
+            return (await Program.readRepository.QueryAsync<ShoppingCartViewModel>(x => x.Active && (customerId == null || x.CustomersId == customerId)))
+                .OrderByDescending(x => x.CreatedAt)
+                .ToList();
+        }
+
+        public async Task<ShoppingCartViewModelExt> Get(string id)
+        {
+            var wk = Program.readRepository.GetByStreamnameAsync<ShoppingCartViewModel>(id).Result;
+
+            var wkId = wk.ShoppingCartId;
+
+            var wkExt = new ShoppingCartViewModelExt();
+            wkExt.ShoppingCartId = wk.ShoppingCartId;
+            wkExt.Id = wk.Id;
+            wkExt.CustomersId = wk.CustomersId;
+            wkExt.CustomerName = wk.CustomerName;
+            wkExt.Status = wk.Status;
+            wkExt.ShoppingCartArticles = (await Program.readRepository
+                .QueryAsync<ShoppingCartArticleViewModel>(x => x.Streamname == wkId))
+                .ToList();
+
+            return wkExt;
+        }
+
+        [HttpGet]
+        [Route("GetAlmostOrderedArticles")]
+        public IEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo> GetAlmostOrderedArticles(string customerId)
+        {
+            return Program.AnalyseAlmostOrderedWithState()
+                .Where(x => x.CustomerId == customerId)
+                .ToList();
+        }
+
+        [HttpPost]
+        [Route("RemoveArticleFromShoppingCart")]
+        public Task RemoveArticleFromShoppingCart(RemoveArticleFromShoppingCart command)
+        {
+            var wk = Program.repository.Get<ShoppingCart>(command.ShoppingCartId);
+            var wka = wk.GetChildEntity<ShoppingCartArticle>(command.ShoppingCartArticleId);
+
+            wka.RemoveFromShoppingCart();
+
+            Program.repository.Save(wk);
+
+            var cp = Program.repository.GetCurrentCheckpointNumber();
+            return Program.checkpointPersister.WaitForCheckpointNumberAsync<ShoppingCartReadModelState>(cp);
+        }
+
+        [HttpPost]
+        [Route("Order")]
+        public Task Order(OrderShoppingCart command)
+        {
+            var wk = Program.repository.Get<ShoppingCart>(command.ShoppingCartId);
+
+            wk.Order(Program.repository);
+
+            Program.repository.Save(wk);
+
+            var cp = Program.repository.GetCurrentCheckpointNumber();
+            return Program.checkpointPersister.WaitForCheckpointNumberAsync<ShoppingCartReadModelState>(cp);
+        }
+    }
+}

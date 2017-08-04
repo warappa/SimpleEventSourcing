@@ -1,0 +1,45 @@
+﻿<script id="article-overview" type="text/html">
+    <!-- ko withProperties: { page: $data }-->
+    <appheader class="bg-grayDarker" params="{title: 'Shop', entries: [
+               { template: 'article-create', title: 'New Article' },
+               { template: 'customers-button', title: 'Customers overview' },
+               { template: 'shopping-carts-button', title: 'Shopping carts overview' }
+               ]}">
+    </appheader>
+    <div style="padding: 10px;">
+        <input data-bind="value: searchTerm" placeholder="Search" />
+
+        <div style="padding-top: 10px;" data-bind="foreach: results">
+            <tile params="footer: articlenumber, texts: [description], backgroundColor: active ? 'blue' : 'red'" data-bind="click: page.open.bind(null, $data)"></tile>
+        </div>
+    </div>
+
+    <!-- /ko -->
+</script>
+
+<script id="article-create-form" type="text/html">
+    <form data-bind="submit: $commit.bind(null, $data)" style="width: 300px; height: 200px;">
+        <input-text params="value: articlenumber, label: 'Articlenumber', placeholder: 'Articlenumber'"></input-text>
+        <input-text params="value: description, label: 'Description', placeholder: 'Description'"></input-text>
+        <input-text params="value: priceValue, label: 'Price (Value)', placeholder: 'Price (Value)'"></input-text>
+        <select data-bind="options: currencies, value: priceIsoCode"></select><br />
+        <button><span class="fa fa-check-square fg-green"></span></button>
+    </form>
+</script>
+<script id="article-create" type="text/html">
+    <a class="element" data-bind="dialog: { title: 'New Article', childTemplate: 'article-create-form', data: page.getCreateArticleData }">
+        <span class="fa fa-plus-circle"></span> {{title}}
+    </a>
+</script>
+
+<script id="customers-button" type="text/html">
+    <a class="element" href="#customers-overview">
+        <span class="fa fa-user"></span> {{title}}
+    </a>
+</script>
+
+<script id="shopping-carts-button" type="text/html">
+    <a class="element" href="#shopping-carts-overview">
+        <span class="fa fa-shopping-cart"></span> {{title}}
+    </a>
+</script>

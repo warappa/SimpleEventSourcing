@@ -1,0 +1,5 @@
+﻿<script id="navigationcontainer" type="text/html">
+    <!-- ko if: currentPage != null-->
+    <div class="page" data-bind="component: { name: currentPage().page, params: currentPage().query }"></div>
+    <!-- /ko -->
+</script>

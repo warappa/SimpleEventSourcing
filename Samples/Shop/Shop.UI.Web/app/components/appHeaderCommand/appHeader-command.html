@@ -1,0 +1,8 @@
+﻿<script id="appHeader-command" type="text/html">
+    <!-- ko if: template != undefined -->
+    <!-- ko template: { name: template }--><!-- /ko -->
+    <!-- /ko -->
+    <!-- ko if: template == undefined -->
+    <a class="element" href="" data-bind="attr: { href: href }, click: action, noop: initAction != undefined ? initAction($element):undefined">{{title}}</a>
+    <!-- /ko -->
+</script>

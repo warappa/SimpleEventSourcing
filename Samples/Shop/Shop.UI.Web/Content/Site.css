@@ -1,0 +1,35 @@
+﻿application {
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+.page {
+  width: 100vw;
+  height: 100vh;
+}
+appheader {
+  color: white;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+}
+.login {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+navigationcontainer {
+  display: block;
+}
+h1,
+h2 {
+  color: white !important;
+}
+.window.flat h1,
+.window.flat h2 {
+  color: black !important;
+}
+.btn-clear:after {
+  content: "" !important;
+}

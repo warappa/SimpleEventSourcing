@@ -1,0 +1,13 @@
+﻿<script id="shopping-carts-overview" type="text/html">
+    <!-- ko withProperties: { page: $data }-->
+    <appheader class="bg-grayDarker" params="{title: 'Shopping Carts'}">
+    </appheader>
+    <div style="padding: 10px;">
+        <input data-bind="value: searchTerm" placeholder="Search" />
+
+        <div style="padding-top: 10px;" data-bind="foreach: results">
+            <tile params="texts: ['For ', customerName], footer: '' + status" data-bind="click: page.open.bind(null, $data)"></tile>
+        </div>
+    </div>
+    <!-- /ko -->
+</script>

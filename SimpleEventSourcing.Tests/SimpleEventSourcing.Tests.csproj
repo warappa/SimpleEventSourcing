@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{08C380EC-0768-440C-ACE6-80732A6C2907}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SimpleEventSourcing.Tests</RootNamespace>
+    <AssemblyName>SimpleEventSourcing.Tests</AssemblyName>
+    <DefaultLanguage>de-DE</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <ProjectReference Include="..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj">
+      <Project>{939c5fa1-9446-4346-af41-18dcad8230e6}</Project>
+      <Name>SimpleEventSourcing.Newtonsoft</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj">
+      <Project>{4d67344f-2bcf-40a9-81ed-027ac0810c6c}</Project>
+      <Name>SimpleEventSourcing</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommandMessage.cs" />
+    <Compile Include="Domain\EventSourcedEntityTests.cs" />
+    <Compile Include="Domain\TestData\BaseEvent.cs" />
+    <Compile Include="Domain\TestData\ChildBaseEvent.cs" />
+    <Compile Include="Domain\TestData\ChildEntity.cs" />
+    <Compile Include="Domain\TestData\ChildEvents.cs" />
+    <Compile Include="Domain\ChildEntityTests.cs" />
+    <Compile Include="Domain\TestData\ChildState.cs" />
+    <Compile Include="Domain\AggregateRootTests.cs" />
+    <Compile Include="Domain\TestData\ParentCreated.cs" />
+    <Compile Include="Domain\TestData\ParentEntity.cs" />
+    <Compile Include="Domain\TestData\ChildEntityId.cs" />
+    <Compile Include="Domain\TestData\ParentEntityId.cs" />
+    <Compile Include="Domain\TestData\ParentState.cs" />
+    <Compile Include="Domain\TestData\DummyMessage.cs" />
+    <Compile Include="Domain\EventSourcedEntityExtensions.cs" />
+    <Compile Include="Domain\TestData\IBaseEvent.cs" />
+    <Compile Include="Domain\TestData\IEventWithId.cs" />
+    <Compile Include="Domain\TestData\TestCommands.cs" />
+    <Compile Include="Domain\TestData\TestProcessManager.cs" />
+    <Compile Include="Domain\TestData\TestProcessManagerRouter.cs" />
+    <Compile Include="Domain\TestData\TestProcessManagerState.cs" />
+    <Compile Include="EventMessage.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="MessageExtensions.cs" />
+    <Compile Include="Messaging\ProcessManagerRouterTests.cs" />
+    <Compile Include="Domain\ProcessManagerTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Domain\TestData\TestEvent.cs" />
+    <Compile Include="Domain\TestData\TestEventEnd.cs" />
+    <Compile Include="ReadModel\CatchUpProjectorWithAutoReadModelResetTests.cs" />
+    <Compile Include="ReadModel\ControlsReadModelsAttributeTests.cs" />
+    <Compile Include="ReadModel\InMemory\CatchUpProjectorInMemoryTests.cs" />
+    <Compile Include="ReadModel\InMemory\CatchUpProjectorWithAutoReadModelResetTests.cs" />
+    <Compile Include="ReadModel\InMemory\ReadRepositoryInMemoryTests.cs" />
+    <Compile Include="ReadModel\CatchUpProjectorTests.cs" />
+    <Compile Include="Storage\StorageResetterTests.cs" />
+    <Compile Include="States\TestState.cs" />
+    <Compile Include="TransactedTest.cs" />
+    <Compile Include="WriteModel\EventRepositoryTestsBase.cs" />
+    <Compile Include="WriteModel\InMemory\InMemoryTestConfig.cs" />
+    <Compile Include="ReadModel\ITestEntityB.cs" />
+    <Compile Include="ReadModel\ITestEntityA.cs" />
+    <Compile Include="ReadModel\ReadRepositoryTests.cs" />
+    <Compile Include="Storage\InMemory\StorageTests.cs" />
+    <Compile Include="WriteModel\InMemory\WriteModel\EventRepositoryTests.cs" />
+    <Compile Include="WriteModel\InMemory\WriteModel\PersistenceEngineBasicTests.cs" />
+    <Compile Include="WriteModel\InMemory\WriteModel\PersistenceEngineByStreamNameTests.cs" />
+    <Compile Include="WriteModel\InMemory\WriteModel\PersistenceEngineCheckpointNumberTests.cs" />
+    <Compile Include="ReadModel\InMemory\TestEntityA.cs" />
+    <Compile Include="ReadModel\InMemory\TestEntityB.cs" />
+    <Compile Include="WriteModel\PersistenceEngineBasicTests.cs" />
+    <Compile Include="WriteModel\PersistenceEngineBasicTestsBaseConfig.cs" />
+    <Compile Include="WriteModel\PersistenceEngineByStreamNameTestsBase.cs" />
+    <Compile Include="WriteModel\PersistenceEngineCheckpointNumberTestsBase.cs" />
+    <Compile Include="WriteModel\PersistenceEngineTests.cs" />
+    <Compile Include="WriteModel\PersistenceEngineTestsBase.cs" />
+    <Compile Include="WriteModel\TestEvents.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="FakeItEasy, Version=3.4.2.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+      <HintPath>..\packages\FakeItEasy.3.4.2\lib\net45\FakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentAssertions, Version=4.19.3.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.4.19.3\lib\net45\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentAssertions.Core, Version=4.19.3.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.4.19.3\lib\net45\FluentAssertions.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.7.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.7.1\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

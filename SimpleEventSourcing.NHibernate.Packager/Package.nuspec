@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>SimpleEventSourcing.NHibernate</id>
+        <version>1.0.0-pre1</version>
+        <title>SimpleEventSourcing.NHibernate</title>
+        <authors>David Rettenbacher</authors>
+        <owners></owners>
+        <description>
+            Simple Event Sourcing
+        </description>
+        <releaseNotes>
+        </releaseNotes>
+        <summary>
+
+        </summary>
+        <language>en-US</language>
+        <projectUrl>https://nuget.org/packages/SimpleEventSourcing.NHibernate</projectUrl>
+        <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon-50x50.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+        <copyright>© 2017 David Rettenbacher</copyright>
+        <dependencies>
+            <group>
+                <dependency id="SimpleEventSourcing" version="1.0.0-pre1" />
+                <dependency id="NHibernate" version="4.1.1.4000" />
+            </group>
+        </dependencies>
+        <references></references>
+        <tags></tags>
+    </metadata>
+    <files>
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.dll" target="lib" />
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.dll" target="lib\dotnet" />
+
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.dll" target="lib\portable-net45+win8+wpa81+wp8" />
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.pdb" target="lib\portable-net45+win8+wpa81+wp8" />
+
+        <!-- PCL -->
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.dll" target="lib\portable-win+net45+wp8+win8+wpa81" />
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.pdb" target="lib\portable-win+net45+wp8+win8+wpa81" />
+
+        <!-- android -->
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.dll" target="lib\MonoAndroid10" />
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.pdb" target="lib\MonoAndroid10" />
+
+        <!-- ios -->
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.dll" target="lib\Xamarin.iOS10" />
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.pdb" target="lib\Xamarin.iOS10" />
+
+        <!-- wp8 -->
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.dll" target="lib\wp8" />
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.pdb" target="lib\wp8" />
+
+        <!-- wpa81 -->
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.dll" target="lib\wpa81" />
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.pdb" target="lib\wpa81" />
+
+        <!-- uwp -->
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.dll" target="lib\uap10.0" />
+        <file src="..\SimpleEventSourcing.NHibernate\bin\Release\SimpleEventSourcing.NHibernate.pdb" target="lib\uap10.0" />
+    </files>
+</package>

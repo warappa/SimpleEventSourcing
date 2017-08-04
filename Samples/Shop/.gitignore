@@ -1,0 +1,14 @@
+**/packages/**/*
+
+*.suo
+
+*.min.css
+*.map
+
+*.db
+
+*.vspscc
+*.user
+
+obj
+bin
