@@ -18,7 +18,8 @@ namespace SimpleEventSourcing.State
         public Type[] PayloadTypes => PayloadTypesStatic;
 
         private static readonly TypeInfo iMessageTypeInfo = typeof(IMessage).GetTypeInfo();
-        private static readonly IDictionary<Type, MethodInfo> methodForEventOrMessageType = new Dictionary<Type, MethodInfo>();
+        private static readonly IDictionary<Type, MethodInfo> methodForEventType = new Dictionary<Type, MethodInfo>();
+        private static readonly IDictionary<Type, MethodInfo> methodForMessageType = new Dictionary<Type, MethodInfo>();
 #pragma warning restore S2743 // Static fields should not be used in generic types
 
         static EventSourcedState()
@@ -57,7 +58,7 @@ namespace SimpleEventSourcing.State
                     handledMessageTypes.Add(typedMessageType);
                     payloadTypes.Add(eventType);
 
-                    methodForEventOrMessageType.Add(typeof(IMessage<>).MakeGenericType(eventType), methodInfo);
+                    methodForMessageType.Add(eventType, methodInfo);
                 }
                 else // EventType?
                 {
@@ -67,7 +68,7 @@ namespace SimpleEventSourcing.State
                     handledEventTypes.Add(eventType);
                     payloadTypes.Add(eventType);
 
-                    methodForEventOrMessageType.Add(eventType, methodInfo);
+                    methodForEventType.Add(eventType, methodInfo);
                 }
 
                 HandledEventTypes = handledEventTypes.ToArray();
@@ -91,40 +92,48 @@ namespace SimpleEventSourcing.State
 
         protected virtual TState InvokeAssociatedApply(object eventOrMessage)
         {
-            // find method-info for event-type
-            MethodInfo mi = null;
-
-            var searchType = eventOrMessage.GetType();
-
-            if (eventOrMessage is IMessage)
-            {
-                searchType = (eventOrMessage as IMessage).Body.GetType(); //typeof(IMessage<>).MakeGenericType((eventOrMessage as IMessage).Body.GetType());
-            }
-
             var state = this as TState;
 
-            if (methodForEventOrMessageType.TryGetValue(searchType, out mi))
+            if (eventOrMessage is IMessage message)
             {
-                if (mi.ReturnType != typeof(void))
+                if (methodForMessageType.TryGetValue(message.Body.GetType(), out MethodInfo mi))
                 {
-                    state = (TState)StateExtensions.ExtractState<TState>(((dynamic)state).Apply((dynamic)eventOrMessage)) ?? state;
+                    if (mi.ReturnType != typeof(void))
+                    {
+                        state = (TState)StateExtensions.ExtractState<TState>(((dynamic)state).Apply((dynamic)message)) ?? state;
+                    }
+                    else
+                    {
+                        ((dynamic)state).Apply((dynamic)message);
+                    }
                 }
-                else
+
+                if (methodForEventType.TryGetValue(message.Body.GetType(), out mi))
                 {
-                    ((dynamic)state).Apply((dynamic)eventOrMessage);
+                    if (mi.ReturnType != typeof(void))
+                    {
+                        state = (TState)StateExtensions.ExtractState<TState>(((dynamic)state).Apply((dynamic)message.Body)) ?? state;
+                    }
+                    else
+                    {
+                        ((dynamic)state).Apply((dynamic)message.Body);
+                    }
                 }
             }
-
-            if (eventOrMessage is IMessage &&
-                methodForEventOrMessageType.TryGetValue((eventOrMessage as IMessage).Body.GetType(), out mi))
+            else
             {
-                if (mi.ReturnType != typeof(void))
+                var @event = eventOrMessage;
+
+                if (methodForEventType.TryGetValue(@event.GetType(), out MethodInfo mi))
                 {
-                    state = (TState)StateExtensions.ExtractState<TState>(((dynamic)state).Apply((dynamic)(eventOrMessage as IMessage).Body)) ?? state;
-                }
-                else
-                {
-                    ((dynamic)state).Apply((dynamic)(eventOrMessage as IMessage).Body);
+                    if (mi.ReturnType != typeof(void))
+                    {
+                        state = (TState)StateExtensions.ExtractState<TState>(((dynamic)state).Apply((dynamic)@event)) ?? state;
+                    }
+                    else
+                    {
+                        ((dynamic)state).Apply((dynamic)@event);
+                    }
                 }
             }
 
