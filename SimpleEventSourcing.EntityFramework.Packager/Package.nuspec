@@ -28,7 +28,7 @@
             </group>
         </dependencies>
         <references></references>
-        <tags></tags>
+        <tags>eventsourcing cqrs ddd entityframework</tags>
     </metadata>
     <files>
         <file src="..\SimpleEventSourcing.EntityFramework\bin\Release\SimpleEventSourcing.EntityFramework.dll" target="lib" />

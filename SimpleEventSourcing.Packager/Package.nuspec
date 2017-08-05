@@ -26,7 +26,7 @@
         </group>
     </dependencies>
     <references></references>
-    <tags></tags>
+    <tags>eventsourcing cqrs ddd</tags>
   </metadata>
   <files>
     <file src="..\SimpleEventSourcing\bin\Release\SimpleEventSourcing.dll" target="lib" />

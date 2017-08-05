@@ -32,7 +32,7 @@
         </group>
     </dependencies>
     <references></references>
-    <tags></tags>
+      <tags>eventsourcing cqrs ddd sqlite</tags>
   </metadata>
   <files>
 	  <file src="..\SimpleEventSourcing.SQLite\bin\Release\SimpleEventSourcing.SQLite.dll" target="lib" />

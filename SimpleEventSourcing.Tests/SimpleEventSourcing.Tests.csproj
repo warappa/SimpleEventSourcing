@@ -80,8 +80,8 @@
     <Compile Include="ReadModel\InMemory\CatchUpProjectorWithAutoReadModelResetTests.cs" />
     <Compile Include="ReadModel\InMemory\ReadRepositoryInMemoryTests.cs" />
     <Compile Include="ReadModel\CatchUpProjectorTests.cs" />
+    <Compile Include="States\StateTests.cs" />
     <Compile Include="Storage\StorageResetterTests.cs" />
-    <Compile Include="States\TestState.cs" />
     <Compile Include="TransactedTest.cs" />
     <Compile Include="WriteModel\EventRepositoryTestsBase.cs" />
     <Compile Include="WriteModel\InMemory\InMemoryTestConfig.cs" />

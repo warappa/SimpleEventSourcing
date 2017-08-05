@@ -27,7 +27,7 @@
         </group>
     </dependencies>
     <references></references>
-    <tags></tags>
+    <tags>eventsourcing cqrs ddd bus</tags>
   </metadata>
   <files>
     <file src="..\SimpleEventSourcing.Bus\bin\Release\SimpleEventSourcing.Bus.dll" target="lib" />
