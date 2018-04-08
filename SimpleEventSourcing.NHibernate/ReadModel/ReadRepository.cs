@@ -148,7 +148,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
         }
 
         public Task<IQueryable<T>> QueryAsync<T>(Expression<Func<T, bool>> predicate)
-            where T : class, IReadModelBase
+            where T : class, IReadModelBase, new()
         {
             IQueryable<T> res = null;
 

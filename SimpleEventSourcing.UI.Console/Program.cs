@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Diagnostics;
-using SQLite.Net;
-using SQLite.Net.Interop;
 using SimpleEventSourcing.WriteModel;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.ReadModel;
@@ -14,6 +12,7 @@ using SimpleEventSourcing.SQLite.WriteModel;
 using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.SQLite.Storage;
 using System.Threading.Tasks;
+using SQLite;
 
 namespace SimpleEventSourcing.UI.ConsoleUI
 {
@@ -148,9 +147,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
                 var databaseFile = "writeDatabase.db";
 
-                var connectionString = new SQLiteConnectionString(databaseFile, true, null, null, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
+                var connectionString = new SQLiteConnectionString(databaseFile, true);
 
-                writeConn = new SQLiteConnectionWithLock(new global::SQLite.Net.Platform.Win32.SQLitePlatformWin32(), connectionString);
+                writeConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
 
                 using (writeConn.Lock())
                 {
@@ -171,9 +170,9 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
 
                 var databaseFile = "readDatabase.db";
 
-                var connectionString = new SQLiteConnectionString(databaseFile, true, null, null, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
+                var connectionString = new SQLiteConnectionString(databaseFile, true);
 
-                readConn = new SQLiteConnectionWithLock(new global::SQLite.Net.Platform.Win32.SQLitePlatformWin32(), connectionString);
+                readConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
 
                 using (readConn.Lock())
                 {
@@ -210,7 +209,7 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
             Console.WriteLine("Generate 1000 entities");
 
             var list = new List<IEventSourcedEntity>();
-            for (var i = 0; i < 1; i++)
+            for (var i = 0; i < 10000; i++)
             {
                 Console.Write(".");
 

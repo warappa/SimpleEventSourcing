@@ -1,5 +1,5 @@
-﻿using SQLite.Net.Attributes;
-using Shop.ReadModel.Shared;
+﻿using Shop.ReadModel.Shared;
+using SQLite;
 
 namespace Shop.ReadModel.Articles
 {

@@ -1,7 +1,7 @@
 ﻿using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 using SimpleEventSourcing.ReadModel;
-using SQLite.Net.Attributes;
+using SQLite;
 
 namespace SimpleEventSourcing.UI.ConsoleUI
 {

@@ -5,12 +5,11 @@ using SimpleEventSourcing.SQLite.Tests;
 using SimpleEventSourcing.Storage;
 using SimpleEventSourcing.SQLite.Storage;
 using SimpleEventSourcing.Tests;
-using SQLite.Net;
-using SQLite.Net.Interop;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 using SimpleEventSourcing.WriteModel;
+using SQLite;
 
 namespace SimpleEventSourcing.SQLite.WriteModel.Tests
 {
@@ -125,9 +124,9 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
 
                     var databaseFile = "writeDatabase.db";
 
-                    var connectionString = new SQLiteConnectionString(databaseFile, true, null, null, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
-
-                    writeConnection = new SQLiteConnectionWithLock(new global::SQLite.Net.Platform.Win32.SQLitePlatformWin32(), connectionString);
+                    var connectionString = new SQLiteConnectionString(databaseFile, true);
+                    
+                    writeConnection = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
 
                     using (writeConnection.Lock())
                     {
@@ -206,9 +205,9 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
 
                     var databaseFile = "readDatabase.db";
 
-                    var connectionString = new SQLiteConnectionString(databaseFile, true, null, null, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
+                    var connectionString = new SQLiteConnectionString(databaseFile, true);
 
-                    readConnection = new SQLiteConnectionWithLock(new global::SQLite.Net.Platform.Win32.SQLitePlatformWin32(), connectionString);
+                    readConnection = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
 
                     using (readConnection.Lock())
                     {

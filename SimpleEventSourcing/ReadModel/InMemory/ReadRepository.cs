@@ -83,7 +83,7 @@ namespace SimpleEventSourcing.ReadModel.InMemory
         }
 
         public async Task<IQueryable<T>> QueryAsync<T>(Expression<Func<T, bool>> predicate)
-            where T : class, IReadModelBase
+            where T : class, IReadModelBase, new()
         {
             return (await QueryAsync(typeof(T), x => predicate.Compile()((T)x)).ConfigureAwait(false))
                 .AsQueryable()

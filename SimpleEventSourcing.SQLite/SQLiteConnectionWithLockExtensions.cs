@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SQLite.Net
+namespace SQLite
 {
     public static class SQLiteConnectionWithLockExtensions
     {

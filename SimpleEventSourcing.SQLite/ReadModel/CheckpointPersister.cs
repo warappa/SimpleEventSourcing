@@ -1,5 +1,5 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SQLite.Net;
+using SQLite;
 using System;
 using System.Threading.Tasks;
 

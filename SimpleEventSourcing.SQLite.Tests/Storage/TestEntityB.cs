@@ -1,7 +1,6 @@
-﻿using System;
-using SimpleEventSourcing.ReadModel;
+﻿using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.ReadModel.Tests;
-using SQLite.Net.Attributes;
+using SQLite;
 
 namespace SimpleEventSourcing.SQLite.WriteModel.Tests
 {

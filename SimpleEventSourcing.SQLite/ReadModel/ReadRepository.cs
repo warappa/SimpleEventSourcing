@@ -1,5 +1,5 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SQLite.Net;
+using SQLite;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -128,7 +128,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
         }
 
         public Task<IQueryable<T>> QueryAsync<T>(Expression<Func<T, bool>> predicate)
-            where T : class, IReadModelBase
+            where T : class, IReadModelBase, new()
         {
             var conn = connectionFactory();
 

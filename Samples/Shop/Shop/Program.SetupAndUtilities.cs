@@ -9,16 +9,15 @@ using SimpleEventSourcing.SQLite.Storage;
 using SimpleEventSourcing.SQLite.WriteModel;
 using SimpleEventSourcing.Storage;
 using SimpleEventSourcing.WriteModel;
-using SQLite.Net;
-using SQLite.Net.Interop;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using SQLite.Net.Platform.Win32;
 using System.Threading.Tasks;
+using static SQLite.SQLite3;
 
 namespace Shop
 {
@@ -60,19 +59,15 @@ namespace Shop
 
         private static async Task SetupWriteModelAsync()
         {
-            var platform = new SQLitePlatformWin32(GetDllPath());
-
-            platform.SQLiteApi.Config(ConfigOption.Serialized);
-
             connectionFactory = () =>
             {
                 if (writeConn == null)
                 {
                     var databaseFile = Path.Combine(GetDataPath(), "writeDatabase.db");
 
-                    var connectionString = new SQLiteConnectionString(databaseFile, true, null, null, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.SharedCache);
+                    var connectionString = new SQLiteConnectionString(databaseFile, true);
 
-                    writeConn = new SQLiteConnectionWithLock(platform, connectionString);
+                    writeConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.SharedCache);
                     writeConn.BusyTimeout = TimeSpan.FromSeconds(2);
 
                     ConfigureConnection(writeConn);
@@ -112,18 +107,15 @@ namespace Shop
 
         public static void SetupReadModel()
         {
-            var platform = new SQLitePlatformWin32(GetDllPath());
-            platform.SQLiteApi.Config(ConfigOption.Serialized);
-
             readConnectionFactory = () =>
             {
                 if (readConn == null)
                 {
                     var databaseFile = Path.Combine(GetDataPath(), "readDatabase.db");
 
-                    var connectionString = new SQLiteConnectionString(databaseFile, true, null, null, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.SharedCache);
+                    var connectionString = new SQLiteConnectionString(databaseFile, true);
 
-                    readConn = new SQLiteConnectionWithLock(platform, connectionString);
+                    readConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.SharedCache);
                     readConn.BusyTimeout = TimeSpan.FromSeconds(2);
 
                     ConfigureConnection(readConn);
@@ -191,7 +183,7 @@ namespace Shop
         }
 
         private static async Task<TAggregate> GetOrCreateAggregateAsync<TViewModel, TAggregate>(IReadRepository readRepository, Expression<Func<TViewModel, bool>> predicate, Func<TAggregate> factory)
-            where TViewModel : class, IStreamReadModel
+            where TViewModel : class, IStreamReadModel, new()
             where TAggregate : class, IAggregateRoot
         {
             TAggregate eventSourcedEntity;

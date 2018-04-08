@@ -15,7 +15,7 @@ namespace SimpleEventSourcing.ReadModel
         Task<T> GetByStreamnameAsync<T>(object streamname) where T : class, IStreamReadModel, new();
         Task<object> GetByStreamnameAsync(Type entityType, object streamname);
 
-        Task<IQueryable<T>> QueryAsync<T>(Expression<Func<T, bool>> predicate) where T : class, IReadModelBase;
+        Task<IQueryable<T>> QueryAsync<T>(Expression<Func<T, bool>> predicate) where T : class, IReadModelBase, new();
         Task<IQueryable> QueryAsync(Type type, Expression<Func<object, bool>> predicate);
 
         Task UpdateAsync(params IReadModelBase[] entities);

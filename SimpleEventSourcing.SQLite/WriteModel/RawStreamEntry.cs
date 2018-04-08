@@ -1,5 +1,5 @@
 ﻿using SimpleEventSourcing.WriteModel;
-using SQLite.Net.Attributes;
+using SQLite;
 using System;
 
 namespace SimpleEventSourcing.SQLite.WriteModel

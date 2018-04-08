@@ -1,5 +1,5 @@
 ﻿using SimpleEventSourcing.WriteModel;
-using SQLite.Net;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -331,13 +331,13 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             try
             {
                 var cmd = connection.CreateCommand("select checkpointNumber from commits order by checkpointNumber desc limit 1");
-                var res = cmd.ExecuteScalar<int?>();
-                if (res == null)
+                var res = cmd.ExecuteScalar<int>();
+                if (res == 0)
                 {
                     return -1;
                 }
 
-                return res.Value;
+                return (int)res;
             }
             catch
             {

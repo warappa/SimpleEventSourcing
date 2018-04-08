@@ -1,5 +1,5 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SQLite.Net.Attributes;
+using SQLite;
 
 namespace SimpleEventSourcing.SQLite.ReadModel
 {

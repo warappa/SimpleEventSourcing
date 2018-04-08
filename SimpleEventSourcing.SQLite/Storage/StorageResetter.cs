@@ -1,5 +1,5 @@
 ﻿using SimpleEventSourcing.Storage;
-using SQLite.Net;
+using SQLite;
 using System;
 
 namespace SimpleEventSourcing.SQLite.Storage
@@ -21,7 +21,7 @@ namespace SimpleEventSourcing.SQLite.Storage
                 {
                     try
                     {
-                        c.DeleteAll(type);
+                        c.DeleteAll(c.GetMapping(type));
                     }
                     catch
                     {
