@@ -5,17 +5,17 @@
 
 
 interface KnockoutSubscribableFunctions<T> {
-    [key: string]: KnockoutBindingHandler;
+    [key: string]: any | KnockoutBindingHandler;
 
 	notifySubscribers(valueToWrite?: T, event?: string): void;
 }
 
 interface KnockoutComputedFunctions<T> {
-    [key: string]: KnockoutBindingHandler;
+    [key: string]: any | KnockoutBindingHandler;
 }
 
 interface KnockoutObservableFunctions<T> {
-    [key: string]: KnockoutBindingHandler;
+    [key: string]: any | KnockoutBindingHandler;
 
 	equalityComparer(a: any, b: any): boolean;
 }
@@ -35,7 +35,7 @@ interface KnockoutObservableArrayFunctions<T> {
     sort(compareFunction: (left: T, right: T) => number): KnockoutObservableArray<T>;
 
     // Ko specific
-    [key: string]: KnockoutBindingHandler;
+    [key: string]: any | KnockoutBindingHandler;
 
     replace(oldItem: T, newItem: T): void;
 
@@ -61,8 +61,10 @@ interface KnockoutSubscription {
 }
 
 interface KnockoutSubscribable<T> extends KnockoutSubscribableFunctions<T> {
-	subscribe(callback: (newValue: T) => void, target?: any, event?: string): KnockoutSubscription;
+    subscribe(callback: (newValue: T) => void, target: any, event: "beforeChange"): KnockoutSubscription;
+	subscribe(callback: (newValue: T) => void, target?: any, event?: "change"): KnockoutSubscription;
 	subscribe<TEvent>(callback: (newValue: TEvent) => void, target: any, event: string): KnockoutSubscription;
+
 	extend(requestedExtenders: { [key: string]: any; }): KnockoutSubscribable<T>;
 	getSubscriptionsCount(): number;
 }
@@ -91,6 +93,11 @@ interface KnockoutObservableArrayStatic {
 }
 
 interface KnockoutObservableArray<T> extends KnockoutObservable<T[]>, KnockoutObservableArrayFunctions<T> {
+    subscribe(callback: (newValue: KnockoutArrayChange<T>[]) => void, target: any, event: "arrayChange"): KnockoutSubscription;
+    subscribe(callback: (newValue: T[]) => void, target: any, event: "beforeChange"): KnockoutSubscription;
+    subscribe(callback: (newValue: T[]) => void, target?: any, event?: "change"): KnockoutSubscription;
+    subscribe<TEvent>(callback: (newValue: TEvent) => void, target: any, event: string): KnockoutSubscription;
+
     extend(requestedExtenders: { [key: string]: any; }): KnockoutObservableArray<T>;
 }
 
@@ -150,41 +157,41 @@ interface KnockoutBindingHandler {
 }
 
 interface KnockoutBindingHandlers {
-    [bindingHandler: string]: KnockoutBindingHandler;
+    [bindingHandler: string]: any | KnockoutBindingHandler;
 
     // Controlling text and appearance
-    visible: KnockoutBindingHandler;
-    text: KnockoutBindingHandler;
-    html: KnockoutBindingHandler;
-    css: KnockoutBindingHandler;
-    style: KnockoutBindingHandler;
-    attr: KnockoutBindingHandler;
+    visible: any | KnockoutBindingHandler;
+    text: any | KnockoutBindingHandler;
+    html: any | KnockoutBindingHandler;
+    css: any | KnockoutBindingHandler;
+    style: any | KnockoutBindingHandler;
+    attr: any | KnockoutBindingHandler;
 
     // Control Flow
-    foreach: KnockoutBindingHandler;
-    if: KnockoutBindingHandler;
-    ifnot: KnockoutBindingHandler;
-    with: KnockoutBindingHandler;
+    foreach: any | KnockoutBindingHandler;
+    if: any | KnockoutBindingHandler;
+    ifnot: any | KnockoutBindingHandler;
+    with: any | KnockoutBindingHandler;
 
     // Working with form fields
-    click: KnockoutBindingHandler;
-    event: KnockoutBindingHandler;
-    submit: KnockoutBindingHandler;
-    enable: KnockoutBindingHandler;
-    disable: KnockoutBindingHandler;
-    value: KnockoutBindingHandler;
-    textInput: KnockoutBindingHandler;
-    hasfocus: KnockoutBindingHandler;
-    checked: KnockoutBindingHandler;
-    options: KnockoutBindingHandler;
-    selectedOptions: KnockoutBindingHandler;
-    uniqueName: KnockoutBindingHandler;
+    click: any | KnockoutBindingHandler;
+    event: any | KnockoutBindingHandler;
+    submit: any | KnockoutBindingHandler;
+    enable: any | KnockoutBindingHandler;
+    disable: any | KnockoutBindingHandler;
+    value: any | KnockoutBindingHandler;
+    textInput: any | KnockoutBindingHandler;
+    hasfocus: any | KnockoutBindingHandler;
+    checked: any | KnockoutBindingHandler;
+    options: any | KnockoutBindingHandler;
+    selectedOptions: any | KnockoutBindingHandler;
+    uniqueName: any | KnockoutBindingHandler;
 
     // Rendering templates
-	template: KnockoutBindingHandler;
+	template: any | KnockoutBindingHandler;
 
 	// Components (new for v3.2)
-	component: KnockoutBindingHandler;
+	component: any | KnockoutBindingHandler;
 }
 
 interface KnockoutMemoization {
@@ -325,7 +332,7 @@ interface KnockoutUtils {
 }
 
 interface KnockoutArrayChange<T> {
-    status: string;
+    status: "added" | "deleted" | "retained";
     value: T;
     index: number;
     moved?: number;
@@ -404,8 +411,8 @@ interface KnockoutStatic {
     utils: KnockoutUtils;
     memoization: KnockoutMemoization;
 
-	bindingHandlers: KnockoutBindingHandlers;
-	getBindingHandler(handler: string): KnockoutBindingHandler;
+	bindingHandlers: any | KnockoutBindingHandlers;
+	getBindingHandler(handler: string): any | KnockoutBindingHandler;
 
     virtualElements: KnockoutVirtualElements;
     extenders: KnockoutExtenders;

@@ -5,7 +5,7 @@ using System;
 using System.Data;
 
 namespace SimpleEventSourcing.NHibernate.WriteModel.Types
-{
+{/*
     [Serializable]
     public abstract class AbstractDateTime2SpecificKindType : DateTimeType
     {
@@ -83,5 +83,5 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Types
         {
             return new DateTime(dateValue.Ticks, DateTimeKind);
         }
-    }
+    }*/
 }

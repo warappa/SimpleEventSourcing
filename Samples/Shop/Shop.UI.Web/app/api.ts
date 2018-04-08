@@ -60,19 +60,19 @@
 
         export module articles {
             export function getArticleList(page, pageSize): JQueryDeferred<IArticleDto[]> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<IArticleDto[]>();
                 api.getJSON("api/articles", null, data => deferred.resolve(data));
                 return deferred;
             }
 
             export function getArticle(id: string): JQueryDeferred<IArticleDto> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<IArticleDto>();
                 api.getJSON("api/articles", { id: id }, data => deferred.resolve(data));
                 return deferred;
             }
 
             export function getArticleActivationHistory(id: string): JQueryDeferred<IArticleActivationHistoryDto[]> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<IArticleActivationHistoryDto[]>();
                 api.getJSON("api/articles/getArticleActivationHistory", { id: id }, data => deferred.resolve(data));
                 return deferred;
             }
@@ -98,37 +98,37 @@
 
         export module shoppingCarts {
             export function getShoppingCarts(page, pageSize): JQueryDeferred<IShoppingCartDto[]> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<IShoppingCartDto[]>();
                 api.getJSON("api/shoppingcarts", null, data => deferred.resolve(data));
                 return deferred;
             }
 
             export function getShoppingCart(id: string): JQueryDeferred<IShoppingCartDto> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<IShoppingCartDto>();
                 api.getJSON("api/shoppingcarts", { id: id }, data => deferred.resolve(data));
                 return deferred;
             }
 
             export function getShoppingCartsForCustomer(customerId, page, pageSize): JQueryDeferred<IShoppingCartDto[]> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<IShoppingCartDto[]>();
                 api.getJSON("api/shoppingcarts", { customerId: customerId }, data => deferred.resolve(data));
                 return deferred;
             }
 
             export function getAlmostOrderedArticles(customerId, page, pageSize): JQueryDeferred<IShoppingCartArticleEntferntInfo[]> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<IShoppingCartArticleEntferntInfo[]>();
                 api.getJSON("api/shoppingcarts/getAlmostOrderedArticles", { customerId: customerId }, data => deferred.resolve(data));
                 return deferred;
             }
 
             export function removeArticleFromShoppingCart(shoppingCartId: string, shoppingCartArticleId: string): JQueryDeferred<ICustomerDto[]> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<ICustomerDto[]>();
                 api.postJSON("api/shoppingcarts/removeArticleFromShoppingCart", { shoppingCartId: shoppingCartId, shoppingCartArticleId: shoppingCartArticleId }, data => deferred.resolve(data));
                 return deferred;
             }
 
             export function order(shoppingCartId: string): JQueryDeferred<ICustomerDto[]> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<ICustomerDto[]>();
                 api.postJSON("api/shoppingcarts/order", { shoppingCartId: shoppingCartId }, data => deferred.resolve(data));
                 return deferred;
             }
@@ -136,25 +136,25 @@
 
         export module customers {
             export function getCustomers(page, pageSize): JQueryDeferred<ICustomerDto[]> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<ICustomerDto[]>();
                 api.getJSON("api/customers", null, data => deferred.resolve(data));
                 return deferred;
             }
 
             export function getCustomer(id: string): JQueryDeferred<ICustomerDto> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<ICustomerDto>();
                 api.getJSON("api/customers", { id: id }, data => deferred.resolve(data));
                 return deferred;
             }
 
             export function orderArticle(customerId: string, articleId: string, quantity: number): JQueryDeferred<ICustomerDto[]> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<ICustomerDto[]>();
                 api.postJSON("api/customers/orderArticle", { customerId: customerId, articleId: articleId, quantity: quantity }, data => deferred.resolve(data));
                 return deferred;
             }
 
             export function createCustomer(customerId: string, name: string): JQueryDeferred<any> {
-                var deferred = $.Deferred();
+                var deferred = $.Deferred<any>();
                 api.postJSON("api/customers/createCustomer", { customerId: customerId, name: name }, data => deferred.resolve(data));
                 return deferred;
             }

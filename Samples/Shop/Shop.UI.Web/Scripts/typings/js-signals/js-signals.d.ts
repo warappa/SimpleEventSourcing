@@ -1,7 +1,7 @@
 // Type definitions for JS-Signals
 // Project: http://millermedeiros.github.io/js-signals/
 // Definitions by: Diullei Gomes <https://github.com/diullei>
-// Definitions: https://github.com/borisyankov/DefinitelyTyped
+// DefinitelyTyped: https://github.com/borisyankov/DefinitelyTyped
 
 interface SignalBinding {
     active: boolean;

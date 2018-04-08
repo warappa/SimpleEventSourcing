@@ -1,5 +1,6 @@
 ﻿using NHibernate;
 using NHibernate.Mapping.ByCode.Conformist;
+using NHibernate.Type;
 using SimpleEventSourcing.NHibernate.WriteModel.Types;
 
 namespace SimpleEventSourcing.NHibernate.WriteModel
@@ -54,7 +55,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             });
             Property(x => x.DateTime, config =>
             {
-                config.Type(new UtcDateTime2Type());
+                config.Type(new UtcDateTimeType());
             });
             Id(x => x.CheckpointNumber, config =>
             {

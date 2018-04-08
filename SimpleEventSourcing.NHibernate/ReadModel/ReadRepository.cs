@@ -166,10 +166,10 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
             var session = sessionFactory.GetCurrentSession();
             var newPredicate = ChangeInputType(predicate, type);
 
-            var queryMethod = typeof(LinqExtensionMethods).GetRuntimeMethods()
+            var queryMethod = session.GetType().GetRuntimeMethods()
                 .First(x =>
-                    x.Name == nameof(LinqExtensionMethods.Query) &&
-                    x.GetParameters()[0].ParameterType == typeof(ISession))
+                    x.Name == nameof(ISession.Query) &&
+                    x.GetParameters().Length == 0)
                 .MakeGenericMethod(type);
 
             var query = (IQueryable)queryMethod.Invoke(null, new object[] { session });
