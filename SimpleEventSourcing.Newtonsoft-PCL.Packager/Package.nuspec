@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SimpleEventSourcing.Newtonsoft-PCL</id>
-    <version>1.0.0-pre1</version>
+    <version>1.0.0-pre2</version>
     <title>SimpleEventSourcing.Newtonsoft-PCL</title>
     <authors>David Rettenbacher</authors>
     <owners></owners>
@@ -22,8 +22,8 @@
     <copyright>© 2017 David Rettenbacher</copyright>
     <dependencies>
 		<group>
-			<dependency id="SimpleEventSourcing" version="1.0.0-pre1" />
-			<dependency id="Newtonsoft.Json" version="6.0.8" />
+			<dependency id="SimpleEventSourcing" version="1.0.0-pre2" />
+			<dependency id="Newtonsoft.Json" version="10.0.1" />
         </group>
     </dependencies>
     <references></references>

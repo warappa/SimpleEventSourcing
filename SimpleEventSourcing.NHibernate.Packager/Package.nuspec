@@ -2,7 +2,7 @@
 <package >
     <metadata>
         <id>SimpleEventSourcing.NHibernate</id>
-        <version>1.0.0-pre1</version>
+        <version>1.0.0-pre2</version>
         <title>SimpleEventSourcing.NHibernate</title>
         <authors>David Rettenbacher</authors>
         <owners></owners>
@@ -22,8 +22,8 @@
         <copyright>© 2017 David Rettenbacher</copyright>
         <dependencies>
             <group>
-                <dependency id="SimpleEventSourcing" version="1.0.0-pre1" />
-                <dependency id="NHibernate" version="4.1.1.4000" />
+                <dependency id="SimpleEventSourcing" version="1.0.0-pre2" />
+                <dependency id="NHibernate" version="5.0.3" />
             </group>
         </dependencies>
         <references></references>

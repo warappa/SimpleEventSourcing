@@ -2,7 +2,7 @@
 
 namespace SimpleEventSourcing.WriteModel
 {
-	public class BinderWrapper : Newtonsoft.Json.Serialization.DefaultSerializationBinder
+	public class BinderWrapper : Newtonsoft.Json.Serialization.ISerializationBinder
     {
         public ISerializationBinder Binder { get; }
 
@@ -11,13 +11,13 @@ namespace SimpleEventSourcing.WriteModel
             Binder = binder;
 		}
 
-		public override void BindToName(Type serializedType, out string assemblyName, out string typeName)
+		public void BindToName(Type serializedType, out string assemblyName, out string typeName)
 		{
 			typeName = Binder.BindToName(serializedType);
 			assemblyName = null;
 		}
 
-		public override Type BindToType(string assemblyName, string typeName)
+		public Type BindToType(string assemblyName, string typeName)
 		{
 			return Binder.BindToType(typeName);
 		}

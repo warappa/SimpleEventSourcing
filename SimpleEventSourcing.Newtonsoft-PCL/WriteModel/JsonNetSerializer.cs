@@ -7,7 +7,7 @@ namespace SimpleEventSourcing.WriteModel
     {
         private readonly JsonSerializerSettings settings;
 
-        public ISerializationBinder Binder => (settings.Binder as BinderWrapper).Binder;
+        public ISerializationBinder Binder => (settings.SerializationBinder as BinderWrapper).Binder;
 
         public JsonNetSerializer(JsonSerializerSettings settings)
         {
@@ -53,7 +53,7 @@ namespace SimpleEventSourcing.WriteModel
         {
             return new JsonSerializerSettings()
             {
-                Binder = new BinderWrapper(binder),
+                SerializationBinder = new BinderWrapper(binder),
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
                 DateParseHandling = DateParseHandling.DateTime,
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
@@ -68,7 +68,8 @@ namespace SimpleEventSourcing.WriteModel
                 PreserveReferencesHandling = PreserveReferencesHandling.None,
                 ReferenceLoopHandling = ReferenceLoopHandling.Error,
                 StringEscapeHandling = StringEscapeHandling.Default,
-                TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple,
+                //TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple,
+                TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
                 TypeNameHandling = TypeNameHandling.Auto
             };
         }

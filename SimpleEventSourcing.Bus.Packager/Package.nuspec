@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SimpleEventSourcing.Bus</id>
-    <version>1.0.0-pre1</version>
+    <version>1.0.0-pre2</version>
     <title>SimpleEventSourcing.Bus</title>
     <authors>David Rettenbacher</authors>
     <owners></owners>
@@ -22,8 +22,8 @@
     <copyright>© 2017 David Rettenbacher</copyright>
     <dependencies>
 		<group>
-          <dependency id="SimpleEventSourcing" version="1.0.0-pre1" />
-			<dependency id="System.Reactive.Linq" version="3.0.0" />
+          <dependency id="SimpleEventSourcing" version="1.0.0-pre2" />
+			<dependency id="System.Reactive.Linq" version="3.1.1" />
         </group>
     </dependencies>
     <references></references>

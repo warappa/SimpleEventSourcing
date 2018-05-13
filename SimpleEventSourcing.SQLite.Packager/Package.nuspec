@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SimpleEventSourcing.SQLite</id>
-    <version>1.0.0-pre1</version>
+    <version>1.0.0-pre2</version>
     <title>SimpleEventSourcing.SQLite</title>
     <authors>David Rettenbacher</authors>
     <owners></owners>
@@ -24,11 +24,9 @@
         <group>
 			<dependency id="SimpleEventSourcing" version="1.0.0-pre1" />
 			<dependency id="Newtonsoft.Json" version="6.0.8" />
-			<dependency id="SQLite.Net.Async-PCL" version="3.1.1" />
-			<dependency id="SQLite.Net.Core-PCL" version="3.1.1" />
-			<dependency id="SQLite.Net-PCL" version="3.1.1" />
-			<dependency id="System.Reactive" version="3.0.0" />
-			<dependency id="System.Reactive.Linq" version="3.0.0" />
+			<dependency id="sqlite-net-pcl" version="1.5.166-beta" />
+			<dependency id="System.Reactive" version="3.1.1" />
+			<dependency id="System.Reactive.Linq" version="3.1.1" />
         </group>
     </dependencies>
     <references></references>
