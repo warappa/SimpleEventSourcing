@@ -1,5 +1,7 @@
 ﻿using NUnit.Framework;
 using SimpleEventSourcing.WriteModel.Tests;
+using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace SimpleEventSourcing.SQLite.WriteModel.Tests
 {

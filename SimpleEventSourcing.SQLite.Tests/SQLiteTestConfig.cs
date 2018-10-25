@@ -38,7 +38,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
         {
             private SQLiteTestConfig parent;
 
-            public StorageSQLiteConfig(SQLiteTestConfig parent )
+            public StorageSQLiteConfig(SQLiteTestConfig parent)
             {
                 this.parent = parent;
             }
@@ -125,7 +125,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
                     var databaseFile = "writeDatabase.db";
 
                     var connectionString = new SQLiteConnectionString(databaseFile, true);
-                    
+
                     writeConnection = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
 
                     using (writeConnection.Lock())
@@ -228,7 +228,8 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
             {
                 return new TestEntityA()
                 {
-                    Value = Guid.NewGuid().ToString()
+                    Value = Guid.NewGuid().ToString(),
+                    SubData = new SubData() { PropA = "propA", PropB = "propB" }
                 };
             }
 

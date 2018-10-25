@@ -1,6 +1,7 @@
 ﻿using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.ReadModel.Tests;
 using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace SimpleEventSourcing.SQLite.WriteModel.Tests
 {
@@ -16,5 +17,16 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
 
         public string Value { get; set; }
         public string Streamname { get; set; }
+
+        [TextBlob("SubDataSerialized")]
+        public SubData SubData { get; set; }
+
+        public string SubDataSerialized { get; set; }
+    }
+
+    public class SubData
+    {
+        public string PropA { get; set; }
+        public string PropB { get; set; }
     }
 }

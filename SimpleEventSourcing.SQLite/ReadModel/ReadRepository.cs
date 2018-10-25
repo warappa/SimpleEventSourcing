@@ -1,5 +1,6 @@
 ﻿using SimpleEventSourcing.ReadModel;
 using SQLite;
+using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,15 +15,16 @@ namespace SimpleEventSourcing.SQLite.ReadModel
     {
         private static readonly MethodInfo getGenericMethodInfo;
         private static readonly MethodInfo tableGenericMethodInfo;
-
+        private static MethodInfo getAllWithChildrenGenericMethodInfo;
         private readonly Func<SQLiteConnectionWithLock> connectionFactory;
 
         static ReadRepository()
         {
             var connectionType = typeof(SQLiteConnectionWithLock);
 
-            getGenericMethodInfo = connectionType.GetRuntimeMethod(nameof(SQLiteConnectionWithLock.Get), new[] { typeof(object) });
+            getGenericMethodInfo = typeof(ReadOperations).GetRuntimeMethod(nameof(ReadOperations.GetWithChildren), new[] { typeof(SQLiteConnection), typeof(object), typeof(bool) });
             tableGenericMethodInfo = connectionType.GetRuntimeMethod(nameof(SQLiteConnectionWithLock.Table), new Type[0]);
+            getAllWithChildrenGenericMethodInfo = typeof(ReadOperations).GetRuntimeMethods().Where(x => x.Name == nameof(ReadOperations.GetAllWithChildren)).First();
         }
 
         public ReadRepository(Func<SQLiteConnectionWithLock> connectionFactory)
@@ -34,7 +36,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
         {
             foreach (var entity in entities)
             {
-                conn.Insert(entity);
+                conn.InsertWithChildren(entity);
             }
         }
 
@@ -42,7 +44,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
         {
             foreach (var entity in entities)
             {
-                conn.Update(entity);
+                conn.UpdateWithChildren(entity);
             }
         }
 
@@ -81,7 +83,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
         {
             var conn = connectionFactory();
             T res = null;
-            conn.RunInLock(() => res = conn.Get<T>(id));
+            conn.RunInLock(() => res = conn.GetWithChildren<T>(id));
 
             return Task.FromResult(res);
         }
@@ -93,7 +95,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             conn.RunInLock(() =>
             {
                 var getMethodInfo = getGenericMethodInfo.MakeGenericMethod(entityType);
-                res = getMethodInfo.Invoke(conn, new[] { id });
+                res = getMethodInfo.Invoke(null, new[] { conn, id, true });
             });
 
             return Task.FromResult(res);
@@ -132,7 +134,8 @@ namespace SimpleEventSourcing.SQLite.ReadModel
         {
             var conn = connectionFactory();
 
-            var res = conn.Table<T>().Where(predicate).AsQueryable();
+            //var res = conn.Table<T>().Where(predicate).AsQueryable();
+            var res = conn.GetAllWithChildren<T>(predicate, true).AsQueryable();
 
             return Task.FromResult(res);
         }
@@ -142,17 +145,22 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             var conn = connectionFactory();
             IQueryable res = null;
 
-            var tableMethodInfo = tableGenericMethodInfo.MakeGenericMethod(type);
-            var tableQuery = tableMethodInfo.Invoke(conn, new object[0]);
+            var getAllMethodInfo = getAllWithChildrenGenericMethodInfo.MakeGenericMethod(type);
 
             var newPredicate = ChangeInputType(predicate, type);
-
-            var whereMethodInfo2 = tableQuery.GetType().GetTypeInfo().GetDeclaredMethods(nameof(TableQuery<object>.Where))
-                .First(x => x.GetGenericArguments().Length == 0);
-
-            var results = (IEnumerable)whereMethodInfo2.Invoke(tableQuery, new object[] { newPredicate });
-
+            var getAll = getAllMethodInfo.Invoke(conn, new object[] { conn, newPredicate, true });
+            var results = (IEnumerable)getAll;
             res = results.AsQueryable();
+            //var tableMethodInfo = tableGenericMethodInfo.MakeGenericMethod(type);
+            //var tableQuery = tableMethodInfo.Invoke(conn, new object[0]);
+
+
+            //var whereMethodInfo2 = getAll.GetType().GetTypeInfo().GetDeclaredMethods(nameof(TableQuery<object>.Where))
+            //    .First(x => x.GetGenericArguments().Length == 0);
+
+            //var results = (IEnumerable)whereMethodInfo2.Invoke(getAll, new object[] { newPredicate });
+
+            //res = results.AsQueryable();
 
             return Task.FromResult(res);
         }
