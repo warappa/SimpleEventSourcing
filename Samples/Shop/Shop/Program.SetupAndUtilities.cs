@@ -65,7 +65,7 @@ namespace Shop
                 {
                     var databaseFile = Path.Combine(GetDataPath(), "writeDatabase.db");
 
-                    var connectionString = new SQLiteConnectionString(databaseFile, true);
+                    var connectionString = new SQLiteConnectionString(databaseFile, true, null);
 
                     writeConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.SharedCache);
                     writeConn.BusyTimeout = TimeSpan.FromSeconds(2);
@@ -113,7 +113,7 @@ namespace Shop
                 {
                     var databaseFile = Path.Combine(GetDataPath(), "readDatabase.db");
 
-                    var connectionString = new SQLiteConnectionString(databaseFile, true);
+                    var connectionString = new SQLiteConnectionString(databaseFile, true, null);
 
                     readConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.SharedCache);
                     readConn.BusyTimeout = TimeSpan.FromSeconds(2);

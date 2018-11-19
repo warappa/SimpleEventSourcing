@@ -1,155 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4D67344F-2BCF-40A9-81ED-027AC0810C6C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SimpleEventSourcing</RootNamespace>
-    <AssemblyName>SimpleEventSourcing</AssemblyName>
-    <DefaultLanguage>de-DE</DefaultLanguage>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile259</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Domain\AggregateRoot.cs" />
-    <Compile Include="Domain\ChildEntity.cs" />
-    <Compile Include="Domain\IAggregateRoot.cs" />
-    <Compile Include="Domain\IChildEntity.cs" />
-    <Compile Include="Domain\IChildEntity1.cs" />
-    <Compile Include="Domain\IChildEntityInternal.cs" />
-    <Compile Include="Domain\IEventSourcedEntity.cs" />
-    <Compile Include="Domain\IEventSourcedEntity1.cs" />
-    <Compile Include="Domain\IEventSourcedEntityInternal.cs" />
-    <Compile Include="Domain\IProcessManager1.cs" />
-    <Compile Include="Domain\IProcessManager.cs" />
-    <Compile Include="Domain\IProcessManagerHandledEvent.cs" />
-    <Compile Include="Domain\IProcessManagerHandles.cs" />
-    <Compile Include="Domain\IProcessManagerHandles1.cs" />
-    <Compile Include="Domain\IProcessManagerStartsWith.cs" />
-    <Compile Include="Domain\IProcessManagerStartsWith1.cs" />
-    <Compile Include="Domain\ProcessManagerHandledEvent.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Messaging\IEventSourcedEntityEvent1.cs" />
-    <Compile Include="Messaging\MessageExtensions.cs" />
-    <Compile Include="ReadModel\ControlsReadModelsAttribute.cs" />
-    <Compile Include="ReadModel\IDbScopeAware.cs" />
-    <Compile Include="ReadModel\InMemory\ReadRepository.cs" />
-    <Compile Include="ReadModel\IReadMode1.cs" />
-    <Compile Include="State\IAggregateRootState1.cs" />
-    <Compile Include="WriteModel\IEventRepository.cs" />
-    <Compile Include="WriteModel\IObserveRawStreamEntries.cs" />
-    <Compile Include="ReadModel\NullDisposable.cs" />
-    <Compile Include="Storage\IStorageResetter.cs" />
-    <Compile Include="WriteModel\InMemory\RawStreamEntryFactory.cs" />
-    <Compile Include="WriteModel\IRawStreamEntryFactory.cs" />
-    <Compile Include="Utils\StateExtensions.cs" />
-    <Compile Include="WriteModel\GroupConstants.cs" />
-    <Compile Include="WriteModel\IHasCheckpointNumber.cs" />
-    <Compile Include="WriteModel\InMemory\PersistenceEngine.cs" />
-    <Compile Include="WriteModel\InMemory\RawStreamEntry.cs" />
-    <Compile Include="WriteModel\IProcessManagerRepository.cs" />
-    <Compile Include="Messaging\ProcessManagerRouter.cs" />
-    <Compile Include="Messaging\IChildEntityEvent.cs" />
-    <Compile Include="Messaging\IEventSourcedEntityCommand.cs" />
-    <Compile Include="Messaging\IEventSourcedEntityEvent.cs" />
-    <Compile Include="Messaging\IMessage1.cs" />
-    <Compile Include="Messaging\Message.cs" />
-    <Compile Include="Messaging\MessageConstants.cs" />
-    <Compile Include="Messaging\TypedMessage.cs" />
-    <Compile Include="ReadModel\IAggregateReadModel.cs" />
-    <Compile Include="ReadModel\ICheckpointInfo.cs" />
-    <Compile Include="Domain\EventSourcedEntity.cs" />
-    <Compile Include="Messaging\ICommand.cs" />
-    <Compile Include="Messaging\IEvent.cs" />
-    <Compile Include="Messaging\IMessage.cs" />
-    <Compile Include="ReadModel\IProjector.cs" />
-    <Compile Include="ReadModel\NullCheckpointPersister.cs" />
-    <Compile Include="State\AggregateRootState.cs" />
-    <Compile Include="State\ChildEntityState.cs" />
-    <Compile Include="State\IAggregateRootState.cs" />
-    <Compile Include="State\IChildEventSourcedState1.cs" />
-    <Compile Include="State\IChildEventSourcedState.cs" />
-    <Compile Include="State\IProcessManagerState.cs" />
-    <Compile Include="State\IState.cs" />
-    <Compile Include="State\IStreamState1.cs" />
-    <Compile Include="State\ProcessManagerState.cs" />
-    <Compile Include="Utils\EqualityExtensions.cs" />
-    <Compile Include="WriteModel\DefaultInstanceProvider.cs" />
-    <Compile Include="WriteModel\IInstanceProvider.cs" />
-    <Compile Include="ReadModel\IReadModel.cs" />
-    <Compile Include="ReadModel\IReadRepository.cs" />
-    <Compile Include="WriteModel\IRawStreamEntryExtensions.cs" />
-    <Compile Include="WriteModel\ISerializationBinder.cs" />
-    <Compile Include="WriteModel\ISerializer.cs" />
-    <Compile Include="WriteModel\IPersistenceEngine.cs" />
-    <Compile Include="WriteModel\IRawStreamEntry.cs" />
-    <Compile Include="Domain\ProcessManager.cs" />
-    <Compile Include="ReadModel\CatchUpProjector.cs" />
-    <Compile Include="ReadModel\ICheckpointPersister.cs" />
-    <Compile Include="State\IEventSourcedState.cs" />
-    <Compile Include="State\IStateFactory.cs" />
-    <Compile Include="ReadModel\Projector.cs" />
-    <Compile Include="ReadModel\ReadRepositoryState.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WriteModel\EventRepository.cs" />
-    <Compile Include="State\IStateInternal.cs" />
-    <Compile Include="State\IStreamState.cs" />
-    <Compile Include="State\EventSourcedState.cs" />
-    <Compile Include="State\StreamState.cs" />
-    <Compile Include="Utils\StringExtensions.cs" />
-    <Compile Include="WriteModel\Poller.cs" />
-    <Compile Include="WriteModel\RawStreamEntryExtensions.cs" />
-    <Compile Include="WriteModel\VersionedAttribute.cs" />
-    <Compile Include="WriteModel\VersionedBinder.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Reactive.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Core.3.1.1\lib\netstandard1.0\System.Reactive.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Interfaces, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Interfaces.3.1.1\lib\netstandard1.0\System.Reactive.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Linq, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Linq.3.1.1\lib\netstandard1.0\System.Reactive.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.PlatformServices.3.1.1\lib\netstandard1.0\System.Reactive.PlatformServices.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Version>2.0.0</Version>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Properties\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+      <PackageReference Include="System.Reactive.Core" Version="4.1.2" />
+    </ItemGroup>
+
 </Project>

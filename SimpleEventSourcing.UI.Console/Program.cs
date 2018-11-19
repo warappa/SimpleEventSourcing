@@ -147,7 +147,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
                 var databaseFile = "writeDatabase.db";
 
-                var connectionString = new SQLiteConnectionString(databaseFile, true);
+                var connectionString = new SQLiteConnectionString(databaseFile, true, null);
 
                 writeConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
 
@@ -170,7 +170,7 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
 
                 var databaseFile = "readDatabase.db";
 
-                var connectionString = new SQLiteConnectionString(databaseFile, true);
+                var connectionString = new SQLiteConnectionString(databaseFile, true, null);
 
                 readConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
 

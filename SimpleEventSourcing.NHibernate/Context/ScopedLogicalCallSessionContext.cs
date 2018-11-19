@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 
 namespace SimpleEventSourcing.NHibernate.Context
 {
@@ -24,7 +23,7 @@ namespace SimpleEventSourcing.NHibernate.Context
 
         private static void OpenScope()
         {
-            var logicalData = CallContext.LogicalGetData(SessionFactoryMapKey) as string;
+            var logicalData = CallContext.GetData(SessionFactoryMapKey) as string;
 
             var newScopeValue = Guid.NewGuid().ToString();
 
@@ -33,14 +32,14 @@ namespace SimpleEventSourcing.NHibernate.Context
                 (logicalData ?? "").Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
                     .Concat(new[] { newScopeValue }));
 
-            CallContext.LogicalSetData(SessionFactoryMapKey, newLogicalData);
+            CallContext.SetData(SessionFactoryMapKey, newLogicalData);
 
             scopes[newScopeValue] = new Dictionary<object, object>();
         }
 
         private static void CloseScope()
         {
-            var logicalData = CallContext.LogicalGetData(SessionFactoryMapKey) as string;
+            var logicalData = CallContext.GetData(SessionFactoryMapKey) as string;
 
             var entries = (logicalData ?? "").Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -55,7 +54,7 @@ namespace SimpleEventSourcing.NHibernate.Context
 
             var newLogicalData = string.Join("|", entries.Take(entries.Length - 1));
 
-            CallContext.LogicalSetData(SessionFactoryMapKey, newLogicalData.Length == 0 ? null : newLogicalData);
+            CallContext.SetData(SessionFactoryMapKey, newLogicalData.Length == 0 ? null : newLogicalData);
         }
 
         /// <summary>
@@ -105,7 +104,7 @@ namespace SimpleEventSourcing.NHibernate.Context
 
         private static string GetCurrentScopeKey()
         {
-            var logicalData = CallContext.LogicalGetData(SessionFactoryMapKey) as string;
+            var logicalData = CallContext.GetData(SessionFactoryMapKey) as string;
 
             return logicalData?.Split('|').LastOrDefault();
         }
