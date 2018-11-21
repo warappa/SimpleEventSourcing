@@ -21,7 +21,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             ControlsReadModelsAttribute.ClearKnownAssemblies();
 
-            ((Action)(() => ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModel)))).ShouldThrow<InvalidOperationException>();
+            ((Action)(() => ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModel)))).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
             ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModel), typeof(State).Assembly);
 
             Type foundState = null;
-            ((Action)(() => foundState = ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModel)))).ShouldNotThrow<InvalidOperationException>();
+            ((Action)(() => foundState = ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModel)))).Should().NotThrow<InvalidOperationException>();
 
             foundState.Should().Be(typeof(State));
         }
@@ -42,7 +42,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             ControlsReadModelsAttribute.ClearKnownAssemblies();
 
-            ((Action)(() => ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModelClaimedByMultiple), typeof(State).Assembly))).ShouldThrow<InvalidOperationException>();
+            ((Action)(() => ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModelClaimedByMultiple), typeof(State).Assembly))).Should().Throw<InvalidOperationException>();
         }
 
         [ControlsReadModels(new[] { typeof(StateReadModel) })]

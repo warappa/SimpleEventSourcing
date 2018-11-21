@@ -124,7 +124,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
 
                     var databaseFile = "writeDatabase.db";
 
-                    var connectionString = new SQLiteConnectionString(databaseFile, true);
+                    var connectionString = new SQLiteConnectionString(databaseFile, true, null);
 
                     writeConnection = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
 
@@ -205,7 +205,7 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
 
                     var databaseFile = "readDatabase.db";
 
-                    var connectionString = new SQLiteConnectionString(databaseFile, true);
+                    var connectionString = new SQLiteConnectionString(databaseFile, true, null);
 
                     readConnection = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
 

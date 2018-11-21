@@ -43,7 +43,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             var loadedEntity = target.Get<TestEntity>(entity.Id);
 
-            loadedEntity.ShouldBeEquivalentTo(entity);
+            loadedEntity.Should().BeEquivalentTo(entity);
             loadedEntity.StateModel.Name.Should().Be("test");
         }
 

@@ -29,7 +29,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             var expected = testEvents.WithStreamName("teststream A");
 
-            loaded.ShouldBeEquivalentTo(expected);
+            loaded.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 .WithStreamName("teststream A")
                 .WithGroup("testgroup");
 
-            loaded.ShouldBeEquivalentTo(expected);
+            loaded.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 .WithCategory("testcategory")
                 .ToList();
 
-            loaded.ShouldBeEquivalentTo(expected);
+            loaded.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 .WithStreamName("teststream A")
                 .WithPayloadType<TestEvent2>();
 
-            loaded.ShouldBeEquivalentTo(expected);
+            loaded.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 .WithStreamName("teststream A")
                 .WithPayloadTypes<TestEvent, TestEvent2>();
 
-            loaded.ShouldBeEquivalentTo(expected);
+            loaded.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 .WithStreamName("teststream A")
                 .Reverse();
 
-            loaded.ShouldBeEquivalentTo(expected);
+            loaded.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                     x.StreamRevision == 2)
                 .ToList();
 
-            loaded.ShouldBeEquivalentTo(expected);
+            loaded.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                     x.StreamRevision == 2)
                 .ToList();
 
-            loaded.ShouldBeEquivalentTo(expected);
+            loaded.Should().BeEquivalentTo(expected);
         }
     }
 }

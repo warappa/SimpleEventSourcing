@@ -29,14 +29,14 @@ namespace SimpleEventSourcing.Tests.Messaging
         [Test]
         public void Ctor_argument_1_is_null_should_throw_ArgumentNullException()
         {
-            ((Action)(() => new TestProcessManagerRouter(null, null))).ShouldThrow<ArgumentNullException>()
+            ((Action)(() => new TestProcessManagerRouter(null, null))).Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("processManagerRepository");
         }
 
         [Test]
         public void Ctor_argument_2_is_null_should_throw_ArgumentNullException()
         {
-            ((Action)(() => new TestProcessManagerRouter(processManagerRepository, null))).ShouldThrow<ArgumentNullException>()
+            ((Action)(() => new TestProcessManagerRouter(processManagerRepository, null))).Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("processIdExtractor");
         }
 
@@ -93,7 +93,7 @@ namespace SimpleEventSourcing.Tests.Messaging
         [Test]
         public void Cannot_register_process_manager_with_no_start_events()
         {
-            ((Action)(() => target.Register<ProcessManagerWithNoStartEvent>())).ShouldThrow<InvalidOperationException>()
+            ((Action)(() => target.Register<ProcessManagerWithNoStartEvent>())).Should().Throw<InvalidOperationException>()
                 .And.Message.Contains("has no start events").Should().Be(true);
         }
 
@@ -109,7 +109,7 @@ namespace SimpleEventSourcing.Tests.Messaging
 
             target.Register<TestProcessManager>();
 
-            ((Action)(() => target.Handle(testMessage))).ShouldThrow<InvalidOperationException>()
+            ((Action)(() => target.Handle(testMessage))).Should().Throw<InvalidOperationException>()
                 .And.Message.Contains("does not match any start events for").Should().Be(true);
         }
 

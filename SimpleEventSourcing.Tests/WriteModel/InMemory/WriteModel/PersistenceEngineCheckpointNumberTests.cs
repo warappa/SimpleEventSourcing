@@ -30,7 +30,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
 
             var loaded = persistenceEngine.LoadStreamEntries(GroupConstants.All, null).ToList();
 
-            loaded.ShouldBeEquivalentTo(loadedAll);
+            loaded.Should().BeEquivalentTo(loadedAll);
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
             var expectedByStream = testEvents
                 .WithGroup("testgroup");
 
-            loadedPerStream.ShouldBeEquivalentTo(expectedByStream);
+            loadedPerStream.Should().BeEquivalentTo(expectedByStream);
         }
 
         [Test]
@@ -52,7 +52,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
             var expected = testEvents
                 .WithCategory("testcategory");
 
-            loadedPerStream.ShouldBeEquivalentTo(expected);
+            loadedPerStream.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
             var expected = testEvents
                 .WithPayloadType<TestEvent2>();
 
-            loaded.ShouldBeEquivalentTo(expected);
+            loaded.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
             var expected = testEvents
                 .WithPayloadTypes<TestEvent, TestEvent2>();
 
-            loaded.ShouldBeEquivalentTo(expected);
+            loaded.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -86,7 +86,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
                 .WithGroup("testgroup")
                 .Reverse();
 
-            loaded.ShouldBeEquivalentTo(expected);
+            loaded.Should().BeEquivalentTo(expected);
         }
     }
 }

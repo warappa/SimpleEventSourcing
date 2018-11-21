@@ -13,14 +13,14 @@ namespace SimpleEventSourcing.Tests
         [Test]
         public void Ctor_with_argument_1_null_throws_ArgumentNullException()
         {
-            ((Action)(() => new ChildEntity(null, Enumerable.Empty<IChildEntityEvent>()))).ShouldThrow<ArgumentNullException>()
+            ((Action)(() => new ChildEntity(null, Enumerable.Empty<IChildEntityEvent>()))).Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("aggregateRoot");
         }
 
         [Test]
         public void Ctor_with_argument_2_null_throws_ArgumentNullException()
         {
-            ((Action)(() => new ChildEntity(new ParentEntity(Enumerable.Empty<IChildEntityEvent>()), null))).ShouldThrow<ArgumentNullException>()
+            ((Action)(() => new ChildEntity(new ParentEntity(Enumerable.Empty<IChildEntityEvent>()), null))).Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("events");
         }
 
@@ -28,7 +28,7 @@ namespace SimpleEventSourcing.Tests
         public void SetAggregateRoot_with_aggregateRoot_null_throws_ArgumentNullException()
         {
             var child = new ChildEntity();
-            ((Action)(() => ((IChildEntityInternal)child).SetAggregateRoot(null, ChildEntityId.Generate()))).ShouldThrow<ArgumentNullException>()
+            ((Action)(() => ((IChildEntityInternal)child).SetAggregateRoot(null, ChildEntityId.Generate()))).Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("aggregateRoot");
         }
 
@@ -38,7 +38,7 @@ namespace SimpleEventSourcing.Tests
             var child = new ChildEntity();
             ((IChildEntityInternal)child).SetAggregateRoot(new ParentEntity(ParentEntityId.Generate(), "name"), ChildEntityId.Generate());
 
-            ((Action)(() => ((IChildEntityInternal)child).SetAggregateRoot(new ParentEntity(ParentEntityId.Generate(), "name"), ChildEntityId.Generate()))).ShouldThrow<InvalidOperationException>()
+            ((Action)(() => ((IChildEntityInternal)child).SetAggregateRoot(new ParentEntity(ParentEntityId.Generate(), "name"), ChildEntityId.Generate()))).Should().Throw<InvalidOperationException>()
                 .And.Message.Should().Be("AggregateRoot cannot be reassigned in ChildEntity!");
         }
 
