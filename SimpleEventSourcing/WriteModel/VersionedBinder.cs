@@ -108,13 +108,7 @@ namespace SimpleEventSourcing.WriteModel
 
             if (scanAssembliesOfTypes == null)
             {
-                var currentdomain = typeof(string).GetTypeInfo().Assembly.GetType("System.AppDomain")
-                    .GetRuntimeProperty("CurrentDomain")
-                    .GetMethod
-                    .Invoke(null, new object[] { });
-
-                var getassemblies = currentdomain.GetType().GetRuntimeMethod("GetAssemblies", new Type[] { });
-                assemblies = getassemblies.Invoke(currentdomain, new object[] { }) as Assembly[];
+                assemblies = AppDomain.CurrentDomain.GetAssemblies();
             }
             else
             {

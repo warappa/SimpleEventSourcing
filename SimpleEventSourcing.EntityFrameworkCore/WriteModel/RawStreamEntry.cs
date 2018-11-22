@@ -1,4 +1,5 @@
-﻿using SimpleEventSourcing.WriteModel;
+﻿using SimpleEventSourcing.EntityFrameworkCore.Internal;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +9,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
     [Table("Commits")]
     public class RawStreamEntry : IRawStreamEntry
     {
-        [Column("StreamName", TypeName = "varchar")]
+        [Column("StreamName", TypeName = "varchar(100)")]
         [StringLength(100)]
         [Index("LoadStreamMessages", Order = 2)]
         public string StreamName { get; set; }
@@ -22,7 +23,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
         [Column("StreamRevision")]
         public int StreamRevision { get; set; }
 
-        [Column("PayloadType", TypeName = "varchar")]
+        [Column("PayloadType", TypeName = "varchar(100)")]
         [StringLength(100)]
         [Index("LoadStreamMessages", Order = 3)]
         public string PayloadType { get; set; }

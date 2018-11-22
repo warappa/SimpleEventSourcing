@@ -1,9 +1,7 @@
-﻿using EntityFramework.DbContextScope;
-using EntityFramework.DbContextScope.Interfaces;
+﻿using EntityFrameworkCore.DbContextScope;
 using Microsoft.EntityFrameworkCore;
 using SimpleEventSourcing.ReadModel;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -12,29 +10,8 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 {
-    public static class DbContextExtensions
-    {
-        private static readonly MethodInfo setMethodInfo;
-        private static ConcurrentDictionary<Type, MethodInfo> setMethods = new ConcurrentDictionary<Type, MethodInfo>();
-        private static ConcurrentDictionary<Type, Type> iSetClasses = new ConcurrentDictionary<Type, Type>();
-
-        static DbContextExtensions()
-        {
-            setMethodInfo = typeof(DbContext).GetMethods()
-                .Where(x => x.Name == nameof(DbContext.Set) &&
-                    x.IsGenericMethodDefinition == false)
-                .First();
-        }
-        public static DbSet Set(this DbContext dbContext, Type type)
-        {
-            var value = setMethods.GetOrAdd(type, t => setMethodInfo.MakeGenericMethod(t));
-            var valueInterface = setMethods.GetOrAdd(type, t => setMethodInfo.MakeGenericMethod(t));
-
-            value.Invoke(dbContext, new object[0]);
-        }
-    }
     public class ReadRepository<TDbContext> : IReadRepository, IDbScopeAware
-        where TDbContext : DbContext, IDbContext
+        where TDbContext : DbContext
     {
         private readonly IDbContextScopeFactory dbContextScopeFactory;
 
@@ -175,21 +152,27 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
             using (var scope = dbContextScopeFactory.Create())
             {
-                res = scope.DbContexts.Get<TDbContext>()
+                var local = scope.DbContexts.Get<TDbContext>()
                     .Set<T>()
-                    .Local
+                    .Local;
+
+                res = local
                     .FirstOrDefault(x =>
                         x.Streamname != null &&
                         x.Streamname.Equals(streamname));
 
                 if (res == null)
                 {
+                    var aaa = scope.DbContexts.Get<TDbContext>()
+                    .Set<T>()
+                    .ToList();
+
                     res = scope.DbContexts.Get<TDbContext>()
                     .Set<T>()
                     .Where(x =>
                         x.Streamname != null &&
 #pragma warning disable CS0253 // Möglicher unbeabsichtigter Referenzvergleich; rechte Seite muss umgewandelt werden
-                        x.Streamname == streamname)
+                        x.Streamname == (string)streamname)
 #pragma warning restore CS0253 // Möglicher unbeabsichtigter Referenzvergleich; rechte Seite muss umgewandelt werden
                     .FirstOrDefault();
                 }

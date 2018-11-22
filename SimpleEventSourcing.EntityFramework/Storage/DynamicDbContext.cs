@@ -22,7 +22,7 @@ namespace SimpleEventSourcing.EntityFramework.Storage
             {
                 modelBuilder.RegisterEntityType(type);
             }
-
+            
             return new DynamicDbContext(
                 connection,
                 contextOwnsConnection,

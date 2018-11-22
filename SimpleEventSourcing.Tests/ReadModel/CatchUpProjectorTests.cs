@@ -47,9 +47,9 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             storageResetter = config.WriteModel.GetStorageResetter();
 
-            target = new CatchUpProjector<CatchUpState>(null, checkpointPersister, engine, storageResetter, 100000);
-
             await engine.InitializeAsync().ConfigureAwait(false);
+
+            target = new CatchUpProjector<CatchUpState>(null, checkpointPersister, engine, storageResetter, 100000);
 
             var readResetter = config.ReadModel.GetStorageResetter();
             readResetter.Reset(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetCheckpointInfoType() });
@@ -70,7 +70,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
                 hasResults.Should().Be(true);
 
-                await Task.Delay(1000).ConfigureAwait(false);
+                await Task.Delay(2000).ConfigureAwait(false);
 
                 target.StateModel.Count.Should().Be(1);
 

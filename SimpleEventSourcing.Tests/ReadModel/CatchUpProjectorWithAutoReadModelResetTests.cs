@@ -4,6 +4,7 @@ using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.Tests;
 using SimpleEventSourcing.WriteModel;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -108,6 +109,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
     public class CatchUpReadModel : IReadModel<int>
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public virtual int Id { get; set; }
         object IReadModelBase.Id { get => Id; set => Id = (int)value; }
         public virtual int Count { get; set; }

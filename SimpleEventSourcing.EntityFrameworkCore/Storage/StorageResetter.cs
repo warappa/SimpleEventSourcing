@@ -1,25 +1,22 @@
-﻿using EntityFramework.DbContextScope.Interfaces;
+﻿using EntityFrameworkCore.DbContextScope;
 using Microsoft.EntityFrameworkCore;
 using SimpleEventSourcing.Storage;
 using System;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Core.Mapping;
-using System.Data.Entity.Core.Metadata.Edm;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Transactions;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 {
     public class StorageResetter<TDbContext> : IStorageResetter
-        where TDbContext : DbContext, IDbContext
+        where TDbContext : DbContext
     {
         private readonly IDbContextScopeFactory dbContextScopeFactory;
+        private readonly DbContextOptions options;
 
-        public StorageResetter(IDbContextScopeFactory dbContextScopeFactory)
+        public StorageResetter(IDbContextScopeFactory dbContextScopeFactory, DbContextOptions options)
         {
             this.dbContextScopeFactory = dbContextScopeFactory;
+            this.options = options;
         }
 
         public void Reset(Type[] entityTypes, bool justDrop = false)
@@ -28,21 +25,34 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
             {
                 var originalDbContext = scope.DbContexts.Get<TDbContext>();
 
-                var dbContext = DynamicDbContext.Create(originalDbContext.Database.GetDbConnection(), false, entityTypes);
+                var connection = originalDbContext.Database.GetDbConnection();
+                var dbContext = DynamicDbContext.Create(options, connection, entityTypes);
+                var emptyDbContext = DynamicDbContext.Create(options, connection, new Type[0]);
 
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
                 {
+
                     try
                     {
                         var tablenames = entityTypes
                             .Select(x => GetTablenameForType(dbContext, x))
                             .ToList();
 
+                        var tablenames2 = entityTypes
+                            .Select(x => GetTablenameForType(originalDbContext, x))
+                            .ToList();
+
+                        if (!tablenames.SequenceEqual(tablenames2))
+                        {
+                            throw new Exception("not equal");
+                        }
+
                         foreach (var tablename in tablenames)
                         {
                             try
                             {
-                                dbContext.Database.ExecuteSqlCommand(/*TransactionalBehavior.DoNotEnsureTransaction, */$"drop table [{tablename}]");
+                                var cmd = $"drop table [{tablename}]";
+                                originalDbContext.Database.ExecuteSqlCommand(new RawSqlString(cmd));
                             }
                             catch
                             {
@@ -52,15 +62,19 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 
                         if (!justDrop)
                         {
-                            dbContext.Database.EnsureCreated();
-                            //var creationScript = ((IObjectContextAdapter)dbContext).ObjectContext.CreateDatabaseScript();
+                            emptyDbContext.Database.EnsureCreated();
 
-                            //var creationSteps = creationScript.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
+                            var creationScript = dbContext.Database.GenerateCreateScript();
 
-                            //foreach (var step in creationSteps)
-                            //{
-                            //    dbContext.Database.ExecuteSqlCommand(/*TransactionalBehavior.DoNotEnsureTransaction, */step);
-                            //}
+                            var creationSteps = creationScript.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
+
+                            foreach (var step in creationSteps)
+                            {
+                                if (string.IsNullOrWhiteSpace(step))
+                                    continue;
+
+                                originalDbContext.Database.ExecuteSqlCommand(new RawSqlString(step));
+                            }
                         }
 
                         transaction.Complete();
@@ -73,39 +87,10 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
             }
         }
 
-        //private string GetTablenameForType(DbContext dbContext, Type type)
-        //{
-        //    var metadata = ((IObjectContextAdapter)dbContext).ObjectContext.MetadataWorkspace;
-
-        //    // Get the part of the model that contains info about the actual CLR types
-        //    var objectItemCollection = ((ObjectItemCollection)metadata.GetItemCollection(DataSpace.OSpace));
-
-        //    // Get the entity type from the model that maps to the CLR type
-        //    var entityType = metadata
-        //            .GetItems<EntityType>(DataSpace.OSpace)
-        //            .Single(e => objectItemCollection.GetClrType(e) == type);
-
-        //    // Get the entity set that uses this entity type
-        //    var entitySet = metadata
-        //        .GetItems<EntityContainer>(DataSpace.CSpace)
-        //        .Single()
-        //        .EntitySets
-        //        .Single(s => s.ElementType.Name == entityType.Name);
-
-        //    // Find the mapping between conceptual and storage model for this entity set
-        //    var mapping = metadata.GetItems<EntityContainerMapping>(DataSpace.CSSpace)
-        //            .Single()
-        //            .EntitySetMappings
-        //            .Single(s => s.EntitySet == entitySet);
-
-        //    // Find the storage entity set (table) that the entity is mapped
-        //    var table = mapping
-        //        .EntityTypeMappings.Single()
-        //        .Fragments.Single()
-        //        .StoreEntitySet;
-
-        //    // Return the table name from the storage entity set
-        //    return (string)table.MetadataProperties["Table"].Value ?? table.Name;
-        //}
+        private string GetTablenameForType(DbContext dbContext, Type type)
+        {
+            var modelNames = dbContext.Model.FindEntityType(type);
+            return modelNames.Relational().TableName;
+        }
     }
 }

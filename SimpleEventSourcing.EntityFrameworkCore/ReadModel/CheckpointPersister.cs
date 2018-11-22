@@ -1,4 +1,4 @@
-﻿using EntityFramework.DbContextScope.Interfaces;
+﻿using EntityFrameworkCore.DbContextScope;
 using Microsoft.EntityFrameworkCore;
 using SimpleEventSourcing.ReadModel;
 using System;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 {
     public class CheckpointPersister<TDbContext, TCheckpointInfo> : ICheckpointPersister
-        where TDbContext : DbContext, IDbContext
+        where TDbContext : DbContext
         where TCheckpointInfo : class, ICheckpointInfo, new()
     {
         private readonly IDbContextScopeFactory dbContextScopeFactory;

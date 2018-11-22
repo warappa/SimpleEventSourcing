@@ -172,7 +172,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
                     x.GetParameters().Length == 0)
                 .MakeGenericMethod(type);
 
-            var query = (IQueryable)queryMethod.Invoke(null, new object[] { session });
+            var query = (IQueryable)queryMethod.Invoke(session, new object[0]);
 
             var whereMethod = typeof(Queryable).GetRuntimeMethods()
                 .First(x =>

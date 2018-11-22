@@ -1,8 +1,10 @@
 ﻿using SimpleEventSourcing.ReadModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 {
+    [Table("CheckpointInfos")]
     public class CheckpointInfo : IReadModel<string>, ICheckpointInfo
     {
         [Key]

@@ -42,8 +42,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
             target.Save(entity);
 
             var loadedEntity = target.Get<TestEntity>(entity.Id);
-
-            loadedEntity.Should().BeEquivalentTo(entity);
+            loadedEntity.Should().BeEquivalentTo(entity,x => x.ComparingByMembers<TestEntity>().ComparingByMembers<TestEntityState>().WithTracing());
             loadedEntity.StateModel.Name.Should().Be("test");
         }
 
@@ -62,6 +61,18 @@ namespace SimpleEventSourcing.WriteModel.Tests
             {
                 Id = @event.Id;
                 Name = @event.Name;
+            }
+
+            public override bool Equals(object obj)
+            {
+                var other = obj as TestEntityState;
+                if (other is null)
+                {
+                    return false;
+                }
+
+                return other.Id == Id &&
+                    other.Name == Name;
             }
         }
 
@@ -91,6 +102,18 @@ namespace SimpleEventSourcing.WriteModel.Tests
             {
                 Name = @event.Name;
             }
+
+            public override bool Equals(object obj)
+            {
+                var other = obj as TestChildEntityState;
+                if (other is null)
+                {
+                    return false;
+                }
+
+                return other.Id == Id &&
+                    other.Name == Name;
+            }
         }
 
         public class TestChildEntity : ChildEntity<TestChildEntityState, string, string>
@@ -104,6 +127,17 @@ namespace SimpleEventSourcing.WriteModel.Tests
             public void Rename(string newName)
             {
                 RaiseEvent(new TestChildEntityRenamed(AggregateRootId, Id, newName));
+            }
+
+            public override bool Equals(object obj)
+            {
+                var other = obj as TestEntityChildAdded;
+                if (other is null)
+                {
+                    return false;
+                }
+
+                return other.Id == Id;
             }
         }
 

@@ -24,6 +24,7 @@ namespace SimpleEventSourcing.NHibernate.Tests
             patternLayout.ActivateOptions();
 
             RollingFileAppender roller = new RollingFileAppender();
+            roller.LockingModel = new FileAppender.MinimalLock();
             roller.AppendToFile = false;
             roller.File = @"C:\temp\EventLog.txt";
             roller.Layout = patternLayout;

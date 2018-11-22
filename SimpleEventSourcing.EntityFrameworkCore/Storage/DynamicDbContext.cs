@@ -1,31 +1,69 @@
-﻿using EntityFramework.DbContextScope.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using SimpleEventSourcing.EntityFrameworkCore.Internal;
 using System;
 using System.Data.Common;
+using System.Linq;
+using System.Reflection;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 {
-    public class DynamicDbContext : DbContext, IDbContext
+    public class DynamicDbContext : DbContext
     {
-        public DynamicDbContext(DbConnection connection, bool contextOwnsConnection, DbCompiledModel compiledModel)
-            : base(connection, compiledModel, contextOwnsConnection)
+        private DynamicDbContext(DbContextOptions options)
+            : base(options)
         {
-            //Database.SetInitializer<DynamicDbContext>(null);
+
+        }
+        private DynamicDbContext(DbContextOptions options, DbConnection connection, IModel compiledModel)
+            : base(BuildOptions(options, connection, compiledModel))
+        {
         }
 
-        public static DynamicDbContext Create(DbConnection connection, bool contextOwnsConnection, Type[] typesOfModel)
+        private static DbContextOptions BuildOptions(DbContextOptions options, DbConnection connection, IModel model)
         {
-            var modelBuilder = new ModelBuilder(new Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal..ConventionSet());
+            var builder = new DbContextOptionsBuilder(options)
+                .UseModel(model);
 
+            var newExtension = options.Extensions.OfType<RelationalOptionsExtension>().First().WithConnection(connection).WithConnectionString(connection.ConnectionString);
+            var builderType = ((IDbContextOptionsBuilderInfrastructure)builder).GetType();
+            var actualExtensioType = newExtension.GetType();
+            var a = builderType.GetRuntimeMethods();
+            var miGeneric = builderType.GetRuntimeMethods().First(x => x.Name == "Microsoft.EntityFrameworkCore.Infrastructure.IDbContextOptionsBuilderInfrastructure.AddOrUpdateExtension");
+            var mi = miGeneric.MakeGenericMethod(actualExtensioType);
+            //((IDbContextOptionsBuilderInfrastructure)builder).AddOrUpdateExtension(newExtension);
+            mi.Invoke(builder, new[] { newExtension });
+
+            var newOptions = builder.Options;
+            var fieldInfos = newExtension.GetType().BaseType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+            fieldInfos.First(x => x.Name == "_connectionString").SetValue(newExtension, null);
+            return newOptions;
+        }
+
+        public static DynamicDbContext Create(DbContextOptions options, DbConnection connection, Type[] typesOfModel)
+        {
+            ConventionSet conventionSet = null;
+
+            using (var db = new DynamicDbContext(options))
+            {
+                conventionSet = ConventionSet.CreateConventionSet(db);
+            }
+
+            var modelBuilder = new ModelBuilder(conventionSet);
+            
             foreach (var type in typesOfModel)
             {
                 modelBuilder.Entity(type);
             }
 
+            modelBuilder.BuildIndexesFromAnnotations();
+
             return new DynamicDbContext(
+                options,
                 connection,
-                contextOwnsConnection,
-                modelBuilder.Build(connection).Compile()
+                modelBuilder.Model
                 );
         }
     }
