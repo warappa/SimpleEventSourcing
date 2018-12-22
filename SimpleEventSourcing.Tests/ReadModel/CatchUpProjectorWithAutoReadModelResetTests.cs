@@ -78,7 +78,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
                 hasResults = catchUp.PollNow();
                 hasResults.Should().Be(true);
 
-                await Task.Delay(1000).ConfigureAwait(false);
+                await Task.Delay(2000).ConfigureAwait(false);
 
                 model = await Load().ConfigureAwait(false);
                 model.Count.Should().Be(1);

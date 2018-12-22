@@ -24,7 +24,7 @@
         </thead>
         <tbody data-bind="foreach: history">
             <tr>
-                <td data-bind="style: { color: active ? 'green' : 'red'}">{{active ?'Activated': 'Deaktivated'}}</td>
+                <td data-bind="style: { color: active ? 'green' : 'red'}">{{active ?'Activated': 'Deactivated'}}</td>
                 <td style="padding: 0 15px;">{{reason}}</td>
                 <td>{{moment(date).format('MM.DD.YYYY HH:mm:ss')}}</td>
             </tr>
