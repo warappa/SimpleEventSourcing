@@ -3,6 +3,16 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <Version>2.0.0</Version>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>David Rettenbacher</Authors>
+        <Company />
+        <PackageProjectUrl>https://github.com/warappa/SimpleEventSourcing</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/warappa/SimpleEventSourcing</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>eventsourcing cqrs ddd</PackageTags>
+        <Copyright>David Rettenbacher</Copyright>
+        <PackageLicenseUrl>https://github.com/warappa/SimpleEventSourcing/blob/master/LICENSE</PackageLicenseUrl>
+        <Description>Library for simple event sourcing</Description>
     </PropertyGroup>
 
     <ItemGroup>
