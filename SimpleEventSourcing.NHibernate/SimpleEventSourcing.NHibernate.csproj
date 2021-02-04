@@ -11,12 +11,13 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>eventsourcing cqrs ddd</PackageTags>
         <Copyright>David Rettenbacher</Copyright>
-        <PackageLicenseUrl>https://github.com/warappa/SimpleEventSourcing/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Description>Library for simple event sourcing</Description>
+        <NoWarn>$(NoWarn);NU1701</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Properties\" />
+      <None Include="..\LICENSE" Pack="true" PackagePath="" />
     </ItemGroup>
 
     <ItemGroup>

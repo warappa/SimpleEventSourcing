@@ -11,9 +11,13 @@
       <RepositoryType>git</RepositoryType>
       <PackageTags>eventsourcing cqrs ddd</PackageTags>
       <Copyright>David Rettenbacher</Copyright>
-      <PackageLicenseUrl>https://github.com/warappa/SimpleEventSourcing/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
       <Description>Library for simple event sourcing</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE" Pack="true" PackagePath="" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Dotfo.EntityFrameworkCore.DbContextScope" Version="1.0.0" />
