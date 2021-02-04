@@ -1,4 +1,5 @@
 ﻿using Shop.Core.Domain.Shared;
+using System.Collections.Generic;
 
 namespace Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles
 {
@@ -27,6 +28,16 @@ namespace Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles
             return ConvertToId(value);
         }
 
+        public static bool operator ==(ShoppingCartArticleId left, ShoppingCartArticleId right)
+        {
+            return EqualityComparer<ShoppingCartArticleId>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(ShoppingCartArticleId left, ShoppingCartArticleId right)
+        {
+            return !(left == right);
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is string s)
@@ -43,6 +54,15 @@ namespace Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles
 
             return other.AggregateRootId?.Equals(AggregateRootId) == true &&
                 other.Value == Value;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 1389681877;
+            hashCode = hashCode * -1521134295 + base.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<ShoppingCartId>.Default.GetHashCode(AggregateRootId);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Value);
+            return hashCode;
         }
     }
 }

@@ -52,7 +52,9 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                             try
                             {
                                 var cmd = $"drop table [{tablename}]";
+#pragma warning disable EF1000 // Possible SQL injection vulnerability.
                                 originalDbContext.Database.ExecuteSqlCommand(new RawSqlString(cmd));
+#pragma warning restore EF1000 // Possible SQL injection vulnerability.
                             }
                             catch
                             {

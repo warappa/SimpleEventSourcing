@@ -126,7 +126,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
                 var session = sessionFactory.GetCurrentSession();
 #pragma warning disable CS0253 // Möglicher unbeabsichtigter Referenzvergleich; rechte Seite muss umgewandelt werden
                 res = session.Query<T>()
-                    .Cacheable()
+                    .SetOptions(x => x.SetCacheable(true))
                     .Where(x =>
                         x.Streamname != null &&
                         x.Streamname == streamname)
@@ -155,7 +155,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
             var session = sessionFactory.GetCurrentSession();
 
             res = session.Query<T>()
-                .Cacheable()
+                .SetOptions(x => x.SetCacheable(true))
                 .Where(predicate);
 
             return Task.FromResult(res);

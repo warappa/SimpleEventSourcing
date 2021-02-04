@@ -66,7 +66,7 @@ namespace SimpleEventSourcing.WriteModel
                 }
 
                 runningTaskCompletionSource = new TaskCompletionSource<Unit>();
-                PollLoop();
+                _ = PollLoop();
                 return runningTaskCompletionSource.Task;
             }
 

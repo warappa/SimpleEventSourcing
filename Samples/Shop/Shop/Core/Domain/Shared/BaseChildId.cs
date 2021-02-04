@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Shop.Core.Domain.Shared
 {
@@ -14,13 +15,13 @@ namespace Shop.Core.Domain.Shared
         string IId.Value => Value;
         TAggregateRootId IChildId<TAggregateRootId>.AggregateRootId => AggregateRootId;
 
-        public BaseChildId()
+        protected BaseChildId()
         {
             AggregateRootId = Activator.CreateInstance<TAggregateRootId>();
             Value = "";
         }
 
-        public BaseChildId(string value, TAggregateRootId aggregateRootId)
+        protected BaseChildId(string value, TAggregateRootId aggregateRootId)
         {
             Value = value;
             AggregateRootId = aggregateRootId;
@@ -87,6 +88,24 @@ namespace Shop.Core.Domain.Shared
         public override string ToString()
         {
             return ConvertToStringId((T)this);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1937772220;
+            hashCode = hashCode * -1521134295 + EqualityComparer<TAggregateRootId>.Default.GetHashCode(AggregateRootId);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Value);
+            return hashCode;
+        }
+
+        public static bool operator ==(BaseChildId<T, TAggregateRootId> left, BaseChildId<T, TAggregateRootId> right)
+        {
+            return EqualityComparer<BaseChildId<T, TAggregateRootId>>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(BaseChildId<T, TAggregateRootId> left, BaseChildId<T, TAggregateRootId> right)
+        {
+            return !(left == right);
         }
     }
 }

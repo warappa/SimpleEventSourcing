@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Shop.Core.Domain.Shared
 {
@@ -36,6 +37,13 @@ namespace Shop.Core.Domain.Shared
             return Value == other.Value;
         }
 
+        public override int GetHashCode()
+        {
+            var hashCode = -1951975302;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Value);
+            return hashCode;
+        }
+
         public static implicit operator string(BaseId<T> value)
         {
             return value?.Value;
@@ -44,6 +52,16 @@ namespace Shop.Core.Domain.Shared
         public static implicit operator BaseId<T>(string value)
         {
             return string.IsNullOrEmpty(value) ? null : new BaseId<T>(value);
+        }
+
+        public static bool operator ==(BaseId<T> left, BaseId<T> right)
+        {
+            return EqualityComparer<BaseId<T>>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(BaseId<T> left, BaseId<T> right)
+        {
+            return !(left == right);
         }
     }
 }

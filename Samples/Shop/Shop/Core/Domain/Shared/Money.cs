@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Shop.Core.Domain.Shared
 {
@@ -28,6 +29,14 @@ namespace Shop.Core.Domain.Shared
         public static Money EUR(decimal value)
         {
             return new Money(value, "EUR");
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1349506059;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(IsoCode);
+            hashCode = hashCode * -1521134295 + Value.GetHashCode();
+            return hashCode;
         }
 
         public static Money operator *(Money moneyA, decimal factor)
@@ -80,6 +89,16 @@ namespace Shop.Core.Domain.Shared
             }
 
             return new Money(moneyA.Value - moneyB.Value, moneyA.IsoCode);
+        }
+
+        public static bool operator ==(Money left, Money right)
+        {
+            return EqualityComparer<Money>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Money left, Money right)
+        {
+            return !(left == right);
         }
     }
 }

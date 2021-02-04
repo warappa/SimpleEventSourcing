@@ -76,7 +76,9 @@ namespace Shop.ReadModel.ShoppingCarts
 
         public Task Apply(ShoppingCartArticleRemoved @event)
         {
+#pragma warning disable CS0253 // Possible unintended reference comparison; right hand side needs cast
             return QueryAndUpdateAsync<ShoppingCartArticleViewModel>(x => x.ShoppingCartArticleId == @event.Id,
+#pragma warning restore CS0253 // Possible unintended reference comparison; right hand side needs cast
                 shoppingCartArticle =>
                 {
                     shoppingCartArticle.RemovedAt = @event.DateTime;
