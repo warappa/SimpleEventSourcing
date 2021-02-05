@@ -70,9 +70,9 @@ namespace SimpleEventSourcing.WriteModel
                 pollLoopTask = Task.Run(async () => await PollLoop());
             }
 
-            public bool PollNow()
+            public async Task<bool> PollNowAsync()
             {
-                return DoPoll();
+                return await DoPoll();
             }
 
             private async Task PollLoop()
@@ -91,11 +91,11 @@ namespace SimpleEventSourcing.WriteModel
                         await Task.Delay(random.Next(interval / 2 + 1, interval)).ConfigureAwait(false);
                     }
 
-                    instant = DoPoll();
+                    instant = await DoPoll();
                 }
             }
 
-            private bool DoPoll()
+            private async Task<bool> DoPoll()
             {
                 var hasResults = false;
                 if (Interlocked.CompareExchange(ref isPolling, 1, 0) == 0)
@@ -105,9 +105,9 @@ namespace SimpleEventSourcing.WriteModel
                         //var stopwatch = new Stopwatch();
                         //stopwatch.Start();
 
-                        var entries = persistenceEngine.LoadStreamEntries(lastKnownCheckpointNumber + 1, payloadTypes: payloadTypes, take: 10000);
+                        var entries = persistenceEngine.LoadStreamEntriesAsync(lastKnownCheckpointNumber + 1, payloadTypes: payloadTypes, take: 10000);
 
-                        foreach (var entry in entries.ToList())
+                        await foreach (var entry in entries)
                         {
                             if (tokenSource.IsCancellationRequested)
                             {

@@ -7,6 +7,7 @@ using SimpleEventSourcing.Tests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel.Tests
 {
@@ -34,14 +35,14 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [Test]
-        public void Save_and_load_entity_with_child_entities()
+        public async Task Save_and_load_entity_with_child_entities()
         {
             var entity = new TestEntity(Guid.NewGuid().ToString(), "test");
             var child = entity.AddChild(Guid.NewGuid().ToString(), "child");
             child.Rename("child new name");
-            target.Save(entity);
+            await target.SaveAsync(entity);
 
-            var loadedEntity = target.Get<TestEntity>(entity.Id);
+            var loadedEntity = await target.GetAsync<TestEntity>(entity.Id);
             loadedEntity.Should().BeEquivalentTo(entity,x => x.ComparingByMembers<TestEntity>().ComparingByMembers<TestEntityState>().WithTracing());
             loadedEntity.StateModel.Name.Should().Be("test");
         }

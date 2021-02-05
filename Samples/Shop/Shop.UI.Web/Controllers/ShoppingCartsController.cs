@@ -43,40 +43,41 @@ namespace Shop.Web.UI.Controllers
 
         [HttpGet]
         [Route("GetAlmostOrderedArticles")]
-        public IEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo> GetAlmostOrderedArticles(string customerId)
+        public async Task<IEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo>> GetAlmostOrderedArticles(string customerId)
         {
-            return Program.AnalyseAlmostOrderedWithState()
+            return await Program.AnalyseAlmostOrderedWithState()
                 .Where(x => x.CustomerId == customerId)
-                .ToList();
+                .ToListAsync();
         }
 
         [HttpPost]
         [Route("RemoveArticleFromShoppingCart")]
-        public Task RemoveArticleFromShoppingCart(RemoveArticleFromShoppingCart command)
+        public async Task RemoveArticleFromShoppingCart(RemoveArticleFromShoppingCart command)
         {
-            var wk = Program.repository.Get<ShoppingCart>(command.ShoppingCartId);
+            var wk = await Program.repository.GetAsync<ShoppingCart>(command.ShoppingCartId);
             var wka = wk.GetChildEntity<ShoppingCartArticle>(command.ShoppingCartArticleId);
 
             wka.RemoveFromShoppingCart();
 
-            Program.repository.Save(wk);
+            await Program.repository.SaveAsync(wk);
 
-            var cp = Program.repository.GetCurrentCheckpointNumber();
-            return Program.checkpointPersister.WaitForCheckpointNumberAsync<ShoppingCartReadModelState>(cp);
+            var cp = await Program.repository.GetCurrentCheckpointNumberAsync();
+
+            await Program.checkpointPersister.WaitForCheckpointNumberAsync<ShoppingCartReadModelState>(cp);
         }
 
         [HttpPost]
         [Route("Order")]
-        public Task Order(OrderShoppingCart command)
+        public async Task Order(OrderShoppingCart command)
         {
-            var wk = Program.repository.Get<ShoppingCart>(command.ShoppingCartId);
+            var wk = await Program.repository.GetAsync<ShoppingCart>(command.ShoppingCartId);
 
             wk.Order(Program.repository);
 
-            Program.repository.Save(wk);
+            await Program.repository.SaveAsync(wk);
 
-            var cp = Program.repository.GetCurrentCheckpointNumber();
-            return Program.checkpointPersister.WaitForCheckpointNumberAsync<ShoppingCartReadModelState>(cp);
+            var cp = await Program.repository.GetCurrentCheckpointNumberAsync();
+            await Program.checkpointPersister.WaitForCheckpointNumberAsync<ShoppingCartReadModelState>(cp);
         }
     }
 }

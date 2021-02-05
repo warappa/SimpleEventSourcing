@@ -39,7 +39,7 @@ namespace SimpleEventSourcing.ReadModel
 
         public override async Task<IDisposable> StartAsync()
         {
-            var lastKnownCheckpointNumber = checkpointPersister.LoadLastCheckpoint(typeof(TState).Name);
+            var lastKnownCheckpointNumber = await checkpointPersister.LoadLastCheckpointAsync(typeof(TState).Name);
 
             if (lastKnownCheckpointNumber == -1)
             {
@@ -50,7 +50,16 @@ namespace SimpleEventSourcing.ReadModel
 
             observer
                 .Buffer(TimeSpan.FromSeconds(0.1))
-                .Subscribe((IList<IRawStreamEntry> streamEntries) =>
+                .Select(x => Observable.FromAsync(() => ProcessStreamEntries(x)))
+                .Concat() //Ensure that the results are serialized
+                .Subscribe(); //do what you will here with the results of the async method calls
+
+            await observer.StartAsync();
+
+            return observer;
+        }
+
+        private async Task ProcessStreamEntries(IList<IRawStreamEntry> streamEntries)
             {
                 if (streamEntries.Count == 0)
                 {
@@ -72,26 +81,21 @@ namespace SimpleEventSourcing.ReadModel
                 {
                     using (scopeaware.OpenScope())
                     {
-                        ApplyMessages(requiredMessages);
+                        await ApplyMessagesAsync(requiredMessages);
                     }
                 }
                 else
                 {
-                    ApplyMessages(requiredMessages);
+                    await ApplyMessagesAsync(requiredMessages);
                 }
 
                 stopwatch.Stop();
                 Debug.WriteLine($"{typeof(TState).Name} {requiredMessages.Count}x ({streamEntries.Count}): {stopwatch.ElapsedMilliseconds}ms");
 
                 requiredMessages.Clear();
-            });
-
-            await observer.StartAsync();
-
-            return observer;
         }
 
-        private void ApplyMessages(List<IMessage> requiredMessages)
+        private async Task ApplyMessagesAsync(List<IMessage> requiredMessages)
         {
             foreach (var message in requiredMessages)
             {
@@ -100,7 +104,9 @@ namespace SimpleEventSourcing.ReadModel
 
             if (requiredMessages.Count > 0)
             {
-                checkpointPersister.SaveCurrentCheckpoint(typeof(TState).Name, requiredMessages[requiredMessages.Count - 1].CheckpointNumber);
+                await checkpointPersister.SaveCurrentCheckpointAsync(
+                    checkpointPersister.GetProjectorIdentifier(typeof(TState)), 
+                    requiredMessages[requiredMessages.Count - 1].CheckpointNumber);
             }
         }
     }

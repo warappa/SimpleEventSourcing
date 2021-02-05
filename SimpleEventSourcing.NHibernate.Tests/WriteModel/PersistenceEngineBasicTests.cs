@@ -31,7 +31,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
         {
             Initialize();
             
-            SaveStreamEntry();
+            SaveStreamEntryAsync();
         }
 
 

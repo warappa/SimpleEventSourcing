@@ -81,13 +81,14 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 }, repo);
 
             bus.SubscribeTo<IMessage<TestAggregateDoSomething>>()
-                .Subscribe(
-                command =>
+                .Select(command => Observable.FromAsync(async () =>
                 {
-                    var aggregate = repo.Get<TestAggregate>(command.Body.Id);
+                    var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id);
                     aggregate.DoSomething(command.Body.Foo);
-                    repo.Save(aggregate);
-                });
+                    await repo.SaveAsync(aggregate);
+                }))
+                .Concat()
+                .Subscribe();
 
             Console.WriteLine("Start executing...");
 
@@ -108,9 +109,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             agg.Rename("Hi!");
 
 
-            repo.Save(agg);
+            await repo.SaveAsync(agg);
 
-            agg = repo.Get<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id);
 
             var projection = TestState.LoadState(agg.StateModel);
             var projection2 = agg.StateModel;
@@ -122,7 +123,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             bus.Send(new TypedMessage<TestAggregateDoSomething>(Guid.NewGuid().ToString(), new TestAggregateDoSomething { Id = agg.Id, Foo = "Command DoSomething Bla" }, null, null, null, DateTime.UtcNow, 0));
             bus.Send(new TypedMessage<TestAggregateRename>(Guid.NewGuid().ToString(), new TestAggregateRename { Id = agg.Id, Name = "Command Renamed Name" }, null, null, null, DateTime.UtcNow, 0));
 
-            agg = repo.Get<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id);
             projection2 = agg.StateModel;
 
             Console.WriteLine("Name: " + projection2.Name);
@@ -221,37 +222,38 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
 
                 list.Add(entity);
             }
-            repository.Save(list);
+
+            await repository.SaveAsync(list);
 
             list.Clear();
 
 
-            var loadedEntity = repository.Get<TestAggregate>(entityId);
+            var loadedEntity = await repository.GetAsync<TestAggregate>(entityId);
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var count = engine.LoadStreamEntries().Count();
+            var count = await engine.LoadStreamEntriesAsync().CountAsync();
             stopwatch.Stop();
             Console.WriteLine($"Load {count} entries: {stopwatch.ElapsedMilliseconds}ms");
             Console.ReadKey();
 
-            Console.WriteLine("Commits: " + engine.LoadStreamEntries()
+            Console.WriteLine("Commits: " + await engine.LoadStreamEntriesAsync()
                 //.Result
-                .Count());
-            Console.WriteLine("Rename count: " + engine.LoadStreamEntries(payloadTypes: new[] { typeof(Renamed) })
+                .CountAsync());
+            Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(payloadTypes: new[] { typeof(Renamed) })
                 //.Result
-                .Count());
+                .CountAsync());
 
-            Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", engine
-                .LoadStreamEntries(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
+            Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", await engine
+                .LoadStreamEntriesAsync(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
                 //.Result
-                .Select(x => "" + x.CheckpointNumber).ToArray()));
-            Console.WriteLine("Rename count: " + engine.LoadStreamEntries(minCheckpointNumber: engine.GetCurrentEventStoreCheckpointNumber()
+                .Select(x => "" + x.CheckpointNumber).ToArrayAsync()));
+            Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(minCheckpointNumber: await engine.GetCurrentEventStoreCheckpointNumberAsync()
                 //.Result
                 - 5, payloadTypes: new[] { typeof(Renamed) })
                 //.Result
-                .Count());
-            Console.WriteLine("Current CheckpointNumber: " + engine.GetCurrentEventStoreCheckpointNumber()
+                .CountAsync());
+            Console.WriteLine("Current CheckpointNumber: " + await engine.GetCurrentEventStoreCheckpointNumberAsync()
                 //.Result
                 );
 
@@ -304,7 +306,7 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
 
             disposables.Add(await persistentState.StartAsync());
 
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 while (true)
                 {
@@ -338,11 +340,11 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
             observer.Dispose();
         }
 
-        public static void Handle(IMessage<TestAggregateRename> command, IEventRepository repo)
+        public static async Task Handle(IMessage<TestAggregateRename> command, IEventRepository repo)
         {
-            var aggregate = repo.Get<TestAggregate>(command.Body.Id);
+            var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id);
             aggregate.Rename(command.Body.Name);
-            repo.Save(aggregate);
+            await repo.SaveAsync(aggregate);
         }
     }
 }

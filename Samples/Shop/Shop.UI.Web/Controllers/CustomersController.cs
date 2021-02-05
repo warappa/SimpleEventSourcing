@@ -17,15 +17,15 @@ namespace Shop.Web.UI.Controllers
     {
         // GET api/<controller>
         //[Route("get")]
-        public IEnumerable<CustomerViewModel> Get()
+        public async Task<IEnumerable<CustomerViewModel>> Get()
         {
-            return Program.readRepository.QueryAsync<CustomerViewModel>(x => x.Active).Result.ToList();
+            return await Program.readRepository.QueryAsync<CustomerViewModel>(x => x.Active);
         }
 
         // GET api/<controller>/5
-        public CustomerViewModel Get(string id)
+        public async Task<CustomerViewModel> Get(string id)
         {
-            return Program.readRepository.GetByStreamnameAsync<CustomerViewModel>(id).Result;
+            return await Program.readRepository.GetByStreamnameAsync<CustomerViewModel>(id);
         }
 
         [HttpPost]
@@ -47,23 +47,23 @@ namespace Shop.Web.UI.Controllers
             }
             else
             {
-                wkAgg = Program.repository.Get<ShoppingCart>(wk.Streamname);
+                wkAgg = await Program.repository.GetAsync<ShoppingCart>(wk.Streamname);
             }
 
-            wkAgg.PlaceArticle(ShoppingCartArticleId.Generate(wkAgg.Id), command.ArticleId, command.Quantity, Program.repository);
+            await wkAgg.PlaceArticleAsync(ShoppingCartArticleId.Generate(wkAgg.Id), command.ArticleId, command.Quantity, Program.repository);
 
-            Program.repository.Save(wkAgg);
+            await Program.repository.SaveAsync(wkAgg);
         }
 
         [HttpPost]
         [Route("CreateCustomer")]
-        public Task CreateCustomer(CreateCustomer command)
+        public async Task CreateCustomer(CreateCustomer command)
         {
             var customer = new Customer(command.CustomerId, command.Name);
-            Program.repository.Save(customer);
+            await Program.repository.SaveAsync(customer);
 
-            var cpn = Program.repository.GetCurrentCheckpointNumber();
-            return Program.checkpointPersister.WaitForCheckpointNumberAsync<CustomerReadModelState>(cpn);
+            var cpn = await Program.repository.GetCurrentCheckpointNumberAsync();
+            await Program.checkpointPersister.WaitForCheckpointNumberAsync<CustomerReadModelState>(cpn);
         }
     }
 }

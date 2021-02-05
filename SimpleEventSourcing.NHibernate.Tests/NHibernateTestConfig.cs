@@ -55,15 +55,15 @@ namespace SimpleEventSourcing.NHibernate.Tests
                 Configuration cfg = new Configuration()
                     .DataBaseIntegration(db =>
                     {
-                        db.LogFormattedSql = true;
-                        db.LogSqlInConsole = true;
+                        //db.LogFormattedSql = true;
+                        //db.LogSqlInConsole = true;
 
                         db.ConnectionString = @"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;";
                         db.Dialect<global::NHibernate.Dialect.MsSql2012Dialect>();
                     })
                     .SetProperty(global::NHibernate.Cfg.Environment.CurrentSessionContextClass, typeof(ScopedLogicalCallSessionContext).AssemblyQualifiedName);
 
-                cfg.SetInterceptor(new SqlStatementInterceptor());
+                //cfg.SetInterceptor(new SqlStatementInterceptor());
 
                 return cfg;
             }
@@ -77,7 +77,7 @@ namespace SimpleEventSourcing.NHibernate.Tests
                 {
                     var conn = session.Connection;
 
-                    var cmd = conn.CreateCommand();
+                    using var cmd = conn.CreateCommand();
 
                     cmd.CommandText = "create database integrationDatabaseNHWriteModel";
 
@@ -285,7 +285,7 @@ insert into hibernate_unique_key values ( 1 );";
                 using (var session = sessionFactory.OpenSession())
                 {
                     var conn = session.Connection;
-                    var cmd = conn.CreateCommand();
+                    using var cmd = conn.CreateCommand();
 
                     cmd.CommandText = "create database integrationDatabaseNHReadModel";
 

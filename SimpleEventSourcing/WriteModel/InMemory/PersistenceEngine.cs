@@ -27,7 +27,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
             this.batchSize = batchSize;
         }
 
-        public int GetCurrentEventStoreCheckpointNumber()
+        public async Task<int> GetCurrentEventStoreCheckpointNumberAsync()
         {
             var list = streamEntries
                 .Select(x => x.CheckpointNumber)
@@ -43,18 +43,25 @@ namespace SimpleEventSourcing.WriteModel.InMemory
             return list[0];
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntries(int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
-            return LoadStreamEntries(GroupConstants.All, null, minCheckpointNumber, maxCheckpointNumber, payloadTypes, ascending, take);
+            return LoadStreamEntriesAsync(GroupConstants.All, null, minCheckpointNumber, maxCheckpointNumber, payloadTypes, ascending, take);
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntries(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
+            List<string> payloadValues = null;
 
             if (maxCheckpointNumber == int.MaxValue)
             {
-                maxCheckpointNumber = GetCurrentEventStoreCheckpointNumber();
+                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
+            }
+
+            if (payloadTypes != null &&
+                payloadTypes.Length > 0)
+            {
+                payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
             }
 
             while (true)
@@ -63,10 +70,8 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 
                 query = query.Where(x => x.CheckpointNumber >= minCheckpointNumber && x.CheckpointNumber <= maxCheckpointNumber);
 
-                if (payloadTypes != null &&
-                    payloadTypes.Length > 0)
+                if (payloadValues is object)
                 {
-                    var payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
                     query = query.Where(x => payloadValues.Contains(x.PayloadType));
                 }
 
@@ -134,15 +139,22 @@ namespace SimpleEventSourcing.WriteModel.InMemory
             }
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntriesByStream(string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
-            return LoadStreamEntriesByStream(GroupConstants.All, null, streamName, minRevision, maxRevision, payloadTypes, ascending, take);
+            return LoadStreamEntriesByStreamAsync(GroupConstants.All, null, streamName, minRevision, maxRevision, payloadTypes, ascending, take);
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntriesByStream(string group, string category, string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string group, string category, string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
             List<RawStreamEntry> rawStreamEntries = null;
+            List<string> payloadValues = null;
+
+            if (payloadTypes != null &&
+                payloadTypes.Length > 0)
+            {
+                payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
+            }
 
             try
             {
@@ -155,10 +167,8 @@ namespace SimpleEventSourcing.WriteModel.InMemory
                     query = query.Where(x => x.StreamName == streamName);
                 }
 
-                if (payloadTypes != null &&
-                    payloadTypes.Length > 0)
+                if (payloadValues is object)
                 {
-                    var payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
                     query = query.Where(x => payloadValues.Contains(x.PayloadType));
                 }
 
@@ -220,7 +230,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
             }
         }
 
-        public int SaveStreamEntries(IEnumerable<IRawStreamEntry> rawStreamEntries)
+        public async Task<int> SaveStreamEntriesAsync(IEnumerable<IRawStreamEntry> rawStreamEntries)
         {
             int result;
 
@@ -234,7 +244,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 
             streamEntries.AddRange(rawStreamEntries.Cast<RawStreamEntry>());
 
-            result = GetCurrentEventStoreCheckpointNumber();
+            result = await GetCurrentEventStoreCheckpointNumberAsync();
 
             return result;
         }

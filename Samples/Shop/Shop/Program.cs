@@ -1,17 +1,17 @@
-﻿using System;
-using System.Linq;
-using System.Reactive.Linq;
+﻿using Shop.Core.Domain.Articles;
 using Shop.Core.Domain.Customers;
-using Shop.Core.Domain.Articles;
 using Shop.Core.Domain.Shared;
 using Shop.Core.Domain.ShoppingCarts;
 using Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles;
-using System.Reactive;
-using System.Collections.Generic;
+using Shop.Core.Reports.ShoppingCarts.Transient;
 using Shop.ReadModel.Articles;
 using Shop.Reports.Customers.Transient;
-using Shop.Core.Reports.ShoppingCarts.Transient;
 using SimpleEventSourcing.WriteModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Shop
@@ -26,7 +26,7 @@ namespace Shop
             SetupReadModel();
         }
 
-        static void Main()
+        private static void Main()
         {
             ExecuteAsync().Wait();
         }
@@ -39,7 +39,7 @@ namespace Shop
 
             await OrderAsync().ConfigureAwait(false);
 
-            AnalyseAlmostOrderedWithState();
+            await AnalyseAlmostOrderedWithState().ToListAsync();
 
             CustomersRenameHistory();
             await CustomersRenameHistoryOfGreatCustomerEventStreamAsync().ConfigureAwait(false);
@@ -75,13 +75,13 @@ namespace Shop
                 .ConfigureAwait(false);
 
             var shoppingCart = new ShoppingCart(ShoppingCartId.Generate(), greatCustomer.Id, greatCustomer.StateModel.Name);
-            var shoppingCartArticle1 = shoppingCart.PlaceArticle(ShoppingCartArticleId.Generate(shoppingCart.Id), article.Id, 1, repository);
-            shoppingCart.PlaceArticle(ShoppingCartArticleId.Generate(shoppingCart.Id), article2.Id, 1, repository);
+            var shoppingCartArticle1 = await shoppingCart.PlaceArticleAsync(ShoppingCartArticleId.Generate(shoppingCart.Id), article.Id, 1, repository);
+            await shoppingCart.PlaceArticleAsync(ShoppingCartArticleId.Generate(shoppingCart.Id), article2.Id, 1, repository);
             shoppingCartArticle1.RemoveFromShoppingCart();
 
             shoppingCart.Order(repository);
 
-            repository.Save(shoppingCart);
+            await repository.SaveAsync(shoppingCart);
 
             var projection = CustomerState.LoadState(greatCustomer.StateModel);
         }
@@ -146,11 +146,11 @@ namespace Shop
             observer.StartAsync();
         }
 
-        public static IEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo> AnalyseAlmostOrderedWithState()
+        public static async IAsyncEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo> AnalyseAlmostOrderedWithState()
         {
-            var loadedMessages = engine.LoadStreamEntries(
+            var loadedMessages = await engine.LoadStreamEntriesAsync(
                 0,
-                Int32.MaxValue, new[]
+                int.MaxValue, new[]
                 {
                     typeof(ShoppingCartCreated),
                     typeof(ShoppingCartArticleRemoved),
@@ -158,7 +158,7 @@ namespace Shop
                     typeof(ShoppingCartCancelled)
                 })
                 .Select(x => serializer.Deserialize(x.Payload))
-                .ToList();
+                .ToListAsync();
 
             Console.WriteLine("Removed Articles: ");
             var almostOrderedState = AlmostOrderedArticlesState.LoadState((AlmostOrderedArticlesState)null,
@@ -190,7 +190,10 @@ namespace Shop
             }
             Console.WriteLine();
 
-            return removedArticles;
+            foreach (var item in removedArticles)
+            {
+                yield return item;
+            }
         }
 
         public static void CustomersRenameHistory()
@@ -208,9 +211,9 @@ namespace Shop
         {
             var greatCustomer = await GetOrCreateGreatCustomerAsync().ConfigureAwait(false);
 
-            var events = engine.LoadStreamEntriesByStream(greatCustomer.Id)
+            var events = await engine.LoadStreamEntriesByStreamAsync(greatCustomer.Id)
                 .Select(x => serializer.Deserialize(x.Payload))
-                .ToList();
+                .ToListAsync();
 
             var state = CustomerRenameHistory.LoadState((CustomerRenameHistory)null, events);
 
@@ -222,7 +225,7 @@ namespace Shop
         {
             var greatCustomer = await GetOrCreateGreatCustomerAsync().ConfigureAwait(false);
 
-            var events = engine.LoadStreamEntriesByStream(
+            var events = await engine.LoadStreamEntriesByStreamAsync(
                     greatCustomer.Id,
                     0,
                     int.MaxValue,
@@ -231,7 +234,7 @@ namespace Shop
                         typeof(CustomerRenamed)
                     })
                 .Select(x => serializer.Deserialize(x.Payload))
-                .ToList();
+                .ToListAsync();
 
             var state = CustomerRenameHistory.LoadState((CustomerRenameHistory)null, events);
 
@@ -241,13 +244,13 @@ namespace Shop
 
         public static void AlmostOrderedArticlesReport()
         {
-            DateTime shoppingCartCreated = DateTime.UtcNow;
-            DateTime article1Ordered = shoppingCartCreated.AddMinutes(1);
-            DateTime article2Ordered = shoppingCartCreated.AddMinutes(2);
-            DateTime article3Ordered = shoppingCartCreated.AddMinutes(3);
-            DateTime article2Removed = shoppingCartCreated.AddMinutes(4);
-            DateTime article1Removed = shoppingCartCreated.AddMinutes(9);
-            DateTime ordered = shoppingCartCreated.AddMinutes(10);
+            var shoppingCartCreated = DateTime.UtcNow;
+            var article1Ordered = shoppingCartCreated.AddMinutes(1);
+            var article2Ordered = shoppingCartCreated.AddMinutes(2);
+            var article3Ordered = shoppingCartCreated.AddMinutes(3);
+            var article2Removed = shoppingCartCreated.AddMinutes(4);
+            var article1Removed = shoppingCartCreated.AddMinutes(9);
+            var ordered = shoppingCartCreated.AddMinutes(10);
 
             var state = new AlmostOrderedArticlesState();
             state = state.Apply(new ShoppingCartCreated("ShoppingCart-Id", "Great-Customer-Id", "Great Customer", shoppingCartCreated));

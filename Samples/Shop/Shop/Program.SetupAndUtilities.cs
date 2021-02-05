@@ -190,13 +190,13 @@ namespace Shop
             var viewModel = (await readRepository.QueryAsync(predicate).ConfigureAwait(false)).FirstOrDefault();
             if (viewModel != null)
             {
-                eventSourcedEntity = repository.Get<TAggregate>(viewModel.Streamname);
+                eventSourcedEntity = await repository.GetAsync<TAggregate>(viewModel.Streamname);
             }
             else
             {
                 eventSourcedEntity = factory();
 
-                repository.Save(eventSourcedEntity);
+                await repository.SaveAsync(eventSourcedEntity); 
             }
 
             return eventSourcedEntity;

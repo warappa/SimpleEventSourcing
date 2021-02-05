@@ -15,14 +15,15 @@ namespace SimpleEventSourcing.ReadModel
             return projectorType.Name;
         }
 
-        public int LoadLastCheckpoint(string projectorIdentifier)
+        public async Task<int> LoadLastCheckpointAsync(string projectorIdentifier)
         {
             return -1;
         }
 
-        public void SaveCurrentCheckpoint(string projectorIdentifier, int checkpoint)
+        public Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint)
         {
             // does nothing
+            return Task.CompletedTask;
         }
 
         public Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber)

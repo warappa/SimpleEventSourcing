@@ -23,7 +23,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
         {
             Initialize();
 
-            SaveStreamEntry();
+            SaveStreamEntryAsync();
         }
     }
 }

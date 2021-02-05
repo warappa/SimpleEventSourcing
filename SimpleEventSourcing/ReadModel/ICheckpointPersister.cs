@@ -5,8 +5,8 @@ namespace SimpleEventSourcing.ReadModel
 {
     public interface ICheckpointPersister
     {
-        int LoadLastCheckpoint(string projectorIdentifier);
-        void SaveCurrentCheckpoint(string projectorIdentifier, int checkpoint);
+        Task<int> LoadLastCheckpointAsync(string projectorIdentifier);
+        Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint);
         string GetProjectorIdentifier<T>();
         string GetProjectorIdentifier(Type projectorType);
         Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber);

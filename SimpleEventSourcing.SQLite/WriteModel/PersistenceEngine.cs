@@ -51,12 +51,12 @@ namespace SimpleEventSourcing.SQLite.WriteModel
         }
 
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntriesByStream(string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
-            return LoadStreamEntriesByStream(GroupConstants.All, null, streamName, minRevision, maxRevision, payloadTypes, ascending, take);
+            return LoadStreamEntriesByStreamAsync(GroupConstants.All, null, streamName, minRevision, maxRevision, payloadTypes, ascending, take);
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntriesByStream(string group, string category, string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string group, string category, string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
             var conn = connectionFactory();
@@ -159,19 +159,19 @@ streamRevision >= @minRevision and streamRevision <= @maxRevision ");
             }
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntries(int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
-            return LoadStreamEntries(GroupConstants.All, null, minCheckpointNumber, maxCheckpointNumber, payloadTypes, ascending, take);
+            return LoadStreamEntriesAsync(GroupConstants.All, null, minCheckpointNumber, maxCheckpointNumber, payloadTypes, ascending, take);
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntries(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
 
             var connection = connectionFactory();
             if (maxCheckpointNumber == int.MaxValue)
             {
-                maxCheckpointNumber = GetCurrentEventStoreCheckpointNumber();
+                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
             }
 
             using (connection.Lock())
@@ -270,7 +270,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             }
         }
 
-        public int SaveStreamEntries(IEnumerable<IRawStreamEntry> entries)
+        public async Task<int> SaveStreamEntriesAsync(IEnumerable<IRawStreamEntry> entries)
         {
             var connection = connectionFactory();
             int result;
@@ -278,7 +278,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             using (connection.Lock())
             {
                 connection.InsertAll(entries);
-                result = GetCurrentEventStoreCheckpointNumberInternal(connection);
+                result = await GetCurrentEventStoreCheckpointNumberInternalAsync(connection);
             }
 
             return result;
@@ -326,7 +326,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             return ret;
         }
 
-        protected int GetCurrentEventStoreCheckpointNumberInternal(SQLiteConnection connection)
+        protected async Task<int> GetCurrentEventStoreCheckpointNumberInternalAsync(SQLiteConnection connection)
         {
             try
             {
@@ -346,14 +346,14 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             return -1;
         }
 
-        public int GetCurrentEventStoreCheckpointNumber()
+        public async Task<int> GetCurrentEventStoreCheckpointNumberAsync()
         {
             var connection = connectionFactory();
             using (connection.Lock())
             {
                 try
                 {
-                    return GetCurrentEventStoreCheckpointNumberInternal(connection);
+                    return await GetCurrentEventStoreCheckpointNumberInternalAsync(connection);
                 }
                 catch (Exception e)
                 {

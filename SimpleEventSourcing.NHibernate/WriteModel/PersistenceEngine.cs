@@ -51,12 +51,12 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             return Task.Delay(0);
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntriesByStream(string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
-            return LoadStreamEntriesByStream(GroupConstants.All, null, streamName, minRevision, maxRevision, payloadTypes, ascending, take);
+            return LoadStreamEntriesByStreamAsync(GroupConstants.All, null, streamName, minRevision, maxRevision, payloadTypes, ascending, take);
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntriesByStream(string group, string category, string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string group, string category, string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
             List<RawStreamEntry> rawStreamEntries = null;
@@ -65,6 +65,14 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             using (var statelessSession = sessionFactory.OpenStatelessSession())
             using (var transaction = statelessSession.BeginTransaction())
             {
+                List<string> payloadValues = null;
+
+                if (payloadTypes != null &&
+                    payloadTypes.Length > 0)
+                {
+                    payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
+                }
+
                 try
                 {
                     var query = statelessSession.Query<RawStreamEntry>();
@@ -76,10 +84,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                         query = query.Where(x => x.StreamName == streamName);
                     }
 
-                    if (payloadTypes != null &&
-                        payloadTypes.Length > 0)
+                    if (payloadValues is object)
                     {
-                        var payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
                         query = query.Where(x => payloadValues.Contains(x.PayloadType));
                     }
 
@@ -105,7 +111,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
                     query = query.Take(take);
 
-                    rawStreamEntries = query.ToList();
+                    // TODO: utilize async enumerable
+                    rawStreamEntries = await query.ToListAsync();
 
                     if (rawStreamEntries.Count == 0)
                     {
@@ -157,12 +164,12 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             return new CurrentSessionContextDisposer(sessionFactory);
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntries(int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
-            return LoadStreamEntries(GroupConstants.All, null, minCheckpointNumber, maxCheckpointNumber, payloadTypes, ascending, take);
+            return LoadStreamEntriesAsync(GroupConstants.All, null, minCheckpointNumber, maxCheckpointNumber, payloadTypes, ascending, take);
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntries(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
 
@@ -170,16 +177,22 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             using (var statelessSession = sessionFactory.OpenStatelessSession())
             using (var transaction = statelessSession.BeginTransaction())
             {
+                List<string> payloadValues = null;
+
+                if (payloadTypes != null &&
+                    payloadTypes.Length > 0)
+                {
+                    payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
+                }
+
                 while (true)
                 {
                     var query = statelessSession.Query<RawStreamEntry>();
 
                     query = query.Where(x => x.CheckpointNumber >= minCheckpointNumber && x.CheckpointNumber <= maxCheckpointNumber);
 
-                    if (payloadTypes != null &&
-                    payloadTypes.Length > 0)
+                    if (payloadValues is object)
                     {
-                        var payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
                         query = query.Where(x => payloadValues.Contains(x.PayloadType));
                     }
 
@@ -210,7 +223,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                     List<RawStreamEntry> rawStreamEntries = null;
                     try
                     {
-                        rawStreamEntries = query.ToList();
+                        // TODO: utilize async enumerable
+                        rawStreamEntries = await query.ToListAsync();
                     }
                     catch (Exception e)
                     {
@@ -252,7 +266,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             }
         }
 
-        public int SaveStreamEntries(IEnumerable<IRawStreamEntry> entries)
+        public async Task<int> SaveStreamEntriesAsync(IEnumerable<IRawStreamEntry> entries)
         {
             int result;
 
@@ -274,7 +288,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                     statelessSession.Insert((RawStreamEntry)rawStreamEntry);
                 }
 
-                result = GetCurrentEventStoreCheckpointNumberInternal(statelessSession);
+                result = await GetCurrentEventStoreCheckpointNumberInternalAsync(statelessSession);
 
                 transaction.Commit();
             }
@@ -324,13 +338,13 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             return ret;
         }
 
-        protected int GetCurrentEventStoreCheckpointNumberInternal(IStatelessSession session)
+        protected async Task<int> GetCurrentEventStoreCheckpointNumberInternalAsync(IStatelessSession session)
         {
-            var list = session.Query<RawStreamEntry>()
+            var list = await session.Query<RawStreamEntry>()
                 .Select(x => x.CheckpointNumber)
                 .OrderByDescending(x => x)
                 .Take(1)
-                .ToList();
+                .ToListAsync();
 
             if (list.Count == 0)
             {
@@ -340,7 +354,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             return list[0];
         }
 
-        public int GetCurrentEventStoreCheckpointNumber()
+        public async Task<int> GetCurrentEventStoreCheckpointNumberAsync()
         {
             int result = -1;
 
@@ -349,7 +363,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             {
                 try
                 {
-                    result = GetCurrentEventStoreCheckpointNumberInternal(statelessSession);
+                    result = await GetCurrentEventStoreCheckpointNumberInternalAsync(statelessSession);
                 }
                 catch (Exception e)
                 {

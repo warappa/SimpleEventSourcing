@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>SimpleEventSourcing.UI.ConsoleUI</RootNamespace>
     <AssetTargetFallback>net45</AssetTargetFallback>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>SimpleEventSourcing.UI.ConsoleUI.ProgramNH</StartupObject>

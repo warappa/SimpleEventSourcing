@@ -1,17 +1,15 @@
 ﻿// using SimpleEventSourcing.WriteModel.InMemory;
 
-using NHibernate.AdoNet;
 using NHibernate.Cfg;
-using NHibernate.Tool.hbm2ddl;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.NHibernate.Context;
-using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.NHibernate.ReadModel;
 using SimpleEventSourcing.NHibernate.Storage;
-using SimpleEventSourcing.WriteModel;
 using SimpleEventSourcing.NHibernate.WriteModel;
+using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,16 +19,16 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.UI.ConsoleUI
 {
-    class ProgramNH
+    internal class ProgramNH
     {
         public static void CreateEmptyDatabase()
         {
-            Configuration cfg = GetBaseConfigurationWithoutDb();
+            var cfg = GetBaseConfigurationWithoutDb();
 
             using (var session = cfg.BuildSessionFactory().OpenSession())
             using (var conn = session.Connection)
             {
-                var cmd = conn.CreateCommand();
+                using var cmd = conn.CreateCommand();
 
                 cmd.CommandText = "create database nhDatabase";
 
@@ -44,7 +42,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
         public static Configuration GetBaseConfiguration()
         {
-            Configuration cfg = new Configuration()
+            var cfg = new Configuration()
                 .Cache(x =>
                 {
                     x.Provider<global::NHibernate.Caches.SysCache2.SysCacheProvider>();
@@ -72,7 +70,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
         public static Configuration GetBaseConfigurationWithoutDb()
         {
-            Configuration cfg = new Configuration()
+            var cfg = new Configuration()
                 .DataBaseIntegration(db =>
                 {
                     db.LogFormattedSql = false;
@@ -92,7 +90,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             CreateEmptyDatabase();
         }
 
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             Console.WriteLine("Program started...");
 
@@ -179,13 +177,15 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 }, repo);
 
             bus.SubscribeTo<IMessage<TestAggregateDoSomething>>()
-                .Subscribe(
-                command =>
+                .Select(command => Observable.FromAsync(() => Task.Run(async () =>
                 {
-                    var aggregate = repo.Get<TestAggregate>(command.Body.Id);
+                    var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id);
                     aggregate.DoSomething(command.Body.Foo);
-                    repo.Save(aggregate);
-                });
+                    await repo.SaveAsync(aggregate);
+                })))
+                .Concat()
+                .Subscribe()
+                ;
 
             Console.WriteLine("Start executing...");
 
@@ -206,9 +206,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             agg.Rename("Hi!");
 
 
-            repo.Save(agg);
+            await repo.SaveAsync(agg);
 
-            agg = repo.Get<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id);
 
             var projection = TestState.LoadState(agg.StateModel);
             var projection2 = agg.StateModel;
@@ -220,7 +220,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             bus.Send(new TypedMessage<TestAggregateDoSomething>(Guid.NewGuid().ToString(), new TestAggregateDoSomething { Id = agg.Id, Foo = "Command DoSomething Bla" }, null, null, null, DateTime.UtcNow, 0));
             bus.Send(new TypedMessage<TestAggregateRename>(Guid.NewGuid().ToString(), new TestAggregateRename { Id = agg.Id, Name = "Command Renamed Name" }, null, null, null, DateTime.UtcNow, 0));
 
-            agg = repo.Get<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id);
             projection2 = agg.StateModel;
 
             Console.WriteLine("Name: " + projection2.Name);
@@ -264,29 +264,30 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
                 list.Add(entity);
             }
-            repository.Save(list);
+            await repository.SaveAsync(list);
 
             list.Clear();
 
-            var loadedEntity = repository.Get<TestAggregate>(entityId);
+            var loadedEntity = await repository.GetAsync<TestAggregate>(entityId);
 
-            Console.WriteLine("Commits: " + persistenceEngine.LoadStreamEntries()
+            Console.WriteLine("Commits: " + await persistenceEngine.LoadStreamEntriesAsync()
                 //.Result
-                .Count());
-            Console.WriteLine("Rename count: " + persistenceEngine.LoadStreamEntries(payloadTypes: new[] { typeof(Renamed) })
+                .CountAsync());
+            Console.WriteLine("Rename count: " + await persistenceEngine.LoadStreamEntriesAsync(payloadTypes: new[] { typeof(Renamed) })
                 //.Result
-                .Count());
+                .CountAsync());
 
-            Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", persistenceEngine
-                .LoadStreamEntries(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
+            Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", await persistenceEngine
+                .LoadStreamEntriesAsync(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
                 //.Result
-                .Select(x => "" + x.CheckpointNumber).ToArray()));
-            Console.WriteLine("Rename count: " + persistenceEngine.LoadStreamEntries(minCheckpointNumber: persistenceEngine.GetCurrentEventStoreCheckpointNumber()
+                .Select(x => "" + x.CheckpointNumber).ToArrayAsync()));
+            Console.WriteLine("Rename count: " + await persistenceEngine.LoadStreamEntriesAsync(
+                    minCheckpointNumber: await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync() - 5,
+                    payloadTypes: new[] { typeof(Renamed) })
+                
                 //.Result
-                - 5, payloadTypes: new[] { typeof(Renamed) })
-                //.Result
-                .Count());
-            Console.WriteLine("Current CheckpointNumber: " + persistenceEngine.GetCurrentEventStoreCheckpointNumber()
+                .CountAsync());
+            Console.WriteLine("Current CheckpointNumber: " + await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync()
                 //.Result
                 );
 
@@ -322,7 +323,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             */
             var resetter = new StorageResetter(nHibernateResetConfigurationProvider);
             //resetter.Reset(new[] { typeof(PersistentEntity) });
-           
+
             var persistentState = new CatchUpProjector<PersistentState>(
                 new PersistentState(readRepository),
                 checkpointPersister,
@@ -342,10 +343,10 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                     await Task.Delay(1000).ConfigureAwait(false);
                 }
             });
-            
+
             Console.ReadKey();
             stopwatch.Stop();
-            Console.WriteLine($"persistent: {persistentState.StateModel.Count} msgs, {stopwatch.ElapsedMilliseconds}ms -> {persistentState.StateModel.Count/(stopwatch.ElapsedMilliseconds/1000.0)}");
+            Console.WriteLine($"persistent: {persistentState.StateModel.Count} msgs, {stopwatch.ElapsedMilliseconds}ms -> {persistentState.StateModel.Count / (stopwatch.ElapsedMilliseconds / 1000.0)}");
             observer.Dispose();
             /*
             Console.WriteLine(live.StateModel.Name);

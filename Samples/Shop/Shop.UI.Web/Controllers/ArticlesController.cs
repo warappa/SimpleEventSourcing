@@ -12,21 +12,21 @@ namespace Shop.Web.UI.Controllers
     [RoutePrefix("api/articles")]
     public partial class ArticlesController : ApiController
     {
-        public IEnumerable<ArticleViewModel> Get()
+        public async Task<IEnumerable<ArticleViewModel>> Get()
         {
-            return Program.readRepository.QueryAsync<ArticleViewModel>(x => true).Result.ToList();
+            return (await Program.readRepository.QueryAsync<ArticleViewModel>(x => true)).ToList();
         }
 
-        public ArticleViewModel Get(string id)
+        public async Task<ArticleViewModel> Get(string id)
         {
-            return Program.readRepository.GetByStreamnameAsync<ArticleViewModel>(id).Result;
+            return await Program.readRepository.GetByStreamnameAsync<ArticleViewModel>(id);
         }
 
         [HttpGet]
         [Route("GetArticleActivationHistory")]
-        public IEnumerable<ArticleActivationHistoryViewModel> GetArticleActivationHistory(string id)
+        public async Task<IEnumerable<ArticleActivationHistoryViewModel>> GetArticleActivationHistory(string id)
         {
-            return Program.readRepository.QueryAsync<ArticleActivationHistoryViewModel>(x => x.Streamname == id).Result;
+            return await Program.readRepository.QueryAsync<ArticleActivationHistoryViewModel>(x => x.Streamname == id);
         }
 
         [HttpPost]
@@ -34,41 +34,41 @@ namespace Shop.Web.UI.Controllers
         public Task CreateArticle(CreateArticle command)
         {
             var article = new Article(command.Id, command.Articlenumber, command.Description, new Money(command.PriceValue, command.PriceIsoCode ?? "EUR"));
-            Program.repository.Save(article);
+            Program.repository.SaveAsync(article);
 
             return WaitForReadModelUpdate<ArticleReadModelState>();
         }
 
         [HttpPost]
         [Route("DeactivateArticle")]
-        public Task DeactivateArticle(DeactivateArticle command)
+        public async Task DeactivateArticle(DeactivateArticle command)
         {
-            var article = Program.repository.Get<Article>(command.Id);
+            var article = await Program.repository.GetAsync<Article>(command.Id);
 
             article.Deactivate(command.Reason);
 
-            Program.repository.Save(article);
+            await Program.repository.SaveAsync(article);
 
-            return WaitForReadModelUpdate<ArticleReadModelState>();
+            await WaitForReadModelUpdate<ArticleReadModelState>();
         }
 
         [HttpPost]
         [Route("ActivateArticle")]
-        public Task ActivateArticle(ActivateArticle command)
+        public async Task ActivateArticle(ActivateArticle command)
         {
-            var article = Program.repository.Get<Article>(command.Id);
+            var article = await Program.repository.GetAsync<Article>(command.Id);
 
             article.Activate(command.Reason);
 
-            Program.repository.Save(article);
+            await Program.repository.SaveAsync(article);
 
-            return WaitForReadModelUpdate<ArticleReadModelState>();
+            await WaitForReadModelUpdate<ArticleReadModelState>();
         }
 
-        private Task WaitForReadModelUpdate<TReadModelState>()
+        private async Task WaitForReadModelUpdate<TReadModelState>()
         {
-            var cp = Program.repository.GetCurrentCheckpointNumber();
-            return Program.checkpointPersister.WaitForCheckpointNumberAsync<TReadModelState>(cp);
+            var cp = await Program.repository.GetCurrentCheckpointNumberAsync();
+            await Program.checkpointPersister.WaitForCheckpointNumberAsync<TReadModelState>(cp);
         }
     }
 }

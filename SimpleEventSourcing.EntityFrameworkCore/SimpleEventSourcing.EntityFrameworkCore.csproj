@@ -13,6 +13,8 @@
       <Copyright>David Rettenbacher</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
       <Description>Library for simple event sourcing</Description>
+    <LangVersion>latest</LangVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,5 +30,13 @@
   <ItemGroup>
     <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
   </ItemGroup>
+
+  <Target Name="ChangeAliasesOfReactiveExtensions" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+    <ItemGroup>
+      <ReferencePath Condition="'%(FileName)' == 'System.Interactive.Async'">
+        <Aliases>ix</Aliases>
+      </ReferencePath>
+    </ItemGroup>
+  </Target>
 
 </Project>

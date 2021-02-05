@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SimpleEventSourcing.Tests;
 using SimpleEventSourcing.WriteModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -39,42 +40,44 @@ namespace SimpleEventSourcing.Tests
 
 
         [Test]
-        public void Can_save_stream_entry()
+        public async Task Can_save_stream_entry()
         {
-            persistenceEngine.GetCurrentEventStoreCheckpointNumber().Should().Be(-1);
+            var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            number.Should().Be(-1) ;
 
             var rawStreamEntry = config.WriteModel.GenerateRawStreamEntry();
-            persistenceEngine.SaveStreamEntries(new[] { rawStreamEntry });
+            await persistenceEngine.SaveStreamEntriesAsync(new[] { rawStreamEntry });
 
-            persistenceEngine.GetCurrentEventStoreCheckpointNumber().Should().BeGreaterThan(-1);
+            number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            number.Should().BeGreaterThan(-1);
         }
 
         [Test]
-        public void Can_save_and_load_stream_entry()
+        public async Task Can_save_and_load_stream_entry()
         {
             var expected = config.WriteModel.GenerateRawStreamEntry();
 
-            persistenceEngine.GetCurrentEventStoreCheckpointNumber().Should().Be(-1);
+            var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            number.Should().Be(-1) ;
 
-            persistenceEngine.SaveStreamEntries(new[] { expected });
-
-            var streamEntry = persistenceEngine.LoadStreamEntries()
-                .First();
-
+            await persistenceEngine.SaveStreamEntriesAsync(new[] { expected }); 
+            var streamEntry = await persistenceEngine.LoadStreamEntriesAsync()
+                .FirstAsync();
             streamEntry.Payload.Should().Be(expected.Payload);
         }
 
         [Test]
-        public void Can_save_and_load_stream_entry_by_streamname()
+        public async Task Can_save_and_load_stream_entry_by_streamname()
         {
             var expected = config.WriteModel.GenerateRawStreamEntry();
 
-            persistenceEngine.GetCurrentEventStoreCheckpointNumber().Should().Be(-1);
+            var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            number.Should().Be(-1);
 
-            persistenceEngine.SaveStreamEntries(new[] { expected });
+            await persistenceEngine.SaveStreamEntriesAsync(new[] { expected }); 
 
-            var streamEntry = persistenceEngine.LoadStreamEntriesByStream(config.RawStreamEntryStreamname)
-                .First();
+            var streamEntry = await persistenceEngine.LoadStreamEntriesByStreamAsync(config.RawStreamEntryStreamname)
+                .FirstAsync();
 
             streamEntry.Payload.Should().Be(expected.Payload);
         }

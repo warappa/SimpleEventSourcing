@@ -13,6 +13,7 @@
       <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Description>Library for simple event sourcing</Description>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

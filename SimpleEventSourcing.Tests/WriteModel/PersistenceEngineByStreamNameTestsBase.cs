@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SimpleEventSourcing.Tests;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel.Tests
 {
@@ -15,27 +16,31 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [Test]
-        public void Loading_unexistent_stream_yields_zero_entries()
+        public async Task Loading_unexistent_stream_yields_zero_entries()
         {
-            var loaded = persistenceEngine.LoadStreamEntriesByStream(GroupConstants.All, null, "teststream nonexistent").ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, null, "teststream nonexistent")
+                .ToListAsync();
 
             loaded.Should().HaveCount(0);
         }
 
         [Test]
-        public void Can_load_by_streamName_accross_groups_and_categories()
+        public async Task Can_load_by_streamName_accross_groups_and_categories()
         {
-            var loaded = persistenceEngine.LoadStreamEntriesByStream(GroupConstants.All, null, "teststream A").ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, null, "teststream A")
+                .ToListAsync();
 
-            var expected = testEvents.WithStreamName("teststream A");
+            var expected = testEvents
+                .WithStreamName("teststream A");
 
             loaded.Should().BeEquivalentTo(expected);
         }
 
         [Test]
-        public void Can_load_by_streamName_and_group_and_any_categories()
+        public async Task Can_load_by_streamName_and_group_and_any_categories()
         {
-            var loaded = persistenceEngine.LoadStreamEntriesByStream("testgroup", null, "teststream A").ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync("testgroup", null, "teststream A")
+                .ToListAsync();
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -45,9 +50,10 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [Test]
-        public void Can_load_by_streamName_and_category_and_any_groups()
+        public async Task Can_load_by_streamName_and_category_and_any_groups()
         {
-            var loaded = persistenceEngine.LoadStreamEntriesByStream(GroupConstants.All, "testcategory", "teststream A").ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, "testcategory", "teststream A")
+                .ToListAsync();
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -58,9 +64,10 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [Test]
-        public void Can_load_by_streamName_and_single_payloadType_accross_groups_and_categories()
+        public async Task Can_load_by_streamName_and_single_payloadType_accross_groups_and_categories()
         {
-            var loaded = persistenceEngine.LoadStreamEntriesByStream(GroupConstants.All, null, "teststream A", payloadTypes: new[] { typeof(TestEvent2) }).ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, null, "teststream A", payloadTypes: new[] { typeof(TestEvent2) })
+                .ToListAsync();
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -70,9 +77,10 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [Test]
-        public void Can_load_by_streamName_and_multiple_payloadTypes_accross_groups_and_categories()
+        public async Task Can_load_by_streamName_and_multiple_payloadTypes_accross_groups_and_categories()
         {
-            var loaded = persistenceEngine.LoadStreamEntriesByStream(GroupConstants.All, null, "teststream A", payloadTypes: new[] { typeof(TestEvent), typeof(TestEvent2) }).ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, null, "teststream A", payloadTypes: new[] { typeof(TestEvent), typeof(TestEvent2) })
+                .ToListAsync();
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -82,9 +90,10 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [Test]
-        public void Can_load_by_streamName_reverse()
+        public async Task Can_load_by_streamName_reverse()
         {
-            var loaded = persistenceEngine.LoadStreamEntriesByStream(GroupConstants.All, null, "teststream A", ascending: false).ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, null, "teststream A", ascending: false)
+                .ToListAsync();
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -94,9 +103,10 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [Test]
-        public void Can_load_by_stream_revision()
+        public async Task Can_load_by_stream_revision()
         {
-            var loaded = persistenceEngine.LoadStreamEntriesByStream("teststream A", 1, 2).ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync("teststream A", 1, 2)
+                .ToListAsync();
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -109,9 +119,10 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [Test]
-        public void Can_load_by_checkpoint_number_with_take_respected()
+        public async Task Can_load_by_checkpoint_number_with_take_respected()
         {
-            var loaded = persistenceEngine.LoadStreamEntriesByStream("teststream A", 1, 3, take: 2).ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync("teststream A", 1, 3, take: 2)
+                .ToListAsync();
 
             var expected = testEvents
                 .WithGroup(null)

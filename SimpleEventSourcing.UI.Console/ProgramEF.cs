@@ -146,13 +146,14 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 }, repo);
 
             bus.SubscribeTo<IMessage<TestAggregateDoSomething>>()
-                .Subscribe(
-                command =>
+                .Select(command => Observable.FromAsync(async () =>
                 {
-                    var aggregate = repo.Get<TestAggregate>(command.Body.Id);
+                    var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id);
                     aggregate.DoSomething(command.Body.Foo);
-                    repo.Save(aggregate);
-                });
+                    await repo.SaveAsync(aggregate);
+                }))
+                .Concat()
+                .Subscribe();
 
             Console.WriteLine("Start executing...");
 
@@ -173,9 +174,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             agg.Rename("Hi!");
 
 
-            repo.Save(agg);
+            await repo.SaveAsync(agg);
 
-            agg = repo.Get<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id);
 
             var projection = TestState.LoadState(agg.StateModel);
             var projection2 = agg.StateModel;
@@ -187,7 +188,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             bus.Send(new TypedMessage<TestAggregateDoSomething>(Guid.NewGuid().ToString(), new TestAggregateDoSomething { Id = agg.Id, Foo = "Command DoSomething Bla" }, null, null, null, DateTime.UtcNow, 0));
             bus.Send(new TypedMessage<TestAggregateRename>(Guid.NewGuid().ToString(), new TestAggregateRename { Id = agg.Id, Name = "Command Renamed Name" }, null, null, null, DateTime.UtcNow, 0));
 
-            agg = repo.Get<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id);
             projection2 = agg.StateModel;
 
             Console.WriteLine("Name: " + projection2.Name);
@@ -233,29 +234,30 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
                 list.Add(entity);
             }
-            repository.Save(list);
+
+            await repository.SaveAsync(list);
 
             list.Clear();
 
-            var loadedEntity = repository.Get<TestAggregate>(entityId);
+            var loadedEntity = await repository.GetAsync<TestAggregate>(entityId);
 
-            Console.WriteLine("Commits: " + engine.LoadStreamEntries()
+            Console.WriteLine("Commits: " + await engine.LoadStreamEntriesAsync()
                 //.Result
-                .Count());
-            Console.WriteLine("Rename count: " + engine.LoadStreamEntries(payloadTypes: new[] { typeof(Renamed) })
+                .CountAsync());
+            Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(payloadTypes: new[] { typeof(Renamed) })
                 //.Result
-                .Count());
+                .CountAsync());
 
-            Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", engine
-                .LoadStreamEntries(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
+            Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", await engine
+                .LoadStreamEntriesAsync(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
                 //.Result
-                .Select(x => "" + x.CheckpointNumber).ToArray()));
-            Console.WriteLine("Rename count: " + engine.LoadStreamEntries(minCheckpointNumber: engine.GetCurrentEventStoreCheckpointNumber()
+                .Select(x => "" + x.CheckpointNumber).ToArrayAsync()));
+            Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(minCheckpointNumber: await engine.GetCurrentEventStoreCheckpointNumberAsync()
                 //.Result
                 - 5, payloadTypes: new[] { typeof(Renamed) })
                 //.Result
-                .Count());
-            Console.WriteLine("Current CheckpointNumber: " + engine.GetCurrentEventStoreCheckpointNumber()
+                .CountAsync());
+            Console.WriteLine("Current CheckpointNumber: " + await engine.GetCurrentEventStoreCheckpointNumberAsync()
                 //.Result
                 );
 

@@ -6,6 +6,6 @@ namespace SimpleEventSourcing.WriteModel
     public interface IObserveRawStreamEntries : IObservable<IRawStreamEntry>, IDisposable
     {
         Task StartAsync();
-        bool PollNow();
+        Task<bool> PollNowAsync();
     }
 }

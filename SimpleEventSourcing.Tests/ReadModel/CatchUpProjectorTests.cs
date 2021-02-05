@@ -60,13 +60,13 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             using (var catchUp = (await target.StartAsync() as IObserveRawStreamEntries))
             {
-                var hasResults = catchUp.PollNow();
+                var hasResults = catchUp.PollNowAsync();
                 hasResults.Should().Be(false);
                 target.StateModel.Count.Should().Be(0);
 
                 SaveRawStreamEntry();
 
-                hasResults = catchUp.PollNow();
+                hasResults = catchUp.PollNowAsync();
 
                 hasResults.Should().Be(true);
 
@@ -76,7 +76,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
                 SaveRawStreamEntry();
 
-                hasResults = catchUp.PollNow();
+                hasResults = catchUp.PollNowAsync();
                 hasResults.Should().Be(true);
 
                 await Task.Delay(2000).ConfigureAwait(false);
@@ -86,7 +86,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
         private void SaveRawStreamEntry()
         {
-            engine.SaveStreamEntries(
+            engine.SaveStreamEntriesAsync(
                                 new[]{config.WriteModel.GetRawStreamEntryFactory().CreateRawStreamEntry(
                         engine.Serializer,
                         Guid.NewGuid().ToString(),

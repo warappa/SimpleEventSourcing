@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SimpleEventSourcing.WriteModel.InMemory.Tests;
 using SimpleEventSourcing.WriteModel.Tests;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
 {
@@ -16,27 +17,31 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
         }
 
         [Test]
-        public void Loading_unexistent_group_yields_zero_entries()
+        public async Task Loading_unexistent_group_yields_zero_entries()
         {
-            var loadedPerStream = persistenceEngine.LoadStreamEntries("nonexisting group", null).ToList();
+            var loadedPerStream = await persistenceEngine.LoadStreamEntriesAsync("nonexisting group", null)
+                .ToListAsync();
 
             loadedPerStream.Should().HaveCount(0);
         }
 
         [Test]
-        public void Can_load_all()
+        public async Task Can_load_all()
         {
-            var loadedAll = persistenceEngine.LoadStreamEntries().ToList();
+            var loadedAll = await persistenceEngine.LoadStreamEntriesAsync()
+                .ToListAsync();
 
-            var loaded = persistenceEngine.LoadStreamEntries(GroupConstants.All, null).ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesAsync(GroupConstants.All, null)
+                .ToListAsync();
 
             loaded.Should().BeEquivalentTo(loadedAll);
         }
 
         [Test]
-        public void Can_load_by_group_and_any_categories()
+        public async Task Can_load_by_group_and_any_categories()
         {
-            var loadedPerStream = persistenceEngine.LoadStreamEntries("testgroup", null).ToList();
+            var loadedPerStream = await persistenceEngine.LoadStreamEntriesAsync("testgroup", null)
+                .ToListAsync();
 
             var expectedByStream = testEvents
                 .WithGroup("testgroup");
@@ -45,9 +50,10 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
         }
 
         [Test]
-        public void Can_load_by_category_and_any_groups()
+        public async Task Can_load_by_category_and_any_groups()
         {
-            var loadedPerStream = persistenceEngine.LoadStreamEntries(GroupConstants.All, "testcategory").ToList();
+            var loadedPerStream = await persistenceEngine.LoadStreamEntriesAsync(GroupConstants.All, "testcategory")
+                .ToListAsync();
 
             var expected = testEvents
                 .WithCategory("testcategory");
@@ -56,9 +62,10 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
         }
 
         [Test]
-        public void Can_load_by_single_payloadType_accross_groups_and_categories()
+        public async Task Can_load_by_single_payloadType_accross_groups_and_categories()
         {
-            var loaded = persistenceEngine.LoadStreamEntries(GroupConstants.All, null, payloadTypes: new[] { typeof(TestEvent2) }).ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesAsync(GroupConstants.All, null, payloadTypes: new[] { typeof(TestEvent2) })
+                .ToListAsync();
 
             var expected = testEvents
                 .WithPayloadType<TestEvent2>();
@@ -67,9 +74,10 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
         }
 
         [Test]
-        public void Can_load_by_multiple_payloadTypes_accross_groups_and_categories()
+        public async Task Can_load_by_multiple_payloadTypes_accross_groups_and_categories()
         {
-            var loaded = persistenceEngine.LoadStreamEntries(GroupConstants.All, null, payloadTypes: new[] { typeof(TestEvent), typeof(TestEvent2) }).ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesAsync(GroupConstants.All, null, payloadTypes: new[] { typeof(TestEvent), typeof(TestEvent2) })
+                .ToListAsync();
 
             var expected = testEvents
                 .WithPayloadTypes<TestEvent, TestEvent2>();
@@ -78,9 +86,10 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
         }
 
         [Test]
-        public void Can_load_by_group_reverse()
+        public async Task Can_load_by_group_reverse()
         {
-            var loaded = persistenceEngine.LoadStreamEntries("testgroup", null, ascending: false).ToList();
+            var loaded = await persistenceEngine.LoadStreamEntriesAsync("testgroup", null, ascending: false)
+                .ToListAsync();
 
             var expected = testEvents
                 .WithGroup("testgroup")

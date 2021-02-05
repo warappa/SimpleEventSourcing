@@ -7,6 +7,7 @@ using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Shop.Core.Domain.ShoppingCarts
 {
@@ -20,11 +21,11 @@ namespace Shop.Core.Domain.ShoppingCarts
 
         }
 
-        public ShoppingCartArticle PlaceArticle(ShoppingCartArticleId shoppingCartArticleId, ArticleId articleId, int quantity, IEventRepository repository)
+        public async Task<ShoppingCartArticle> PlaceArticleAsync(ShoppingCartArticleId shoppingCartArticleId, ArticleId articleId, int quantity, IEventRepository repository)
         {
             ShoppingCartBusinessRules.CanPlaceArticle(shoppingCartArticleId, articleId, repository).Check(this);
 
-            var article = repository.Get<Article>(articleId);
+            var article = await repository.GetAsync<Article>(articleId);
 
             var shoppingCartArticle = new ShoppingCartArticle(
                 this,

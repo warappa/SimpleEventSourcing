@@ -7,6 +7,7 @@ using System.Reflection;
 using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.Utils;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel
 {
@@ -25,22 +26,22 @@ namespace SimpleEventSourcing.WriteModel
             this.rawStreamEntryFactory = rawStreamEntryFactory;
         }
 
-        public virtual TEventSourcedEntity Get<TEventSourcedEntity>(string streamName, int minRevision = 0, int maxRevision = int.MaxValue)
+        public virtual async Task<TEventSourcedEntity> GetAsync<TEventSourcedEntity>(string streamName, int minRevision = 0, int maxRevision = int.MaxValue)
                 where TEventSourcedEntity : class, IEventSourcedEntity
         {
-            return (TEventSourcedEntity)Get(typeof(TEventSourcedEntity), streamName, minRevision, maxRevision);
+            return (TEventSourcedEntity)await GetAsync(typeof(TEventSourcedEntity), streamName, minRevision, maxRevision);
         }
 
-        public virtual IEventSourcedEntity Get(Type aggregateType, string streamName, int minRevision = 0, int maxRevision = int.MaxValue)
+        public virtual async Task<IEventSourcedEntity> GetAsync(Type aggregateType, string streamName, int minRevision = 0, int maxRevision = int.MaxValue)
         {
             if (streamName.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(streamName));
             }
 
-            var streamEntries = persistenceEngine
-                .LoadStreamEntriesByStream(streamName)
-                .ToList();
+            var streamEntries = await persistenceEngine
+                .LoadStreamEntriesByStreamAsync(streamName)
+                .ToListAsync();
 
             if (streamEntries.Count == 0)
             {
@@ -62,7 +63,7 @@ namespace SimpleEventSourcing.WriteModel
             return instance;
         }
 
-        public virtual int Save(IEnumerable<IEventSourcedEntity> entities, IDictionary<string, object> commitHeaders = null)
+        public virtual async Task<int> SaveAsync(IEnumerable<IEventSourcedEntity> entities, IDictionary<string, object> commitHeaders = null)
         {
             var commitId = Guid.NewGuid().ToString();
             int result;
@@ -105,7 +106,7 @@ namespace SimpleEventSourcing.WriteModel
                 allStreamEntries.AddRange(streamDTOs);
             }
 
-            result = persistenceEngine.SaveStreamEntries(allStreamEntries);
+            result = await persistenceEngine.SaveStreamEntriesAsync(allStreamEntries);
             allStreamEntries.Clear();
 
             foreach (var entity in entities)
@@ -123,14 +124,14 @@ namespace SimpleEventSourcing.WriteModel
             return result;
         }
 
-        public virtual int Save(IEventSourcedEntity entity, IDictionary<string, object> commitHeaders = null)
+        public virtual async Task<int> SaveAsync(IEventSourcedEntity entity, IDictionary<string, object> commitHeaders = null)
         {
-            return Save(new[] { entity }, commitHeaders);
+            return await SaveAsync(new[] { entity }, commitHeaders);
         }
 
-        public virtual int GetCurrentCheckpointNumber()
+        public virtual Task<int> GetCurrentCheckpointNumberAsync()
         {
-            return persistenceEngine.GetCurrentEventStoreCheckpointNumber();
+            return persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
         }
 
         public virtual IObservable<T> SubscribeTo<T>()

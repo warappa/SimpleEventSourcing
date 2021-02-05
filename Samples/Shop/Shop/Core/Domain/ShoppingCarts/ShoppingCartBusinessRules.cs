@@ -40,7 +40,7 @@ namespace Shop.Core.Domain.ShoppingCarts
                     rule.AddCheck(_ => shoppingCartArticleId != ShoppingCartArticleId.Empty, "Id is empty!");
                     rule.AddCheck(_ =>
                     {
-                        var article = repository.Get<Article>(articleId);
+                        var article = repository.GetAsync<Article>(articleId).Result;
 
                         return article?.StateModel.Active == true;
                     }, $"Article does not exist or is deactivated!!");
@@ -67,7 +67,8 @@ namespace Shop.Core.Domain.ShoppingCarts
                     {
                         foreach (var shoppingCartArticleState in shoppingCart.StateModel.ShoppingCartArticleStates.Where(x => x.Active))
                         {
-                            var article = repository.Get<Article>(shoppingCartArticleState.ArticleId);
+                            var article = repository.GetAsync<Article>(shoppingCartArticleState.ArticleId)
+                                .Result;
 
                             if (article == null ||
                                 !ArticleSpecifications.IsActive.IsSatisfiedBy(article))

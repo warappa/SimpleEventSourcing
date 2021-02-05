@@ -38,15 +38,15 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [SetUp]
-        public void TestSetup()
+        public async Task TestSetupAsync()
         {
             EarlySetup();
 
             if (initialize)
             {
-                Initialize();
+                await Initialize();
 
-                SaveStreamEntry();
+                await SaveStreamEntryAsync();
             }
         }
 
@@ -69,11 +69,11 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
         }
 
-        virtual protected void Initialize()
+        virtual protected async Task Initialize()
         {
             persistenceEngine = config.WriteModel.GetPersistenceEngine();
 
-            persistenceEngine.InitializeAsync().Wait();
+            await persistenceEngine.InitializeAsync();
 
             serializer = persistenceEngine.Serializer;
         }
@@ -150,7 +150,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
             return entries;
         }
 
-        protected void SaveStreamEntry()
+        protected async Task SaveStreamEntryAsync()
         {
             testEvents = CreateTestData(null, null)
                 .Concat(CreateTestData("testgroup", null))
@@ -158,14 +158,15 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 .Concat(CreateTestData("testgroup", "testcategory"))
                 .ToArray();
 
-            persistenceEngine.SaveStreamEntries(testEvents);
+            await persistenceEngine.SaveStreamEntriesAsync(testEvents);
 
-            FixTestData();
+            await FixTestDataAsync();
         }
 
-        protected void FixTestData()
+        protected async Task FixTestDataAsync()
         {
-            var rawStreamEntries = persistenceEngine.LoadStreamEntries().ToList();
+            var rawStreamEntries = await persistenceEngine.LoadStreamEntriesAsync()
+                .ToListAsync();
 
             foreach (var entry in rawStreamEntries)
             {

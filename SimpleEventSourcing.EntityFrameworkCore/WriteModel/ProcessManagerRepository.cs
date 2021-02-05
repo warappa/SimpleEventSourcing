@@ -15,12 +15,12 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 
         public IProcessManager Get(Type processManagerType, string processId)
         {
-            return (IProcessManager)repository.Get(processManagerType, processId);
+            return (IProcessManager)repository.GetAsync(processManagerType, processId);
         }
 
         public void Save(IProcessManager processManager)
         {
-            repository.Save(processManager);
+            repository.SaveAsync(processManager);
         }
     }
 }

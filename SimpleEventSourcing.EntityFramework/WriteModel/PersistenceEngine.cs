@@ -72,12 +72,12 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
             }
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntriesByStream(string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
-            return LoadStreamEntriesByStream(GroupConstants.All, null, streamName, minRevision, maxRevision, payloadTypes, ascending, take);
+            return LoadStreamEntriesByStreamAsync(GroupConstants.All, null, streamName, minRevision, maxRevision, payloadTypes, ascending, take);
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntriesByStream(string group, string category, string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string group, string category, string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
             List<RawStreamEntry> rawStreamEntries = null;
@@ -128,7 +128,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                     query = query.Take(nextBatchSize);
 
-                    rawStreamEntries = query.ToList();
+                    rawStreamEntries = await query.ToListAsync();
 
                     if (rawStreamEntries.Count == 0)
                     {
@@ -163,12 +163,12 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
             }
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntries(int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
-            return LoadStreamEntries(GroupConstants.All, null, minCheckpointNumber, maxCheckpointNumber, payloadTypes, ascending, take);
+            return LoadStreamEntriesAsync(GroupConstants.All, null, minCheckpointNumber, maxCheckpointNumber, payloadTypes, ascending, take);
         }
 
-        public IEnumerable<IRawStreamEntry> LoadStreamEntries(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
+        public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
 
@@ -178,7 +178,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                 if (maxCheckpointNumber == int.MaxValue)
                 {
-                    maxCheckpointNumber = GetCurrentEventStoreCheckpointNumber();
+                    maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
                 }
 
                 while (true)
@@ -221,7 +221,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                     List<RawStreamEntry> rawStreamEntries = null;
                     try
                     {
-                        rawStreamEntries = query.ToList();
+                        rawStreamEntries = await query.ToListAsync();
                     }
                     catch (Exception e)
                     {
@@ -259,7 +259,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
             }
         }
 
-        public int SaveStreamEntries(IEnumerable<IRawStreamEntry> rawStreamEntries)
+        public async Task<int> SaveStreamEntriesAsync(IEnumerable<IRawStreamEntry> rawStreamEntries)
         {
             int result;
 
@@ -278,7 +278,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                 int rowCount = 0;
                 scope.RefreshEntitiesInParentScope(rawStreamEntries);
-                rowCount = scope.SaveChanges();
+                rowCount = await scope.SaveChangesAsync();
                 //RetryHelper(() => rowCount = scope.SaveChanges()).Wait();
 
                 if (rowCount == 0)
@@ -286,7 +286,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                     //throw new Exception("Stream entries not inserted!");
                 }
 
-                result = GetCurrentEventStoreCheckpointNumberInternal(dbContext);
+                result = await GetCurrentEventStoreCheckpointNumberInternalAsync(dbContext);
             }
             
             return result;
@@ -334,7 +334,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
             return ret;
         }
 
-        protected int GetCurrentEventStoreCheckpointNumberInternal(DbContext dbContext)
+        protected async Task<int> GetCurrentEventStoreCheckpointNumberInternalAsync(DbContext dbContext)
         {
             var list = dbContext.Set<RawStreamEntry>()
                 .Local
@@ -342,14 +342,15 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                 .OrderByDescending(x => x)
                 .Take(1)
                 .ToList();
+
             if (list.Count == 0)
             {
-                list = dbContext.Set<RawStreamEntry>()
-                .AsNoTracking()
-                .Select(x => x.CheckpointNumber)
-                .OrderByDescending(x => x)
-                .Take(1)
-                .ToList();
+                list = await dbContext.Set<RawStreamEntry>()
+                    .AsNoTracking()
+                    .Select(x => x.CheckpointNumber)
+                    .OrderByDescending(x => x)
+                    .Take(1)
+                    .ToListAsync();
             }
 
             if (list.Count == 0)
@@ -360,7 +361,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
             return list[0];
         }
 
-        public int GetCurrentEventStoreCheckpointNumber()
+        public async Task<int> GetCurrentEventStoreCheckpointNumberAsync()
         {
             int result;
 
@@ -370,7 +371,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                 try
                 {
-                    result = GetCurrentEventStoreCheckpointNumberInternal(dbContext);
+                    result = await GetCurrentEventStoreCheckpointNumberInternalAsync(dbContext);
                 }
                 catch (Exception e)
                 {

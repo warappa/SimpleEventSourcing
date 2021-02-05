@@ -27,15 +27,16 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
             return projectorType.Name;
         }
 
-        public int LoadLastCheckpoint(string projectorIdentifier)
+        public async Task<int> LoadLastCheckpointAsync(string projectorIdentifier)
         {
             using (var scope = dbContextScopeFactory.Create())
             {
                 TCheckpointInfo checkpointInfo = null;
                 try
                 {
-                    checkpointInfo = scope.DbContexts.Get<TDbContext>().Set<TCheckpointInfo>()
-                        .Find(projectorIdentifier);
+                    checkpointInfo = await scope.DbContexts.Get<TDbContext>()
+                        .Set<TCheckpointInfo>()
+                        .FindAsync(projectorIdentifier);
                 }
                 catch
                 {
@@ -51,12 +52,13 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
             }
         }
 
-        public void SaveCurrentCheckpoint(string projectorIdentifier, int checkpoint)
+        public async Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint)
         {
             using (var scope = dbContextScopeFactory.Create())
             {
-                var set = scope.DbContexts.Get<TDbContext>().Set<TCheckpointInfo>();
-                var checkpointInfo = set.Find(projectorIdentifier);
+                var set = scope.DbContexts.Get<TDbContext>()
+                    .Set<TCheckpointInfo>();
+                var checkpointInfo = await set.FindAsync(projectorIdentifier);
 
                 if (checkpointInfo == null)
                 {
@@ -70,7 +72,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                     checkpointInfo.CheckpointNumber = checkpoint;
                 }
 
-                scope.SaveChanges();
+                await scope.SaveChangesAsync();
             }
         }
 
@@ -78,13 +80,14 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
         {
             var timeout = DateTime.Now.AddSeconds(60);
 
-            var lastLoadedCheckpoint = LoadLastCheckpoint(GetProjectorIdentifier<TReadModelState>());
+            var projectorIdentifier = GetProjectorIdentifier<TReadModelState>();
+            var lastLoadedCheckpoint = await LoadLastCheckpointAsync(projectorIdentifier);
 
             while (DateTime.Now < timeout &&
                 lastLoadedCheckpoint < checkpointNumber)
             {
                 await Task.Delay(100).ConfigureAwait(false);
-                lastLoadedCheckpoint = LoadLastCheckpoint(GetProjectorIdentifier<TReadModelState>());
+                lastLoadedCheckpoint = await LoadLastCheckpointAsync(projectorIdentifier);
             }
         }
     }

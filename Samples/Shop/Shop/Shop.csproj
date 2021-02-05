@@ -3,6 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   
   <ItemGroup>
@@ -46,7 +47,5 @@
     <PackageReference Include="System.Reactive.Interfaces" Version="5.0.0" />
     <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
     <PackageReference Include="System.Reactive.PlatformServices" Version="5.0.0" />
-    <PackageReference Include="System.Reactive.Windows.Threading" Version="5.0.0" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
   </ItemGroup>
 </Project>

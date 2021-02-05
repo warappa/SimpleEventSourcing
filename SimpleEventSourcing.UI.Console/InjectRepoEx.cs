@@ -4,10 +4,10 @@ using SimpleEventSourcing.WriteModel;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.Domain;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.UI.ConsoleUI
 {
-
     public static class InjectRepoEx
     {
 
@@ -15,19 +15,21 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             where TMessage : class, IMessage<IEventSourcedEntityCommand>
             where TEntity : class, IEventSourcedEntity
         {
-            Action<TMessage> a = null;
+            Func<TMessage, Task> a = async obj =>
+            {
+                var ent = await repo.GetAsync<TEntity>(obj.Body.Id);
 
-            a = obj =>
-                {
-                    var ent = repo.Get<TEntity>(obj.Body.Id);
+                onNext(ent, obj);
 
-                    onNext(ent, obj);
+                await repo.SaveAsync(ent);
+            };
 
-                    repo.Save(ent);
-                };
-
-            return BusExtensions.SubscribeTo<TMessage>(source).Subscribe(a);
+            return BusExtensions.SubscribeTo<TMessage>(source)
+                .Select(x => Observable.FromAsync(() => a(x)))
+                .Concat()
+                .Subscribe();
         }
+        
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T, IEventRepository> onNext, IEventRepository repo)
         {
             Action<T> a = null;

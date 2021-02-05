@@ -13,6 +13,7 @@
         <Copyright>David Rettenbacher</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Description>Library for simple event sourcing</Description>
+      <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,6 +23,16 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
       <PackageReference Include="System.Reactive.Core" Version="5.0.0" />
+      <PackageReference Include="System.Linq.Async" Version="5.0.0" />
     </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <!--<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />-->
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
+    <!--<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />-->
+  </ItemGroup>
+
 
 </Project>

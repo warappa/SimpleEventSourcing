@@ -25,7 +25,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             return projectorType.Name;
         }
 
-        public int LoadLastCheckpoint(string projectorIdentifier)
+        public async Task<int> LoadLastCheckpointAsync(string projectorIdentifier)
         {
             TCheckpointInfo checkpointInfo = null;
             try
@@ -45,7 +45,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             return checkpointInfo.CheckpointNumber;
         }
 
-        public void SaveCurrentCheckpoint(string projectorIdentifier, int checkpoint)
+        public async Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint)
         {
             connection.RunInLock((SQLiteConnection conn) =>
             {
@@ -69,13 +69,14 @@ namespace SimpleEventSourcing.SQLite.ReadModel
         {
             var timeout = DateTime.Now.AddSeconds(60);
 
-            var lastLoadedCheckpoint = LoadLastCheckpoint(GetProjectorIdentifier<TReadModelState>());
+            var projectorIdentifier = GetProjectorIdentifier<TReadModelState>();
+            var lastLoadedCheckpoint = await LoadLastCheckpointAsync(projectorIdentifier);
 
             while (DateTime.Now < timeout &&
                 lastLoadedCheckpoint < checkpointNumber)
             {
                 await Task.Delay(100).ConfigureAwait(false);
-                lastLoadedCheckpoint = LoadLastCheckpoint(GetProjectorIdentifier<TReadModelState>());
+                lastLoadedCheckpoint = await LoadLastCheckpointAsync(projectorIdentifier);
             }
         }
     }
