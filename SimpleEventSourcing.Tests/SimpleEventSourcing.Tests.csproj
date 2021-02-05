@@ -9,7 +9,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Reference Include="System.Transactions" />
+    <Reference Include="System.Transactions" Condition="$(TargetFramework) == 'net461'" />
     <PackageReference Include="FakeItEasy" Version="6.2.1" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
