@@ -78,12 +78,12 @@
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.osx" Version="1.1.14" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.v110_xp" Version="1.1.14" />
     <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3.net45" Version="1.1.14" />
-    <PackageReference Include="System.Reactive" Version="4.0.0" />
-    <PackageReference Include="System.Reactive.Core" Version="4.0.0" />
-    <PackageReference Include="System.Reactive.Interfaces" Version="4.0.0" />
-    <PackageReference Include="System.Reactive.Linq" Version="4.0.0" />
-    <PackageReference Include="System.Reactive.PlatformServices" Version="4.0.0" />
-    <PackageReference Include="System.Reactive.Windows.Threading" Version="4.0.0" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="System.Reactive.Core" Version="5.0.0" />
+    <PackageReference Include="System.Reactive.Interfaces" Version="5.0.0" />
+    <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
+    <PackageReference Include="System.Reactive.PlatformServices" Version="5.0.0" />
+    <PackageReference Include="System.Reactive.Windows.Threading" Version="5.0.0" />
     <PackageReference Include="WebActivatorEx" Version="2.2.0" />
     <PackageReference Include="WebGrease" Version="1.6.0" />
   </ItemGroup>
