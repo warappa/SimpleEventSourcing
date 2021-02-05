@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <OutputPath>bin</OutputPath>
     <OutputType>Library</OutputType>
@@ -10,13 +10,12 @@
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <PlatformTarget>x64</PlatformTarget>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!--<EnableDefaultCompileItems>false</EnableDefaultCompileItems>-->
   </PropertyGroup>
   
   <ItemGroup>
     <ProjectCapability Include="DotNetCoreWeb" />
 	  <ProjectCapability Include="SupportsSystemWeb" />
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.4" />
   </ItemGroup>
   
   <ItemGroup>
@@ -46,8 +45,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="almond" Version="0.3.3" />
-    <PackageReference Include="Antlr" Version="3.5.0.2" />
     <PackageReference Include="crossroads.TypeScript.DefinitelyTyped" Version="1.5.2" />
     <PackageReference Include="FontAwesome" Version="4.7.0" />
     <PackageReference Include="jQuery" Version="3.3.1" />
@@ -89,13 +86,39 @@
     <PackageReference Include="System.Reactive.Linq" Version="4.0.0" />
     <PackageReference Include="System.Reactive.PlatformServices" Version="4.0.0" />
     <PackageReference Include="System.Reactive.Windows.Threading" Version="4.0.0" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
+    <!--<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.1" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />-->
     <PackageReference Include="WebActivatorEx" Version="2.2.0" />
     <PackageReference Include="WebGrease" Version="1.6.0" />
   </ItemGroup>
+
   <ItemGroup>
+    
+    <TypeScriptCompile Include="app\**\*.ts" />
+      
+    <!--<Content Include="Content\Site.css">
+      <DependentUpon>Site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\Site.min.css">
+      <DependentUpon>Site.css</DependentUpon>
+    </Content>
+
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="app\_references.ts" />
+  </ItemGroup>
+  <!--<ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\MetroUICSSBundleConfig.cs" />
@@ -139,12 +162,7 @@
     <Content Include="Content\metro-ui\fonts\iconFont.dev.svg" />
     <Content Include="Content\metro-ui\fonts\iconFont.svg" />
     <Content Include="Content\metro-ui\fonts\metroSysIcons.svg" />
-    <Content Include="Content\Site.css">
-      <DependentUpon>Site.less</DependentUpon>
-    </Content>
-    <Content Include="Content\Site.min.css">
-      <DependentUpon>Site.css</DependentUpon>
-    </Content>
+    
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="Global.asax" />
@@ -197,15 +215,7 @@
       <DependentUpon>metro.min.js</DependentUpon>
     </Content>
     <None Include="Scripts\_scalejs.intellisense.js" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
+    
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
@@ -245,7 +255,7 @@
     <TypeScriptCompile Include="Scripts\typings\moment\moment.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\requirejs\require.d.ts" />
     <TypeScriptCompile Include="Scripts\_references.ts" />
-  </ItemGroup>
+  </ItemGroup>-->
   <ItemGroup>
     <ProjectReference Include="..\..\..\SimpleEventSourcing.Bus\SimpleEventSourcing.Bus.csproj" />
     <ProjectReference Include="..\..\..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />    
@@ -254,7 +264,7 @@
     <ProjectReference Include="..\Shop\Shop.csproj" />
   </ItemGroup>
 
-  <Target Name="UpdateWebConfigBindingRedirects" AfterTargets="CopyFilesToOutputDirectory">
+  <!--<Target Name="UpdateWebConfigBindingRedirects" AfterTargets="CopyFilesToOutputDirectory">
     <Copy SourceFiles="$(OutDir)$(AssemblyName).dll.config" DestinationFiles="web.config" />
-  </Target>
+  </Target>-->
 </Project>
