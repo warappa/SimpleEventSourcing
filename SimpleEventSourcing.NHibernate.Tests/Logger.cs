@@ -17,7 +17,7 @@ namespace SimpleEventSourcing.NHibernate.Tests
                 return;
             }
 
-            hierarchy = (Hierarchy)LogManager.GetRepository();
+            hierarchy = (Hierarchy)LogManager.GetRepository("tests");
 
             PatternLayout patternLayout = new PatternLayout();
             patternLayout.ConversionPattern = "%date [%thread] %-5level %logger - %message%newline";

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30914.41
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEventSourcing.UI.Console", "SimpleEventSourcing.UI.Console\SimpleEventSourcing.UI.Console.csproj", "{36FF0A4E-E0C7-48D4-84F0-D5275CC9A3BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.UI.Console", "SimpleEventSourcing.UI.Console\SimpleEventSourcing.UI.Console.csproj", "{36FF0A4E-E0C7-48D4-84F0-D5275CC9A3BE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing", "SimpleEventSourcing\SimpleEventSourcing.csproj", "{4D67344F-2BCF-40A9-81ED-027AC0810C6C}"
 EndProject
@@ -11,33 +11,33 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.Bus", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.SQLite", "SimpleEventSourcing.SQLite\SimpleEventSourcing.SQLite.csproj", "{9355CEEA-8A26-4D50-9F8C-CD97E99E3676}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEventSourcing.Tests", "SimpleEventSourcing.Tests\SimpleEventSourcing.Tests.csproj", "{08C380EC-0768-440C-ACE6-80732A6C2907}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.Tests", "SimpleEventSourcing.Tests\SimpleEventSourcing.Tests.csproj", "{08C380EC-0768-440C-ACE6-80732A6C2907}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.Newtonsoft", "SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj", "{939C5FA1-9446-4346-AF41-18DCAD8230E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEventSourcing.SQLite.Tests", "SimpleEventSourcing.SQLite.Tests\SimpleEventSourcing.SQLite.Tests.csproj", "{B9F7E418-0219-4A25-AF86-50235BDE6ADD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.SQLite.Tests", "SimpleEventSourcing.SQLite.Tests\SimpleEventSourcing.SQLite.Tests.csproj", "{B9F7E418-0219-4A25-AF86-50235BDE6ADD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.EntityFramework", "SimpleEventSourcing.EntityFramework\SimpleEventSourcing.EntityFramework.csproj", "{E79B45A8-0224-49E3-BBB6-E0B0BFC4136F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEventSourcing.EntityFramework.Tests", "SimpleEventSourcing.EntityFramework.Tests\SimpleEventSourcing.EntityFramework.Tests.csproj", "{E0475310-A4F5-46ED-B5B8-980A75B97DE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.EntityFramework.Tests", "SimpleEventSourcing.EntityFramework.Tests\SimpleEventSourcing.EntityFramework.Tests.csproj", "{E0475310-A4F5-46ED-B5B8-980A75B97DE2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.NHibernate", "SimpleEventSourcing.NHibernate\SimpleEventSourcing.NHibernate.csproj", "{AF841FFB-B0F5-41AE-8B5E-889EB7CB2824}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A58BB82B-5CB9-4592-BCAB-22A2DA886D7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEventSourcing.NHibernate.Tests", "SimpleEventSourcing.NHibernate.Tests\SimpleEventSourcing.NHibernate.Tests.csproj", "{6F20F4B6-F073-4406-B4FD-9D8ACDFF6B44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.NHibernate.Tests", "SimpleEventSourcing.NHibernate.Tests\SimpleEventSourcing.NHibernate.Tests.csproj", "{6F20F4B6-F073-4406-B4FD-9D8ACDFF6B44}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{C7B155C1-6FF0-46C8-84E2-390CA0C5F7A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop", "Samples\Shop\Shop\Shop.csproj", "{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop", "Samples\Shop\Shop\Shop.csproj", "{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.UI.Web", "Samples\Shop\Shop.UI.Web\Shop.UI.Web.csproj", "{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.UI.Web", "Samples\Shop\Shop.UI.Web\Shop.UI.Web.csproj", "{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shop", "Shop", "{9100ACF7-2719-4848-81B7-AE10473C960A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.EntityFrameworkCore", "SimpleEventSourcing.EntityFrameworkCore\SimpleEventSourcing.EntityFrameworkCore.csproj", "{C0088948-895F-4DD9-8EA3-5B208371ADD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEventSourcing.EntityFrameworkCore.Tests", "SimpleEventSourcing.EntityFrameworkCore.Tests\SimpleEventSourcing.EntityFrameworkCore.Tests.csproj", "{11A8D02D-FAB6-44A7-B559-2B4B87C4652A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.EntityFrameworkCore.Tests", "SimpleEventSourcing.EntityFrameworkCore.Tests\SimpleEventSourcing.EntityFrameworkCore.Tests.csproj", "{11A8D02D-FAB6-44A7-B559-2B4B87C4652A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -179,10 +179,10 @@ Global
 		{6F20F4B6-F073-4406-B4FD-9D8ACDFF6B44}.Release|x86.Build.0 = Release|Any CPU
 		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Debug|x64.ActiveCfg = Debug|x64
-		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Debug|x64.Build.0 = Debug|x64
-		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Debug|x86.ActiveCfg = Debug|x86
-		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Debug|x86.Build.0 = Debug|x86
+		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Debug|x64.Build.0 = Debug|Any CPU
+		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Debug|x86.Build.0 = Debug|Any CPU
 		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Release|x64.ActiveCfg = Release|x64
@@ -191,10 +191,10 @@ Global
 		{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}.Release|x86.Build.0 = Release|x86
 		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Debug|x64.ActiveCfg = Debug|x64
-		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Debug|x64.Build.0 = Debug|x64
-		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Debug|x86.ActiveCfg = Debug|x86
-		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Debug|x86.Build.0 = Debug|x86
+		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Debug|x64.Build.0 = Debug|Any CPU
+		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Debug|x86.Build.0 = Debug|Any CPU
 		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}.Release|x64.ActiveCfg = Release|x64

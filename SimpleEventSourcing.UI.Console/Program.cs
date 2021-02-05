@@ -209,7 +209,7 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
             Console.WriteLine("Generate 1000 entities");
 
             var list = new List<IEventSourcedEntity>();
-            for (var i = 0; i < 10000; i++)
+            for (var i = 0; i < 10; i++)
             {
                 Console.Write(".");
 
