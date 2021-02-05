@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SimpleEventSourcing.Tests.Storage;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel.InMemory.Tests
 {
@@ -12,11 +13,11 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
 
         }
 
-        protected override void BeforeFixtureTransaction()
+        protected override async Task BeforeFixtureTransactionAsync()
         {
-            config.ReadModel.CleanupReadDatabase();
+            await config.ReadModel.CleanupReadDatabaseAsync();
 
-            base.BeforeFixtureTransaction();
+            await base.BeforeFixtureTransactionAsync();
         }
     }
 }

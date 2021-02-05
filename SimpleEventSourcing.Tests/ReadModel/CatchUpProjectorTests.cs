@@ -26,18 +26,18 @@ namespace SimpleEventSourcing.ReadModel.Tests
             UseTestTransaction = true;
         }
 
-        protected override void BeforeFixtureTransaction()
+        protected override async Task BeforeFixtureTransactionAsync()
         {
             engine = config.WriteModel.GetPersistenceEngine();
 
-            base.BeforeFixtureTransaction();
+            await base.BeforeFixtureTransactionAsync();
         }
 
         [TearDown]
-        public void TearDown()
+        public async Task TearDown()
         {
-            config.ReadModel.CleanupReadDatabase();
-            config.WriteModel.CleanupWriteDatabase();
+            await config.ReadModel.CleanupReadDatabaseAsync();
+            await config.WriteModel.CleanupWriteDatabaseAsync();
         }
 
         [SetUp]
@@ -52,13 +52,13 @@ namespace SimpleEventSourcing.ReadModel.Tests
             target = new CatchUpProjector<CatchUpState>(null, checkpointPersister, engine, storageResetter, 100000);
 
             var readResetter = config.ReadModel.GetStorageResetter();
-            readResetter.Reset(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetCheckpointInfoType() });
+            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetCheckpointInfoType() });
         }
 
         [Test]
         public async Task Can_poll()
         {
-            using (var catchUp = (target.Start() as IObserveRawStreamEntries))
+            using (var catchUp = (await target.StartAsync() as IObserveRawStreamEntries))
             {
                 var hasResults = catchUp.PollNow();
                 hasResults.Should().Be(false);

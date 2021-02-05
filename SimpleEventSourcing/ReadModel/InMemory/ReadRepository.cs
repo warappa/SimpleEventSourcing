@@ -111,7 +111,7 @@ namespace SimpleEventSourcing.ReadModel.InMemory
             }
         }
 
-        public void Reset(Type[] entityTypes, bool justDrop = false)
+        public async Task ResetAsync(Type[] entityTypes, bool justDrop = false)
         {
             var entityNames = entityTypes.Select(x => x.Name).ToList();
 

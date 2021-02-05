@@ -3,6 +3,7 @@ using SimpleEventSourcing.NHibernate.Tests;
 using SimpleEventSourcing.Tests.Storage;
 using NHibernate.Context;
 using NHibernate;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
 {
@@ -20,12 +21,12 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
         private ISessionFactory writeSessionFactory;
         private ISessionFactory readSessionFactory;
 
-        protected override void BeforeFixtureTransaction()
+        protected override async Task BeforeFixtureTransactionAsync()
         {
-            NHconfig.WriteModel.EnsureWriteDatabase();
-            NHconfig.ReadModel.EnsureReadDatabase();
+            await NHconfig.WriteModel.EnsureWriteDatabaseAsync();
+            await NHconfig.ReadModel.EnsureReadDatabaseAsync();
 
-            base.BeforeFixtureTransaction();
+            await base.BeforeFixtureTransactionAsync();
         }
 
         [OneTimeSetUp]

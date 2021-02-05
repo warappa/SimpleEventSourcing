@@ -1,6 +1,7 @@
 ﻿using EntityFrameworkCore.DbContextScope;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                     var dbContext = scope.DbContexts.Get<TDbContext>();
                     if (!CheckTableExists<RawStreamEntry>(dbContext))
                     {
-                        var script = dbContext.Database.GenerateCreateScript();
+                        var script = dbContext.GetService<IRelationalDatabaseCreator>().GenerateCreateScript();
                         var steps = script.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
 
                         foreach (var step in steps)
@@ -94,7 +95,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 
                 try
                 {
-                    IQueryable<RawStreamEntry> query = dbContext.Set<RawStreamEntry>().AsNoTracking();
+                    var query = dbContext.Set<RawStreamEntry>().AsNoTracking();
 
                     query = query.Where(x => x.StreamRevision >= minRevision && x.StreamRevision <= maxRevision);
 
@@ -189,7 +190,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 
                 while (true)
                 {
-                    IQueryable<RawStreamEntry> query = dbContext.Set<RawStreamEntry>().AsNoTracking();
+                    var query = dbContext.Set<RawStreamEntry>().AsNoTracking();
 
                     query = query.Where(x => x.CheckpointNumber >= minCheckpointNumber && x.CheckpointNumber <= maxCheckpointNumber);
 
@@ -281,8 +282,8 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                 }
 
                 dbContext.Set<RawStreamEntry>().AddRange(rawStreamEntries.Cast<RawStreamEntry>());
-                
-                int rowCount = 0;
+
+                var rowCount = 0;
                 //scope.RefreshEntitiesInParentScope(rawStreamEntries);
                 rowCount = scope.SaveChanges();
                 //RetryHelper(() => rowCount = scope.SaveChanges()).Wait();
@@ -323,7 +324,9 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                 {
                     retryCount--;
                     if (retryCount == 0)
+                    {
                         throw;
+                    }
 
                     await Task.Delay(100).ConfigureAwait(false);
                 }
@@ -331,7 +334,9 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                 {
                     retryCount--;
                     if (retryCount == 0)
+                    {
                         throw;
+                    }
 
                     await Task.Delay(100).ConfigureAwait(false);
                 }

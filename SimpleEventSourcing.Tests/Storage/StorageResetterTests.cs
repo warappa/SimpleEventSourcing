@@ -34,20 +34,20 @@ namespace SimpleEventSourcing.Tests.Storage
         }
 
         [TearDown]
-        public void TearDown()
+        public async Task TearDown()
         {
-            config.ReadModel.CleanupReadDatabase();
-            config.WriteModel.CleanupWriteDatabase();
+            await config.ReadModel.CleanupReadDatabaseAsync();
+            await config.WriteModel.CleanupWriteDatabaseAsync();
         }
 
         [Test]
-        public void Can_create_table()
+        public async Task Can_create_table()
         {
             var tableExists = config.ReadModel.IsTableInDatabase(entityTypeA);
 
             tableExists.Should().BeFalse();
 
-            storageResetter.Reset(new[] { entityTypeA });
+            await storageResetter.ResetAsync(new[] { entityTypeA });
 
             tableExists = config.ReadModel.IsTableInDatabase(entityTypeA);
 
@@ -61,7 +61,7 @@ namespace SimpleEventSourcing.Tests.Storage
 
             tableExists.Should().BeFalse();
 
-            storageResetter.Reset(new[] { entityTypeA });
+            await storageResetter.ResetAsync(new[] { entityTypeA });
             using ((readRepository as IDbScopeAware).OpenScope())
             {
                 var res = (await readRepository.QueryAsync(entityTypeA, x => true)).ToList();

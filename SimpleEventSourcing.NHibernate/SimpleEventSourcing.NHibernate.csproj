@@ -13,7 +13,7 @@
         <Copyright>David Rettenbacher</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Description>Library for simple event sourcing</Description>
-        <NoWarn>$(NoWarn);NU1701</NoWarn>
+        <NoWarn>$(NoWarn);NU1701;SYSLIB0011</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

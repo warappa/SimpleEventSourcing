@@ -1,5 +1,6 @@
 ﻿using SimpleEventSourcing.State;
 using System;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel
 {
@@ -18,6 +19,6 @@ namespace SimpleEventSourcing.ReadModel
             StateModel = stateModel ?? new TState();
         }
 
-        public abstract IDisposable Start();
+        public abstract Task<IDisposable> StartAsync();
     }
 }

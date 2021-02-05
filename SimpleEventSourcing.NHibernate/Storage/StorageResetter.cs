@@ -2,6 +2,7 @@
 using NHibernate.Tool.hbm2ddl;
 using System.IO;
 using SimpleEventSourcing.Storage;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.Storage
 {
@@ -14,7 +15,7 @@ namespace SimpleEventSourcing.NHibernate.Storage
             this.nHibernateResetConfigurationProvider = nHibernateResetConfigurationProvider;
         }
 
-        public void Reset(Type[] entityTypes, bool justDrop = false)
+        public async Task ResetAsync(Type[] entityTypes, bool justDrop = false)
         {
             var configuration = nHibernateResetConfigurationProvider.GetConfigurationForTypes(entityTypes);
 

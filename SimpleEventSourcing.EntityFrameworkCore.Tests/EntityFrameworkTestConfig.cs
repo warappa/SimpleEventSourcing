@@ -14,6 +14,7 @@ using SimpleEventSourcing.WriteModel;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 {
@@ -57,7 +58,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
                 this.parent = parent;
             }
 
-            public override void EnsureWriteDatabase()
+            public override async Task EnsureWriteDatabaseAsync()
             {
                 var connectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("integrationtest");
                 using (var dbContext = new EmptyDbContext("integrationtest"))
@@ -70,9 +71,9 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
                 //GetStorageResetter().Reset(new[] { typeof(RawStreamEntry) });
             }
 
-            public override void CleanupWriteDatabase()
+            public override async Task CleanupWriteDatabaseAsync()
             {
-                GetStorageResetter().Reset(new[] { typeof(RawStreamEntry) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry) }, true);
             }
 
             public static ISerializationBinder GetBinder()
@@ -179,9 +180,9 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
                 return new CheckpointPersister<ReadModelTestDbContext, CheckpointInfo>(new DbContextScopeFactory(new DbContextFactory()));
             }
 
-            public override void CleanupReadDatabase()
+            public override async Task CleanupReadDatabaseAsync()
             {
-                GetStorageResetter().Reset(new[] { typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel), typeof(CheckpointInfo) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel), typeof(CheckpointInfo) }, true);
             }
 
             public override IReadRepository GetReadRepository()
@@ -213,7 +214,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
                 };
             }
 
-            public override void EnsureReadDatabase()
+            public override async Task EnsureReadDatabaseAsync()
             {
                 using (var dbContext = new EmptyDbContext("integrationtest"))
                 {

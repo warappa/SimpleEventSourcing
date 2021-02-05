@@ -3,6 +3,7 @@ using NHibernate.Context;
 using NUnit.Framework;
 using SimpleEventSourcing.NHibernate.Tests;
 using SimpleEventSourcing.ReadModel.Tests;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.ReadModel.Tests
 {
@@ -14,12 +15,12 @@ namespace SimpleEventSourcing.NHibernate.ReadModel.Tests
 
         private ISessionFactory sessionFactory;
 
-        protected override void BeforeFixtureTransaction()
+        protected override async Task BeforeFixtureTransactionAsync()
         {
-            NHconfig.WriteModel.EnsureWriteDatabase();
-            NHconfig.ReadModel.EnsureReadDatabase();
+            await NHconfig.WriteModel.EnsureWriteDatabaseAsync();
+            await NHconfig.ReadModel.EnsureReadDatabaseAsync();
 
-            base.BeforeFixtureTransaction();
+            await base.BeforeFixtureTransactionAsync();
         }
 
         public CatchUpProjectorNHibernateTests()

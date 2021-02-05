@@ -38,11 +38,11 @@ namespace SimpleEventSourcing.WriteModel
             private readonly Type[] payloadTypes;
             private readonly int interval;
             private readonly Subject<IRawStreamEntry> subject = new Subject<IRawStreamEntry>();
-            private readonly CancellationTokenSource stopRequested = new CancellationTokenSource();
             private readonly Random random = new Random();
             private int lastKnownCheckpointNumber;
             private int isPolling;
-            private TaskCompletionSource<Unit> runningTaskCompletionSource;
+            private CancellationTokenSource tokenSource;
+            private Task pollLoopTask;
             private bool disposed;
 
             public PollingObserveRawStreamEntries(IPersistenceEngine persistenceEngine, int interval, int lastKnownCheckpointNumber = 0, Type[] payloadTypes = null)
@@ -58,16 +58,16 @@ namespace SimpleEventSourcing.WriteModel
                 return subject.Subscribe(observer);
             }
 
-            public Task StartAsync()
+            public async Task StartAsync()
             {
-                if (runningTaskCompletionSource != null)
+                if (tokenSource != null)
                 {
-                    return runningTaskCompletionSource.Task;
+                    tokenSource.Cancel();
                 }
 
-                runningTaskCompletionSource = new TaskCompletionSource<Unit>();
-                _ = PollLoop();
-                return runningTaskCompletionSource.Task;
+                tokenSource = new CancellationTokenSource();
+
+                pollLoopTask = Task.Run(async () => await PollLoop());
             }
 
             public bool PollNow()
@@ -81,10 +81,8 @@ namespace SimpleEventSourcing.WriteModel
 
                 while (true)
                 {
-                    if (stopRequested.IsCancellationRequested)
+                    if (tokenSource.IsCancellationRequested)
                     {
-                        runningTaskCompletionSource.SetResult(new Unit());
-
                         return;
                     }
 
@@ -111,7 +109,7 @@ namespace SimpleEventSourcing.WriteModel
 
                         foreach (var entry in entries.ToList())
                         {
-                            if (stopRequested.IsCancellationRequested)
+                            if (tokenSource.IsCancellationRequested)
                             {
                                 Interlocked.Exchange(ref isPolling, 0);
 
@@ -152,15 +150,14 @@ namespace SimpleEventSourcing.WriteModel
                 {
                     disposed = true;
 
-                    stopRequested.Cancel();
-                    stopRequested.Dispose();
+                    tokenSource?.Cancel();
 
                     subject.OnCompleted();
                     subject.Dispose();
 
                     if (Interlocked.CompareExchange(ref isPolling, 1, 0) == 1)
                     {
-                        runningTaskCompletionSource.Task.Wait();
+                        pollLoopTask?.Wait(5000);
                     }
                 }
             }

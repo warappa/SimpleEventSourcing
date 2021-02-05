@@ -1,6 +1,7 @@
 ﻿using SimpleEventSourcing.Storage;
 using SQLite;
 using System;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.SQLite.Storage
 {
@@ -13,7 +14,7 @@ namespace SimpleEventSourcing.SQLite.Storage
             this.connection = connection;
         }
 
-        public void Reset(Type[] entityTypes, bool justDrop = false)
+        public async Task ResetAsync(Type[] entityTypes, bool justDrop = false)
         {
             connection.RunInLock((SQLiteConnection c) =>
             {

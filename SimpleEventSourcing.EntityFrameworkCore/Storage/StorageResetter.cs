@@ -1,8 +1,11 @@
 ﻿using EntityFrameworkCore.DbContextScope;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using SimpleEventSourcing.Storage;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Transactions;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Storage
@@ -19,7 +22,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
             this.options = options;
         }
 
-        public void Reset(Type[] entityTypes, bool justDrop = false)
+        public async Task ResetAsync(Type[] entityTypes, bool justDrop = false)
         {
             using (var scope = dbContextScopeFactory.Create())
             {
@@ -66,14 +69,16 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                         {
                             emptyDbContext.Database.EnsureCreated();
 
-                            var creationScript = dbContext.Database.GenerateCreateScript();
+                            var creationScript = dbContext.GetService<IRelationalDatabaseCreator>().GenerateCreateScript();
 
                             var creationSteps = creationScript.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
 
                             foreach (var step in creationSteps)
                             {
                                 if (string.IsNullOrWhiteSpace(step))
+                                {
                                     continue;
+                                }
 
                                 originalDbContext.Database.ExecuteSqlCommand(new RawSqlString(step));
                             }

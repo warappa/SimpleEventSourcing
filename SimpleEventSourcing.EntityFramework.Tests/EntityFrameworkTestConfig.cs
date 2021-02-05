@@ -14,6 +14,7 @@ using SimpleEventSourcing.Messaging;
 using EntityFramework.DbContextScope.Interfaces;
 using SimpleEventSourcing.EntityFramework.Storage;
 using SimpleEventSourcing.EntityFramework.WriteModel.Tests;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.EntityFramework.Tests
 {
@@ -57,7 +58,7 @@ namespace SimpleEventSourcing.EntityFramework.Tests
                 this.parent = parent;
             }
 
-            public override void EnsureWriteDatabase()
+            public override async Task EnsureWriteDatabaseAsync()
             {
                 using (var dbContext = new EmptyDbContext("integrationtest"))
                 {
@@ -69,9 +70,9 @@ namespace SimpleEventSourcing.EntityFramework.Tests
                 //GetStorageResetter().Reset(new[] { typeof(RawStreamEntry) });
             }
 
-            public override void CleanupWriteDatabase()
+            public override async Task CleanupWriteDatabaseAsync()
             {
-                GetStorageResetter().Reset(new[] { typeof(RawStreamEntry) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry) }, true);
             }
 
             public static ISerializationBinder GetBinder()
@@ -178,9 +179,9 @@ namespace SimpleEventSourcing.EntityFramework.Tests
                 return new CheckpointPersister<ReadModelTestDbContext, CheckpointInfo>(new DbContextScopeFactory(new DbContextFactory()));
             }
 
-            public override void CleanupReadDatabase()
+            public override async Task CleanupReadDatabaseAsync()
             {
-                GetStorageResetter().Reset(new[] { typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel), typeof(CheckpointInfo) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel), typeof(CheckpointInfo) }, true);
             }
 
             public override IReadRepository GetReadRepository()
@@ -211,7 +212,7 @@ namespace SimpleEventSourcing.EntityFramework.Tests
                 };
             }
 
-            public override void EnsureReadDatabase()
+            public override async Task EnsureReadDatabaseAsync()
             {
                 using (var dbContext = new EmptyDbContext("integrationtest"))
                 {

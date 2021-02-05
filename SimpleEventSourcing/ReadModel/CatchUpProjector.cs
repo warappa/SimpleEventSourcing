@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel
 {
@@ -36,13 +37,13 @@ namespace SimpleEventSourcing.ReadModel
             poller = new Poller(engine, interval);
         }
 
-        public override IDisposable Start()
+        public override async Task<IDisposable> StartAsync()
         {
             var lastKnownCheckpointNumber = checkpointPersister.LoadLastCheckpoint(typeof(TState).Name);
 
             if (lastKnownCheckpointNumber == -1)
             {
-                storageResetter.Reset(ControlsReadModelsAttribute.GetControlledReadModels(typeof(TState)));
+                await storageResetter.ResetAsync(ControlsReadModelsAttribute.GetControlledReadModels(typeof(TState)));
             }
 
             var observer = poller.ObserveFrom(lastKnownCheckpointNumber, StateModel.PayloadTypes);
@@ -85,8 +86,7 @@ namespace SimpleEventSourcing.ReadModel
                 requiredMessages.Clear();
             });
 
-            // TODO: expose observer Task?
-            observer.StartAsync();
+            await observer.StartAsync();
 
             return observer;
         }

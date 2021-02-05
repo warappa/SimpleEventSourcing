@@ -27,9 +27,9 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
                     return;
 
                 session.Flush();
-                if (session.Transaction?.IsActive == true)
+                if (session.GetCurrentTransaction()?.IsActive == true)
                 {
-                    session.Transaction?.Commit();
+                    session.GetCurrentTransaction().Commit();
                 }
                 session.Dispose();
             }

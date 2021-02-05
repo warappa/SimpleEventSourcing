@@ -153,7 +153,7 @@ namespace Shop
 
             StartPersistentProjector(new ArticleActivationHistoryReadModelState(readRepository), checkpointPersister, viewModelResetter);
 
-            disposeables.Add(liveProjector.Start());
+            disposeables.Add(liveProjector.StartAsync());
         }
 
         public static Task<Customer> GetOrCreateGreatCustomerAsync()
@@ -179,7 +179,7 @@ namespace Shop
                 engine,
                 StorageResetter);
 
-            disposeables.Add(projection.Start());
+            disposeables.Add(projection.StartAsync());
         }
 
         private static async Task<TAggregate> GetOrCreateAggregateAsync<TViewModel, TAggregate>(IReadRepository readRepository, Expression<Func<TViewModel, bool>> predicate, Func<TAggregate> factory)

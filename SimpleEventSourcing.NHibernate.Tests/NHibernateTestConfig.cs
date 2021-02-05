@@ -13,6 +13,7 @@ using SimpleEventSourcing.NHibernate.WriteModel;
 using SimpleEventSourcing.NHibernate.Storage;
 using SimpleEventSourcing.NHibernate.WriteModel.Tests;
 using SimpleEventSourcing.NHibernate.Context;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.Tests
 {
@@ -67,7 +68,7 @@ namespace SimpleEventSourcing.NHibernate.Tests
                 return cfg;
             }
 
-            public override void EnsureWriteDatabase()
+            public override async Task EnsureWriteDatabaseAsync()
             {
                 Configuration cfg = GetDbCreationConfiguration();
 
@@ -136,9 +137,9 @@ insert into hibernate_unique_key values ( 1 );";
                 return cfg;
             }
 
-            public override void CleanupWriteDatabase()
+            public override async Task CleanupWriteDatabaseAsync()
             {
-                GetStorageResetter().Reset(new[] { typeof(RawStreamEntry) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry) }, true);
             }
 
             public ISerializationBinder GetBinder()
@@ -260,12 +261,12 @@ insert into hibernate_unique_key values ( 1 );";
                 return new NHibernateResetConfigurationProvider(baseConfiguration ?? GetBaseConfiguration(), new[] { typeof(TestEntityA).Assembly, typeof(CheckpointInfo).Assembly });
             }
 
-            public override void CleanupReadDatabase()
+            public override async Task CleanupReadDatabaseAsync()
             {
-                GetStorageResetter().Reset(new[] { typeof(CheckpointInfo), typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(CheckpointInfo), typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel) }, true);
             }
 
-            public override void EnsureReadDatabase()
+            public override async Task EnsureReadDatabaseAsync()
             {
                 Configuration cfg = new Configuration()
                     .DataBaseIntegration(db =>

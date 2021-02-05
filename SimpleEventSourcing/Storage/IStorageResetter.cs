@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.Storage
 {
     public interface IStorageResetter
     {
-        void Reset(Type[] entityTypes, bool justDrop = false);
+        Task ResetAsync(Type[] entityTypes, bool justDrop = false);
     }
 }

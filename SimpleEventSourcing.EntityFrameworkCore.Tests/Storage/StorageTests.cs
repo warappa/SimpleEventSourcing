@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using SimpleEventSourcing.EntityFrameworkCore.Tests;
 using SimpleEventSourcing.Tests.Storage;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
 {
@@ -12,11 +13,11 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
         {
         }
 
-        protected override void BeforeFixtureTransaction()
+        protected override async Task BeforeFixtureTransactionAsync()
         {
-            config.WriteModel.EnsureWriteDatabase();
+            await config.WriteModel.EnsureWriteDatabaseAsync();
 
-            base.BeforeFixtureTransaction();
+            await base.BeforeFixtureTransactionAsync();
         }
     }
 }

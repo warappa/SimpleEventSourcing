@@ -74,6 +74,30 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 return other.Id == Id &&
                     other.Name == Name;
             }
+
+            public override int GetHashCode()
+            {
+                var hashCode = -1410341252;
+                hashCode = hashCode * -1521134295 + base.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<Type[]>.Default.GetHashCode(PayloadTypes);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(StreamName);
+                hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<IChildEventSourcedState>>.Default.GetHashCode(ChildStates);
+                hashCode = hashCode * -1521134295 + EqualityComparer<IDictionary<Type, Func<object, IChildEventSourcedState>>>.Default.GetHashCode(ChildStateCreationMap);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Id);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+                hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<TestChildEntityState>>.Default.GetHashCode(Children);
+                return hashCode;
+            }
+
+            public static bool operator ==(TestEntityState left, TestEntityState right)
+            {
+                return EqualityComparer<TestEntityState>.Default.Equals(left, right);
+            }
+
+            public static bool operator !=(TestEntityState left, TestEntityState right)
+            {
+                return !(left == right);
+            }
         }
 
         public class TestChildEntityState : ChildEntityState<TestChildEntityState, string, string>
@@ -114,6 +138,28 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 return other.Id == Id &&
                     other.Name == Name;
             }
+
+            public override int GetHashCode()
+            {
+                var hashCode = 530994897;
+                hashCode = hashCode * -1521134295 + base.GetHashCode();
+                hashCode = hashCode * -1521134295 + EqualityComparer<Type[]>.Default.GetHashCode(PayloadTypes);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(StreamName);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Id);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AggregateRootId);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+                return hashCode;
+            }
+
+            public static bool operator ==(TestChildEntityState left, TestChildEntityState right)
+            {
+                return EqualityComparer<TestChildEntityState>.Default.Equals(left, right);
+            }
+
+            public static bool operator !=(TestChildEntityState left, TestChildEntityState right)
+            {
+                return !(left == right);
+            }
         }
 
         public class TestChildEntity : ChildEntity<TestChildEntityState, string, string>
@@ -138,6 +184,11 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 }
 
                 return other.Id == Id;
+            }
+
+            public override int GetHashCode()
+            {
+                return Id.GetHashCode();
             }
         }
 

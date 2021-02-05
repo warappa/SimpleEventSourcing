@@ -54,7 +54,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
                 this.parent = parent;
             }
 
-            public override void EnsureWriteDatabase()
+            public override async Task EnsureWriteDatabaseAsync()
             {
 
             }
@@ -70,7 +70,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
                 Task.Delay(100).Wait();
             }
 
-            public override void CleanupWriteDatabase()
+            public override async Task CleanupWriteDatabaseAsync()
             {
                 CloseConnection();
 
@@ -182,12 +182,12 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
                 Task.Delay(100).Wait();
             }
 
-            public override void EnsureReadDatabase()
+            public override async Task EnsureReadDatabaseAsync()
             {
 
             }
 
-            public override void CleanupReadDatabase()
+            public override async Task CleanupReadDatabaseAsync()
             {
                 CloseConnection();
 

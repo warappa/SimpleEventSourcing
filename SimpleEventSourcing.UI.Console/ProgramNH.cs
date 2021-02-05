@@ -92,7 +92,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             CreateEmptyDatabase();
         }
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine("Program started...");
 
@@ -121,7 +121,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             var bus = new ObservableMessageBus();
             var persistenceEngine = new PersistenceEngine(sessionFactory, configuration, serializer);
 
-            persistenceEngine.InitializeAsync().Wait();
+            await persistenceEngine.InitializeAsync();
 
             var repo = new EventRepository(
                 new DefaultInstanceProvider(),
@@ -240,7 +240,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);
             });
 
-            observer.StartAsync();
+            await observer.StartAsync();
 
             var repository = new EventRepository(
                 new DefaultInstanceProvider(),
@@ -332,9 +332,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            persistentState.Start();
+            await persistentState.StartAsync();
 
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 while (true)
                 {
@@ -346,6 +346,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             Console.ReadKey();
             stopwatch.Stop();
             Console.WriteLine($"persistent: {persistentState.StateModel.Count} msgs, {stopwatch.ElapsedMilliseconds}ms -> {persistentState.StateModel.Count/(stopwatch.ElapsedMilliseconds/1000.0)}");
+            observer.Dispose();
             /*
             Console.WriteLine(live.StateModel.Name);
             Console.WriteLine(live.StateModel.SomethingDone);

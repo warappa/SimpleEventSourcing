@@ -4,6 +4,7 @@ using SimpleEventSourcing.Storage;
 using SimpleEventSourcing.WriteModel;
 using SimpleEventSourcing.WriteModel.InMemory;
 using System;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.Tests
 {
@@ -25,8 +26,8 @@ namespace SimpleEventSourcing.Tests
 
         public abstract class ReadModelConfig
         {
-            public abstract void EnsureReadDatabase();
-            public abstract void CleanupReadDatabase();
+            public abstract Task EnsureReadDatabaseAsync();
+            public abstract Task CleanupReadDatabaseAsync();
 
             public abstract ITestEntityA GetTestEntityA();
             public abstract ITestEntityB GetTestEntityB();
@@ -47,8 +48,8 @@ namespace SimpleEventSourcing.Tests
             public abstract IPersistenceEngine GetPersistenceEngine();
             public abstract IRawStreamEntry GenerateRawStreamEntry();
 
-            public abstract void EnsureWriteDatabase();
-            public abstract void CleanupWriteDatabase();
+            public abstract Task EnsureWriteDatabaseAsync();
+            public abstract Task CleanupWriteDatabaseAsync();
             
             public abstract bool IsTableInDatabase(Type type);
             public abstract IStorageResetter GetStorageResetter();

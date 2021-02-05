@@ -7,6 +7,7 @@ using System.Data.Entity.Core.Mapping;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Transactions;
 
 namespace SimpleEventSourcing.EntityFramework.Storage
@@ -21,7 +22,7 @@ namespace SimpleEventSourcing.EntityFramework.Storage
             this.dbContextScopeFactory = dbContextScopeFactory;
         }
 
-        public void Reset(Type[] entityTypes, bool justDrop = false)
+        public async Task ResetAsync(Type[] entityTypes, bool justDrop = false)
         {
             using (var scope = dbContextScopeFactory.Create())
             {

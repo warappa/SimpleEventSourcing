@@ -21,6 +21,5 @@
     <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 </Project>

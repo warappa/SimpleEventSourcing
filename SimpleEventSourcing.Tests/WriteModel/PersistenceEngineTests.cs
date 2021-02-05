@@ -18,9 +18,9 @@ namespace SimpleEventSourcing.Tests
             this.config = config;
         }
 
-        protected override void BeforeFixtureTransaction()
+        protected override async Task BeforeFixtureTransactionAsync()
         {
-            config.WriteModel.EnsureWriteDatabase();
+            await config.WriteModel.EnsureWriteDatabaseAsync();
         }
 
         [SetUp]
@@ -32,9 +32,9 @@ namespace SimpleEventSourcing.Tests
         }
 
         [TearDown]
-        public void Cleanup()
+        public async Task Cleanup()
         {
-            config.WriteModel.CleanupWriteDatabase();
+            await config.WriteModel.CleanupWriteDatabaseAsync();
         }
 
 

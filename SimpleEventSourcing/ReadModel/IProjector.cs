@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel
 {
     public interface IProjector
     {
-        IDisposable Start();
+        Task<IDisposable> StartAsync();
     }
 }

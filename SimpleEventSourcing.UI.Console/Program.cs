@@ -20,7 +20,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
     {
         private static SQLiteConnectionWithLock writeConn;
         private static SQLiteConnectionWithLock readConn;
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var disposables = new List<IDisposable>();
 
@@ -197,7 +197,7 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);
             });
             disposables.Add(observer);
-            var completionTask = observer.StartAsync();
+            await observer.StartAsync();
 
             var repository = new EventRepository(
                 new DefaultInstanceProvider(),
@@ -302,7 +302,7 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
                 viewModelResetter);
             stopwatch.Start();
 
-            disposables.Add(persistentState.Start());
+            disposables.Add(await persistentState.StartAsync());
 
             Task.Run(async () =>
             {
@@ -335,7 +335,7 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
             {
                 disp.Dispose();
             }
-            completionTask.Wait();
+            observer.Dispose();
         }
 
         public static void Handle(IMessage<TestAggregateRename> command, IEventRepository repo)

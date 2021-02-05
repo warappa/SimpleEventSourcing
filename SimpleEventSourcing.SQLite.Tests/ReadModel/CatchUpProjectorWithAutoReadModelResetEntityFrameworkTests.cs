@@ -2,6 +2,7 @@
 using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.SQLite.WriteModel.Tests;
 using SQLite;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.SQLite.Tests
 {
@@ -15,11 +16,11 @@ namespace SimpleEventSourcing.SQLite.Tests
 
         protected SQLiteTestConfig SQLiteConfig => (SQLiteTestConfig)config;
 
-        protected override void BeforeFixtureTransaction()
+        protected override async Task BeforeFixtureTransactionAsync()
         {
-            config.ReadModel.EnsureReadDatabase();
+            await config.ReadModel.EnsureReadDatabaseAsync();
 
-            base.BeforeFixtureTransaction();
+            await base.BeforeFixtureTransactionAsync();
 
             var connection = SQLiteConfig.ReadModel.GetConnection();
             var mapping = connection.GetMapping(typeof(CatchUpReadModel), CreateFlags.ImplicitPK);

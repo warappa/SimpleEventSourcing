@@ -5,6 +5,7 @@ using SimpleEventSourcing.ReadModel.InMemory;
 using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.Tests;
 using SimpleEventSourcing.ReadModel.InMemory.Tests;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel.InMemory.Tests
 {
@@ -46,12 +47,12 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
                 this.parent = parent;
             }
 
-            public override void EnsureWriteDatabase()
+            public override async Task EnsureWriteDatabaseAsync()
             {
 
             }
 
-            public override void CleanupWriteDatabase()
+            public override async Task CleanupWriteDatabaseAsync()
             {
                 persistenceEngine = null;
             }
@@ -112,7 +113,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
                 this.parent = parent;
             }
 
-            public override void CleanupReadDatabase()
+            public override async Task CleanupReadDatabaseAsync()
             {
                 readRepository = null;
             }
@@ -158,7 +159,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
                 return typeof(object);
             }
 
-            public override void EnsureReadDatabase()
+            public override async Task EnsureReadDatabaseAsync()
             {
 
             }

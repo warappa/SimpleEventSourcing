@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Transactions;
 
 namespace SimpleEventSourcing.Tests
@@ -12,20 +13,20 @@ namespace SimpleEventSourcing.Tests
         private TransactionScope testTransaction;
 
         [OneTimeSetUp]
-        protected virtual void BeforeFixtureTransaction()
+        protected virtual async Task BeforeFixtureTransactionAsync()
         {
 
         }
 
-        protected virtual void BeforeTestTransaction()
+        protected virtual async Task BeforeTestTransactionAsync()
         {
 
         }
 
         [SetUp]
-        public void SetupTest()
+        public async Task SetupTest()
         {
-            BeforeTestTransaction();
+            await BeforeTestTransactionAsync();
 
             if (UseTestTransaction)
             {

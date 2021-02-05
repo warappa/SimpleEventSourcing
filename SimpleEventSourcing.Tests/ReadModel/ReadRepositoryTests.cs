@@ -17,26 +17,26 @@ namespace SimpleEventSourcing.ReadModel.Tests
             this.config = config;
         }
 
-        protected override void BeforeFixtureTransaction()
+        protected override async Task BeforeFixtureTransactionAsync()
         {
-            config.WriteModel.EnsureWriteDatabase();
-            config.ReadModel.EnsureReadDatabase();
+            await config.WriteModel.EnsureWriteDatabaseAsync();
+            await config.ReadModel.EnsureReadDatabaseAsync();
         }
 
         [TearDown]
-        public void TearDown()
+        public async Task TearDown()
         {
-            config.ReadModel.CleanupReadDatabase();
-            config.WriteModel.CleanupWriteDatabase();
+            await config.ReadModel.CleanupReadDatabaseAsync();
+            await config.WriteModel.CleanupWriteDatabaseAsync();
         }
 
         [SetUp]
-        public void Initialize()
+        public async Task Initialize()
         {
             readRepository = config.ReadModel.GetReadRepository();
 
             var readResetter = config.ReadModel.GetStorageResetter();
-            readResetter.Reset(new[] { config.ReadModel.GetTestEntityA().GetType() });
+            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType() });
         }
 
         [Test]

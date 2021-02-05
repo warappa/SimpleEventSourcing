@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SimpleEventSourcing.ReadModel.Tests;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 {
@@ -11,11 +12,11 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
         {
         }
 
-        protected override void BeforeFixtureTransaction()
+        protected override async Task BeforeFixtureTransactionAsync()
         {
-            config.ReadModel.EnsureReadDatabase();
+            await config.ReadModel.EnsureReadDatabaseAsync();
 
-            base.BeforeFixtureTransaction();
+            await base.BeforeFixtureTransactionAsync();
         }
     }
 }

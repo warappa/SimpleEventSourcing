@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using SimpleEventSourcing.EntityFramework.Tests;
 using SimpleEventSourcing.WriteModel.Tests;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
 {
@@ -13,10 +14,10 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
         }
 
         [TearDown]
-        public void TearDownEF()
+        public async Task TearDownEF()
         {
-            config.ReadModel.CleanupReadDatabase();
-            config.WriteModel.CleanupWriteDatabase();
+            await config.ReadModel.CleanupReadDatabaseAsync();
+            await config.WriteModel.CleanupWriteDatabaseAsync();
         }
     }
 }

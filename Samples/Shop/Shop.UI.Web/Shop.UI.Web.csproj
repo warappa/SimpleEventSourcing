@@ -9,6 +9,7 @@
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <PlatformTarget>x64</PlatformTarget>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <TypeScriptToolsVersion>latest</TypeScriptToolsVersion>
   </PropertyGroup>
   
   <ItemGroup>

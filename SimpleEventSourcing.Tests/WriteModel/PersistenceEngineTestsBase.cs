@@ -3,6 +3,7 @@ using SimpleEventSourcing.Tests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Transactions;
 
 namespace SimpleEventSourcing.WriteModel.Tests
@@ -24,11 +25,11 @@ namespace SimpleEventSourcing.WriteModel.Tests
         protected IRawStreamEntry[] testEvents;
         private readonly bool initialize;
 
-        protected override void BeforeFixtureTransaction()
+        protected override async Task BeforeFixtureTransactionAsync()
         {
-            config.WriteModel.EnsureWriteDatabase();
-            config.ReadModel.EnsureReadDatabase();
-            base.BeforeFixtureTransaction();
+            await config.WriteModel.EnsureWriteDatabaseAsync();
+            await config.ReadModel.EnsureReadDatabaseAsync();
+            await base.BeforeFixtureTransactionAsync();
         }
 
         protected virtual void EarlySetup()
@@ -50,10 +51,10 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [TearDown]
-        public void TearDown()
+        public async Task TearDown()
         {
-            config.ReadModel.CleanupReadDatabase();
-            config.WriteModel.CleanupWriteDatabase();
+            await config.ReadModel.CleanupReadDatabaseAsync();
+            await config.WriteModel.CleanupWriteDatabaseAsync();
         }
 
         [OneTimeSetUp]
