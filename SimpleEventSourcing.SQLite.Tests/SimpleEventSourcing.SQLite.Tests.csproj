@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />
@@ -8,14 +8,11 @@
     <ProjectReference Include="..\SimpleEventSourcing.Tests\SimpleEventSourcing.Tests.csproj" />
     <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
   </ItemGroup>
-  <!--<ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>-->
+  
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="5.5.3" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="NUnit" Version="3.11.0" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NUnit" Version="3.13.1" />
     <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.14" />
@@ -24,10 +21,5 @@
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.osx" Version="1.1.14" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.v110_xp" Version="1.1.14" />
     <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3.net45" Version="1.1.14" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
-  <!--<ItemGroup>
-    <Compile Remove="PersistenceEngineTests.cs" />
-  </ItemGroup>-->
 </Project>

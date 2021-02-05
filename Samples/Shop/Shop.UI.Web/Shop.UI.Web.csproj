@@ -2,7 +2,6 @@
   <PropertyGroup>
     <OutputPath>bin</OutputPath>
     <OutputType>Library</OutputType>
-    <!--<TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>-->
     <TargetFramework>net472</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppConfig>Web.config</AppConfig>
@@ -10,7 +9,6 @@
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <PlatformTarget>x64</PlatformTarget>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <!--<EnableDefaultCompileItems>false</EnableDefaultCompileItems>-->
   </PropertyGroup>
   
   <ItemGroup>
@@ -47,12 +45,12 @@
   <ItemGroup>
     <PackageReference Include="crossroads.TypeScript.DefinitelyTyped" Version="1.5.2" />
     <PackageReference Include="FontAwesome" Version="4.7.0" />
-    <PackageReference Include="jQuery" Version="3.3.1" />
+    <PackageReference Include="jQuery" Version="3.5.1" />
     <PackageReference Include="jquery.TypeScript.DefinitelyTyped" Version="3.1.2" />
     <PackageReference Include="js-signals.TypeScript.DefinitelyTyped" Version="0.1.3" />
     <PackageReference Include="knockout.punches" Version="0.5.1" />
     <PackageReference Include="knockout.TypeScript.DefinitelyTyped" Version="1.1.6" />
-    <PackageReference Include="knockoutjs" Version="3.4.2" />
+    <PackageReference Include="knockoutjs" Version="3.5.1" />
     <PackageReference Include="Metro-UI-CSS" Version="2.0.31.1" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNet.Razor" Version="3.2.7" />
@@ -62,13 +60,13 @@
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNet.WebApi.WebHost" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.7" />
-    <PackageReference Include="Microsoft.Owin" Version="4.0.0" />
-    <PackageReference Include="Microsoft.Owin.Security" Version="4.0.0" />
-    <PackageReference Include="Microsoft.Owin.Security.Cookies" Version="4.0.0" />
+    <PackageReference Include="Microsoft.Owin" Version="4.1.1" />
+    <PackageReference Include="Microsoft.Owin.Security" Version="4.1.1" />
+    <PackageReference Include="Microsoft.Owin.Security.Cookies" Version="4.1.1" />
     <PackageReference Include="Microsoft.Web.Infrastructure" Version="1.0.0.0" />
-    <PackageReference Include="Moment.js" Version="2.23.0" />
+    <PackageReference Include="Moment.js" Version="2.29.1" />
     <PackageReference Include="moment.TypeScript.DefinitelyTyped" Version="1.8.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Owin" Version="1.0" />
     <PackageReference Include="RequireJS" Version="2.3.6" />
     <PackageReference Include="requirejs.TypeScript.DefinitelyTyped" Version="0.4.4" />
@@ -86,176 +84,18 @@
     <PackageReference Include="System.Reactive.Linq" Version="4.0.0" />
     <PackageReference Include="System.Reactive.PlatformServices" Version="4.0.0" />
     <PackageReference Include="System.Reactive.Windows.Threading" Version="4.0.0" />
-    <!--<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.1" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />-->
     <PackageReference Include="WebActivatorEx" Version="2.2.0" />
     <PackageReference Include="WebGrease" Version="1.6.0" />
   </ItemGroup>
 
   <ItemGroup>
-    
     <TypeScriptCompile Include="app\**\*.ts" />
-      
-    <!--<Content Include="Content\Site.css">
-      <DependentUpon>Site.less</DependentUpon>
-    </Content>
-    <Content Include="Content\Site.min.css">
-      <DependentUpon>Site.css</DependentUpon>
-    </Content>
-
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>-->
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="app\_references.ts" />
   </ItemGroup>
-  <!--<ItemGroup>
-    <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\MetroUICSSBundleConfig.cs" />
-    <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Commands\Articles\ActivateArticle.cs" />
-    <Compile Include="Commands\Articles\CreateArticle.cs" />
-    <Compile Include="Commands\Articles\DeactivateArticle.cs" />
-    <Compile Include="Commands\Customers\CreateCustomer.cs" />
-    <Compile Include="Commands\Customers\OrderArticle.cs" />
-    <Compile Include="Commands\ShoppingCarts\OrderShoppingCart.cs" />
-    <Compile Include="Commands\ShoppingCarts\RemoveArticleFromShoppingCart.cs" />
-    <Compile Include="Controllers\ArticlesController.cs" />
-    <Compile Include="Controllers\CustomersController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ShoppingCartsController.cs" />
-    <Compile Include="Controllers\ShoppingCartViewModelExt.cs" />
-    <Compile Include="Global.asax.cs">
-      <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="app\components\appheader\appheader.html" />
-    <Content Include="app\components\application\application.html" />
-    <Content Include="app\components\shopping-cart\shopping-cart.html" />
-    <Content Include="app\components\shopping-carts-overview\shopping-carts-overview.html" />
-    <Content Include="app\components\customer\customer.html" />
-    <Content Include="app\components\article\article.html" />
-    <Content Include="app\components\article-overview\article-overview.html" />
-    <Content Include="app\components\customers-overview\customers-overview.html" />
-    <Content Include="app\components\input-password\input-password.html" />
-    <Content Include="app\components\navigationContainer\navigationContainer.html" />
-    <Content Include="app\components\login\login.html" />
-    <Content Include="app\components\appHeaderCommand\appHeader-command.html" />
-    <Content Include="app\components\input-text\input-text.html" />
-    <Content Include="app\components\tile\tile.html" />
-    <Content Include="Content\font-awesome.css" />
-    <Content Include="Content\font-awesome.min.css" />
-    <Content Include="Content\metro-ui\css\metro-bootstrap-responsive.css" />
-    <Content Include="Content\metro-ui\css\metro-bootstrap.css" />
-    <Content Include="Content\metro-ui\fonts\iconFont.dev.svg" />
-    <Content Include="Content\metro-ui\fonts\iconFont.svg" />
-    <Content Include="Content\metro-ui\fonts\metroSysIcons.svg" />
-    
-    <Content Include="favicon.ico" />
-    <Content Include="fonts\fontawesome-webfont.svg" />
-    <Content Include="Global.asax" />
-    <Content Include="Scripts\almond.js" />
-    <Content Include="Scripts\crossroads.js" />
-    <Content Include="Scripts\hasher.js" />
-    <Content Include="Content\metro-ui\fonts\metroSysIcons.woff" />
-    <Content Include="Content\metro-ui\fonts\metroSysIcons.ttf" />
-    <Content Include="Content\metro-ui\fonts\iconFont.woff" />
-    <Content Include="Content\metro-ui\fonts\iconFont.ttf" />
-    <Content Include="Content\metro-ui\fonts\iconFont.json" />
-    <Content Include="Content\metro-ui\fonts\iconFont.eot" />
-    <None Include="Scripts\jquery-3.3.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.3.1.js" />
-    <Content Include="Scripts\jquery-3.3.1.min.js" />
-    <Content Include="Scripts\jquery-3.3.1.slim.js" />
-    <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
-    <Content Include="Scripts\knockout-3.4.2.debug.js" />
-    <Content Include="Scripts\knockout-3.4.2.js" />
-    <Content Include="Scripts\knockout.punches.js" />
-    <Content Include="Scripts\knockout.punches.min.js" />
-    <Content Include="Scripts\ko.bindinghandlers.js" />
-    <Content Include="fonts\FontAwesome.otf" />
-    <Content Include="fonts\fontawesome-webfont.woff2" />
-    <Content Include="fonts\fontawesome-webfont.woff" />
-    <Content Include="fonts\fontawesome-webfont.ttf" />
-    <Content Include="fonts\fontawesome-webfont.eot" />
-    <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.3.1.min.map" />
-    <None Include="Scripts\linq-vsdoc.js" />
-    <Content Include="Scripts\linq.js" />
-    <Content Include="Scripts\linq.min.js" />
-    <Content Include="Scripts\metro-ui\jquery.ui.widget.js" />
-    <Content Include="Scripts\metro-ui\metro.js" />
-    <Content Include="Scripts\metro-ui\metro.min.js" />
-    <Content Include="Scripts\moment-with-locales.js" />
-    <Content Include="Scripts\moment-with-locales.min.js" />
-    <Content Include="Scripts\moment.js" />
-    <Content Include="Scripts\moment.min.js" />
-    <Content Include="Scripts\r.js" />
-    <Content Include="Scripts\require.js" />
-    <Content Include="Scripts\scalejs-0.3.3.js" />
-    <Content Include="Scripts\scalejs-0.3.3.min.js" />
-    <Content Include="Scripts\scalejs.linq-linqjs-3.0.3.1.js" />
-    <Content Include="Scripts\scalejs.linq-linqjs-3.0.3.1.min.js" />
-    <Content Include="Scripts\scalejs.sandbox.js" />
-    <Content Include="Scripts\signals.js" />
-    <Content Include="Scripts\_references.js" />
-    <Content Include="Scripts\metro-ui\metro.min.js.map">
-      <DependentUpon>metro.min.js</DependentUpon>
-    </Content>
-    <None Include="Scripts\_scalejs.intellisense.js" />
-    
-    <Content Include="Views\Web.config" />
-    <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\Site.less" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="app\api.ts" />
-    <TypeScriptCompile Include="app\components\appheader\appheader.ts" />
-    <TypeScriptCompile Include="app\components\application\application.ts" />
-    <TypeScriptCompile Include="app\components\shopping-cart\shopping-cart.ts" />
-    <TypeScriptCompile Include="app\components\shopping-carts-overview\shopping-carts-overview.ts" />
-    <TypeScriptCompile Include="app\components\customer\customer.ts" />
-    <TypeScriptCompile Include="app\components\article\article.ts" />
-    <TypeScriptCompile Include="app\components\article-overview\article-overview.ts" />
-    <TypeScriptCompile Include="app\components\customers-overview\customers-overview.ts" />
-    <TypeScriptCompile Include="app\components\input-password\input-password.ts" />
-    <TypeScriptCompile Include="app\components\login\login.ts" />
-    <TypeScriptCompile Include="app\components\navigationContainer\navigationContainer.ts" />
-    <TypeScriptCompile Include="app\components\appHeaderCommand\appHeader-command.ts" />
-    <TypeScriptCompile Include="app\components\input-text\input-text.ts" />
-    <TypeScriptCompile Include="app\components\tile\tile.ts" />
-    <TypeScriptCompile Include="app\RootApplication.ts" />
-    <TypeScriptCompile Include="Scripts\linq.js.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\crossroads\crossroads.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\hasher\hasher.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\js-signals\js-signals.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\knockout\knockout.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\knockout\tests\jasmine.extensions.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\moment\moment.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\requirejs\require.d.ts" />
-    <TypeScriptCompile Include="Scripts\_references.ts" />
-  </ItemGroup>-->
+  
   <ItemGroup>
     <ProjectReference Include="..\..\..\SimpleEventSourcing.Bus\SimpleEventSourcing.Bus.csproj" />
     <ProjectReference Include="..\..\..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />    
@@ -263,8 +103,4 @@
     <ProjectReference Include="..\..\..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
     <ProjectReference Include="..\Shop\Shop.csproj" />
   </ItemGroup>
-
-  <!--<Target Name="UpdateWebConfigBindingRedirects" AfterTargets="CopyFilesToOutputDirectory">
-    <Copy SourceFiles="$(OutDir)$(AssemblyName).dll.config" DestinationFiles="web.config" />
-  </Target>-->
 </Project>

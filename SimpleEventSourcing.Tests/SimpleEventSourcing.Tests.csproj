@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net461;net5.0</TargetFrameworks>
   </PropertyGroup>
   
   <ItemGroup>
@@ -9,11 +9,11 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="4.9.2" />
-    <PackageReference Include="FluentAssertions" Version="5.5.3" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="NUnit" Version="3.11.0" />
+    <Reference Include="System.Transactions" />
+    <PackageReference Include="FakeItEasy" Version="6.2.1" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NUnit" Version="3.13.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>

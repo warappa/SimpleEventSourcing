@@ -61,7 +61,7 @@ namespace SimpleEventSourcing.Tests.Messaging
 
             processManager.StateModel.StreamName.Should().Be("processId");
 
-            A.CallTo(() => processManagerRepository.Get(typeof(TestProcessManager), "processId")).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => processManagerRepository.Get(typeof(TestProcessManager), "processId")).MustHaveHappenedOnceExactly();
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace SimpleEventSourcing.Tests.Messaging
 
             processManager.StateModel.StreamName.Should().Be("processId");
 
-            A.CallTo(() => processManagerRepository.Get(typeof(TestProcessManager), "processId")).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => processManagerRepository.Get(typeof(TestProcessManager), "processId")).MustHaveHappenedOnceExactly();
 
             target.Handle(new DummyMessage<TestEventEnd>("processId", new TestEventEnd("anotherId")));
 
