@@ -57,7 +57,9 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
             {
                 if (!typesOfModel.Contains(t.ClrType))
                 {
-                    modelBuilder.Model.RemoveEntityType(t);
+                    // workaround return-type change between 3.1.11 and 5.0.2
+                    dynamic model = modelBuilder.Model;
+                    model.RemoveEntityType(t.ClrType);
                 }
             }
 
@@ -66,7 +68,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
             return new DynamicDbContext(
                 options,
                 connection,
-                modelBuilder.Model
+                modelBuilder.Model.FinalizeModel()
                 );
         }
     }

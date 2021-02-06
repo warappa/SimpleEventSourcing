@@ -10,13 +10,14 @@ using System.Transactions;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 {
-    public class StorageResetter<TDbContext> : IStorageResetter
+    public class StorageResetter<TDbContext> : IStorageResetter, 
+        IReadModelStorageResetter, IWriteModelStorageResetter
         where TDbContext : DbContext
     {
         private readonly IDbContextScopeFactory dbContextScopeFactory;
         private readonly DbContextOptions options;
 
-        public StorageResetter(IDbContextScopeFactory dbContextScopeFactory, DbContextOptions options)
+        public StorageResetter(IDbContextScopeFactory dbContextScopeFactory, DbContextOptions<TDbContext> options)
         {
             this.dbContextScopeFactory = dbContextScopeFactory;
             this.options = options;
@@ -32,6 +33,11 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                 var dbContext = DynamicDbContext.Create(originalDbContext, options, connection, entityTypes);
                 var emptyDbContext = DynamicDbContext.Create(originalDbContext, options, connection, Array.Empty<Type>());
 
+                if (!justDrop)
+                {
+                    emptyDbContext.Database.EnsureCreated();
+                }
+                 
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
                 {
 
@@ -65,8 +71,6 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 
                         if (!justDrop)
                         {
-                            emptyDbContext.Database.EnsureCreated();
-
                             var creationScript = dbContext.GetService<IRelationalDatabaseCreator>().GenerateCreateScript();
 
                             var creationSteps = creationScript.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
