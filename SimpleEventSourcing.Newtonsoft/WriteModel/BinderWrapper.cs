@@ -2,7 +2,7 @@
 
 namespace SimpleEventSourcing.WriteModel
 {
-    public class BinderWrapper : Newtonsoft.Json.Serialization.ISerializationBinder
+    public class BinderWrapper : global::Newtonsoft.Json.Serialization.ISerializationBinder
     {
         public ISerializationBinder Binder { get; }
 

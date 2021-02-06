@@ -47,13 +47,13 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
             var conventionSet = ConventionSet.CreateConventionSet(dbContext);
 
             var modelBuilder = new ModelBuilder(conventionSet);
-            
+
             foreach (var type in typesOfModel)
             {
                 modelBuilder.Entity(type);
             }
 
-            foreach(var t in modelBuilder.Model.GetEntityTypes().ToList())
+            foreach (var t in modelBuilder.Model.GetEntityTypes().ToList())
             {
                 if (!typesOfModel.Contains(t.ClrType))
                 {

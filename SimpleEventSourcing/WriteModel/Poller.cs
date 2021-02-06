@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel
 {
-    public sealed class Poller
+    public sealed class Poller : IPoller
     {
         private IPersistenceEngine persistenceEngine { get; }
         private readonly int interval;

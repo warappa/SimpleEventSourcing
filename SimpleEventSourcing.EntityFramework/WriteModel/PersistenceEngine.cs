@@ -48,7 +48,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                         }
                     }
 
-                    await dbContext.SaveChangesAsync().ConfigureAwait(false);
+                    await scope.SaveChangesAsync().ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {

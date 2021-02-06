@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel
 {
-    public abstract class Projector<TState> : IProjector
+    public abstract class Projector<TState> : IProjector<TState>
         where TState : class, IEventSourcedState<TState>, new()
     {
         public TState StateModel { get; protected set; }

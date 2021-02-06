@@ -113,7 +113,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
             public override IStorageResetter GetStorageResetter()
             {
-                return new StorageResetter<WriteModelTestDbContext>(parent.GetDbContextScopeFactory(), new DbContextOptionsBuilder().UseSqlServer(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("integrationtest")).ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning)).Options);
+                return new StorageResetter<WriteModelTestDbContext>(parent.GetDbContextScopeFactory(), new DbContextOptionsBuilder<WriteModelTestDbContext>().UseSqlServer(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("integrationtest")).ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning)).Options);
             }
 
 
@@ -194,7 +194,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
             public override IStorageResetter GetStorageResetter()
             {
                 var connectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("integrationtest");
-                return new StorageResetter<ReadModelTestDbContext>(parent.GetDbContextScopeFactory(), new DbContextOptionsBuilder().UseSqlServer(connectionString).ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning)).Options);
+                return new StorageResetter<ReadModelTestDbContext>(parent.GetDbContextScopeFactory(), new DbContextOptionsBuilder<ReadModelTestDbContext>().UseSqlServer(connectionString).ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning)).Options);
             }
 
             public override ITestEntityA GetTestEntityA()

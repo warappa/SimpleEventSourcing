@@ -55,7 +55,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                         }
                     }
 
-                    await dbContext.SaveChangesAsync().ConfigureAwait(false);
+                    await scope.SaveChangesAsync().ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
@@ -237,7 +237,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 
                         throw;
                     }
-
+                    
                     scope.Dispose();
 
                     if (rawStreamEntries.Count == 0)

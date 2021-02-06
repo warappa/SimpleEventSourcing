@@ -11,7 +11,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
     public static class InjectRepoEx
     {
 
-        public static IDisposable SubscribeToAndUpdate<TMessage, TEntity>(this ObservableMessageBus source, Action<TEntity, TMessage> onNext, IEventRepository repo)
+        public static IDisposable SubscribeToAndUpdate<TMessage, TEntity>(this IObservableMessageBus source, Action<TEntity, TMessage> onNext, IEventRepository repo)
             where TMessage : class, IMessage<IEventSourcedEntityCommand>
             where TEntity : class, IEventSourcedEntity
         {

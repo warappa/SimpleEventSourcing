@@ -1,13 +1,15 @@
 ﻿using EntityFrameworkCore.DbContextScope;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.Domain;
+using SimpleEventSourcing.EntityFrameworkCore;
 using SimpleEventSourcing.EntityFrameworkCore.ReadModel;
-using SimpleEventSourcing.EntityFrameworkCore.Storage;
-using SimpleEventSourcing.EntityFrameworkCore.WriteModel;
 using SimpleEventSourcing.Messaging;
+using SimpleEventSourcing.Newtonsoft;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.Storage;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
@@ -18,76 +20,6 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.UI.ConsoleCore
 {
-    public class ReadModelDbContext : DbContext
-    {
-        private readonly string connectionName;
-
-        public ReadModelDbContext(string connectionName = null)
-            : base()
-        {
-            this.connectionName = connectionName ?? "efRead";
-            // this.Database.Log = msg => Debug.WriteLine(msg);
-            ChangeTracker.AutoDetectChangesEnabled = false;
-        }
-
-        public DbSet<PersistentEntity> PersistentEntities { get; set; }
-        public DbSet<CheckpointInfo> CheckpointInfos { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var cb = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-            optionsBuilder.UseSqlServer(cb.GetConnectionString(connectionName));
-
-            base.OnConfiguring(optionsBuilder);
-        }
-    }
-
-    public class WriteModelDbContext : DbContext
-    {
-        private readonly string connectionName;
-
-        public WriteModelDbContext(string connectionName = null)
-            : base()
-        {
-            this.connectionName = connectionName ?? "efWrite";
-
-            // this.Database.Log = msg => Debug.WriteLine(msg);
-        }
-
-        public DbSet<RawStreamEntry> Commits { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var cb = new ConfigurationBuilder()
-                   .AddJsonFile("appsettings.json")
-                   .Build();
-            optionsBuilder.UseSqlServer(cb.GetConnectionString(connectionName));
-
-            base.OnConfiguring(optionsBuilder);
-        }
-    }
-
-    public class DbContextFactory : IDbContextFactory
-    {
-        TDbContext IDbContextFactory.CreateDbContext<TDbContext>()
-        {
-            if (typeof(TDbContext) == typeof(WriteModelDbContext))
-            {
-                return (TDbContext)(object)new WriteModelDbContext();
-            }
-            else if (typeof(TDbContext) == typeof(ReadModelDbContext))
-            {
-                return (TDbContext)(object)new ReadModelDbContext();
-            }
-            else
-            {
-                throw new InvalidOperationException();
-            }
-        }
-    }
-
     internal class Program
     {
         private static async Task Main(string[] args)
@@ -98,31 +30,47 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                   .AddJsonFile("appsettings.json")
                   .Build();
 
-            using (var writeDbContext = new WriteModelDbContext("efWrite"))
+            var services = new ServiceCollection();
+
+            services.AddDbContext<WriteModelDbContext>(options =>
             {
-                writeDbContext.Database.EnsureCreated();
-            }
-
-            using (var readDbContext = new ReadModelDbContext("efRead"))
+                options.UseSqlServer(cb.GetConnectionString("efWrite"));
+            }, ServiceLifetime.Transient);
+            services.AddDbContext<ReadModelDbContext>(options =>
             {
-                readDbContext.Database.EnsureCreated();
-            }
+                options.UseSqlServer(cb.GetConnectionString("efRead"));
+            }, ServiceLifetime.Transient);
 
-            var binder = new VersionedBinder();
-            var serializer = new JsonNetSerializer(binder);
+            services.AddSimpleEventSourcing<WriteModelDbContext, ReadModelDbContext>();
+            services.AddCatchupProjector<TestState, ReadModelDbContext>(new TestState());
+            services.AddCatchupProjector<PersistentState, ReadModelDbContext>(
+                sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
+            services.AddNewtonsoftJson();
+            services.AddBus();
 
-            var bus = new ObservableMessageBus();
-            var dbContextScopeFactory = new DbContextScopeFactory(new DbContextFactory());
-            var persistenceEngine = new PersistenceEngine<WriteModelDbContext>(dbContextScopeFactory, serializer);
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            var bus = serviceProvider.GetRequiredService<IObservableMessageBus>();
+            var persistenceEngine = serviceProvider.GetRequiredService<IPersistenceEngine>();
+            var dbContextFactory = serviceProvider.GetRequiredService<IDbContextFactory>();
+            var repo = serviceProvider.GetRequiredService<IEventRepository>();
+            var repository = serviceProvider.GetRequiredService<IEventRepository>();
+            var checkpointPersister = serviceProvider.GetRequiredService<ICheckpointPersister>();
+            var polling = serviceProvider.GetRequiredService<IPoller>();
+            var readRepository = serviceProvider.GetRequiredService<IReadRepository>();
+            var persistentState = serviceProvider.GetRequiredService<IProjector<PersistentState>>();
+            var dbContextScopeFactory = serviceProvider.GetRequiredService<IDbContextScopeFactory>();
+
+            // var dbContextScope = dbContextScopeFactory.Create();
+
+            var writeDbContext = dbContextFactory.CreateDbContext<WriteModelDbContext>();
+            writeDbContext.Database.EnsureCreated();
+
+            var readDbContext = dbContextFactory.CreateDbContext<ReadModelDbContext>();
+            readDbContext.Database.EnsureCreated();
 
             await persistenceEngine.InitializeAsync();
-
-            var repo = new EventRepository(
-                new DefaultInstanceProvider(),
-                persistenceEngine,
-                new RawStreamEntryFactory());
-
-
 
             // let bus subscribe to repository and publish its committed events
             repo.SubscribeTo<IMessage<IEvent>>()
@@ -200,7 +148,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             agg.Rename("Hi!");
 
-
+            
             await repo.SaveAsync(agg);
 
             agg = await repo.GetAsync<TestAggregate>(agg.Id);
@@ -224,13 +172,8 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             Console.WriteLine("Database Persistence");
             Console.WriteLine("-------");
 
+            var engine = persistenceEngine;
 
-
-            var engine = new PersistenceEngine<WriteModelDbContext>(dbContextScopeFactory, serializer);
-
-            // engine.Initialize().Wait();
-
-            var polling = new Poller(engine, 500);
             var observer = polling.ObserveFrom(0);
             observer.Subscribe((s) =>
             {
@@ -238,11 +181,6 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             });
 
             await observer.StartAsync();
-
-            var repository = new EventRepository(
-                new DefaultInstanceProvider(),
-                engine,
-                new RawStreamEntryFactory());
 
             string entityId = null;
 
@@ -268,37 +206,24 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             var loadedEntity = await repository.GetAsync<TestAggregate>(entityId);
 
-            Console.WriteLine("Commits: " + await engine.LoadStreamEntriesAsync()
-                //.Result
-                .CountAsync());
+            Console.WriteLine("Commits: " + await engine.LoadStreamEntriesAsync().CountAsync());
             Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(payloadTypes: new[] { typeof(Renamed) })
-                //.Result
                 .CountAsync());
 
             Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", await engine
                 .LoadStreamEntriesAsync(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
-                //.Result
-                .Select(x => "" + x.CheckpointNumber).ToArrayAsync()));
+                .Select(x => "" + x.CheckpointNumber)
+                .ToListAsync()));
             Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(minCheckpointNumber: await engine.GetCurrentEventStoreCheckpointNumberAsync()
-                //.Result
                 - 5, payloadTypes: new[] { typeof(Renamed) })
-                //.Result
                 .CountAsync());
-            Console.WriteLine("Current CheckpointNumber: " + await engine.GetCurrentEventStoreCheckpointNumberAsync()
-                //.Result
-                );
+            Console.WriteLine("Current CheckpointNumber: " + await engine.GetCurrentEventStoreCheckpointNumberAsync());
 
-            var builder = new DbContextOptionsBuilder<ReadModelDbContext>()
-                .UseSqlServer(cb.GetConnectionString("efRead"));
-            var viewModelResetter = new StorageResetter<ReadModelDbContext>(dbContextScopeFactory, builder.Options);
-            // viewModelResetter.Reset(new[] { typeof(CheckpointInfo), typeof(PersistentEntity) });
-            var checkpointPersister = new CheckpointPersister<ReadModelDbContext, CheckpointInfo>(dbContextScopeFactory);
+            var viewModelResetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
+            await viewModelResetter.ResetAsync(new[] { typeof(CheckpointInfo), typeof(PersistentEntity) });
 
-            //Console.ReadKey();
+            //WaitForInput();
 
-            var readRepository = new ReadRepository<ReadModelDbContext>(dbContextScopeFactory);
-
-            //return;
             /*
             var live = new CatchUpProjector<TestState>(
                 new TestState(),
@@ -322,11 +247,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             //var resetter = new StorageResetter(nHibernateResetConfigurationProvider);
             //resetter.Reset(new[] { typeof(MyPersistentEntity) });
             */
-            var persistentState = new CatchUpProjector<PersistentState>(
-                new PersistentState(readRepository),
-                checkpointPersister,
-                engine,
-                viewModelResetter);
+
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             await persistentState.StartAsync();
@@ -340,8 +261,10 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 }
             });
 
-            Console.ReadKey();
+            WaitForInput();
+
             stopwatch.Stop();
+
             Console.WriteLine($"persistent: {persistentState.StateModel.Count} msgs, {stopwatch.ElapsedMilliseconds}ms -> {persistentState.StateModel.Count / (stopwatch.ElapsedMilliseconds / 1000.0)}");
 
             observer.Dispose();
@@ -359,7 +282,12 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             */
 
 
-            Console.ReadKey();
+            WaitForInput();
+        }
+
+        private static void WaitForInput()
+        {
+            Console.WriteLine("\n\nPress any key to continue");
         }
     }
 }
