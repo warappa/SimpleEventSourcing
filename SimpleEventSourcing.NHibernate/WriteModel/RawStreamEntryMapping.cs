@@ -45,8 +45,12 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             Property(x => x.Group, config =>
             {
                 config.Column("`Group`");
+                config.Index("LoadStreamMessages");
             });
-            Property(x => x.Category);
+            Property(x => x.Category, config =>
+            {
+                config.Index("LoadStreamMessages");
+            });
             Property(x => x.Headers, config =>
             {
                 config.Type(NHibernateUtil.StringClob);
@@ -55,6 +59,10 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             Property(x => x.DateTime, config =>
             {
                 config.Type(new UtcDateTimeType());
+            });
+            Property(x => x.CheckpointNumber, config =>
+            {
+                config.Index("LoadStreamMessages");
             });
             Id(x => x.CheckpointNumber, config =>
             {

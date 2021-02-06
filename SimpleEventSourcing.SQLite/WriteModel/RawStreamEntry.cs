@@ -8,7 +8,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel
     public class RawStreamEntry : IRawStreamEntry
     {
         [Column("StreamName")]
-        [Indexed(Name = "LoadStreamMessages", Order = 2, Unique = true)]
+        [Indexed(Name = "LoadStreamMessages", Order = 2)]
         public string StreamName { get; set; }
 
         [Column("CommitId")]
@@ -21,16 +21,18 @@ namespace SimpleEventSourcing.SQLite.WriteModel
         public int StreamRevision { get; set; }
 
         [Column("PayloadType")]
-        [Indexed(Name = "LoadStreamMessages", Order = 3, Unique = true)]
+        [Indexed(Name = "LoadStreamMessages", Order = 3)]
         public string PayloadType { get; set; }
 
         [Column("Payload")]
         public string Payload { get; set; }
 
         [Column("Group")]
+        [Indexed(Name = "LoadStreamMessages", Order = 4)]
         public string Group { get; set; }
 
         [Column("Category")]
+        [Indexed(Name = "LoadStreamMessages", Order = 5)]
         public string Category { get; set; }
 
         [Column("Headers")]

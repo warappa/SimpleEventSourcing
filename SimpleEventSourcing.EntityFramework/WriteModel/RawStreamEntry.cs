@@ -31,9 +31,11 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
         public string Payload { get; set; }
 
         [Column("Group")]
+        [Index("LoadStreamMessages", Order = 4)]
         public string Group { get; set; }
 
         [Column("Category")]
+        [Index("LoadStreamMessages", Order = 5)]
         public string Category { get; set; }
 
         [Column("Headers")]
