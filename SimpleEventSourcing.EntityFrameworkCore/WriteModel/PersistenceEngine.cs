@@ -51,7 +51,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                                 continue;
                             }
 
-                            dbContext.Database.ExecuteSqlCommand(new RawSqlString(step));
+                            dbContext.Database.ExecuteSqlRaw(step);
                         }
                     }
 

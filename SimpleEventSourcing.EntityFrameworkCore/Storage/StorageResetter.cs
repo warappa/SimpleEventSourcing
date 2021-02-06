@@ -56,7 +56,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                             {
                                 var cmd = $"drop table [{tablename}]";
 #pragma warning disable EF1000 // Possible SQL injection vulnerability.
-                                originalDbContext.Database.ExecuteSqlCommand(new RawSqlString(cmd));
+                                originalDbContext.Database.ExecuteSqlRaw(cmd);
 #pragma warning restore EF1000 // Possible SQL injection vulnerability.
                             }
                             catch
@@ -80,7 +80,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                                     continue;
                                 }
 
-                                originalDbContext.Database.ExecuteSqlCommand(new RawSqlString(step));
+                                originalDbContext.Database.ExecuteSqlRaw(step);
                             }
                         }
 
@@ -97,7 +97,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
         private string GetTablenameForType(DbContext dbContext, Type type)
         {
             var modelNames = dbContext.Model.FindEntityType(type);
-            return modelNames.Relational().TableName;
+            return modelNames.GetTableName();
         }
     }
 }

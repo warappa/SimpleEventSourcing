@@ -169,6 +169,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
                     res = scope.DbContexts.Get<TDbContext>()
                     .Set<T>()
+                    .AsQueryable()
                     .Where(x =>
                         x.Streamname != null &&
 #pragma warning disable CS0253 // Möglicher unbeabsichtigter Referenzvergleich; rechte Seite muss umgewandelt werden

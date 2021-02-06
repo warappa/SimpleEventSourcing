@@ -23,8 +23,8 @@
 
   <ItemGroup>
     <PackageReference Include="Dotfo.EntityFrameworkCore.DbContextScope" Version="1.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.14" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.1.14" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.11" />
   </ItemGroup>
 
   <ItemGroup>
