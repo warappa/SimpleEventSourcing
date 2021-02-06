@@ -60,39 +60,39 @@ namespace SimpleEventSourcing.ReadModel
         }
 
         private async Task ProcessStreamEntries(IList<IRawStreamEntry> streamEntries)
+        {
+            if (streamEntries.Count == 0)
             {
-                if (streamEntries.Count == 0)
-                {
-                    return;
-                }
+                return;
+            }
 
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
 
-                var requiredMessages = streamEntries
-                    .Select(streamEntry => streamEntry.ToTypedMessage(engine.Serializer))
-                    .ToList();
+            var requiredMessages = streamEntries
+                .Select(streamEntry => streamEntry.ToTypedMessage(engine.Serializer))
+                .ToList();
 
-                stopwatch.Stop();
-                Debug.WriteLine($"deserialized {typeof(TState).Name} {requiredMessages.Count}x ({streamEntries.Count}): {stopwatch.ElapsedMilliseconds}ms");
-                stopwatch.Restart();
+            stopwatch.Stop();
+            Debug.WriteLine($"deserialized {typeof(TState).Name} {requiredMessages.Count}x ({streamEntries.Count}): {stopwatch.ElapsedMilliseconds}ms");
+            stopwatch.Restart();
 
-                if (StateModel is IDbScopeAware scopeaware)
-                {
-                    using (scopeaware.OpenScope())
-                    {
-                        await ApplyMessagesAsync(requiredMessages);
-                    }
-                }
-                else
+            if (StateModel is IDbScopeAware scopeaware)
+            {
+                using (scopeaware.OpenScope())
                 {
                     await ApplyMessagesAsync(requiredMessages);
                 }
+            }
+            else
+            {
+                await ApplyMessagesAsync(requiredMessages);
+            }
 
-                stopwatch.Stop();
-                Debug.WriteLine($"{typeof(TState).Name} {requiredMessages.Count}x ({streamEntries.Count}): {stopwatch.ElapsedMilliseconds}ms");
+            stopwatch.Stop();
+            Debug.WriteLine($"{typeof(TState).Name} {requiredMessages.Count}x ({streamEntries.Count}): {stopwatch.ElapsedMilliseconds}ms");
 
-                requiredMessages.Clear();
+            requiredMessages.Clear();
         }
 
         private async Task ApplyMessagesAsync(List<IMessage> requiredMessages)
@@ -105,7 +105,7 @@ namespace SimpleEventSourcing.ReadModel
             if (requiredMessages.Count > 0)
             {
                 await checkpointPersister.SaveCurrentCheckpointAsync(
-                    checkpointPersister.GetProjectorIdentifier(typeof(TState)), 
+                    checkpointPersister.GetProjectorIdentifier(typeof(TState)),
                     requiredMessages[requiredMessages.Count - 1].CheckpointNumber);
             }
         }

@@ -7,6 +7,8 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
     {
         public CheckpointInfoMapping()
         {
+            Table("CheckpointInfos");
+
             Id(x => x.StateModel, c => c.Generator(Generators.Assigned));
             Property(x => x.CheckpointNumber);
         }

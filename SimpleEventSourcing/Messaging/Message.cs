@@ -16,7 +16,7 @@ namespace SimpleEventSourcing.Messaging
 
         public Message(string messageId, object body, IDictionary<string, object> headers, string correlationId, string causationId, DateTime dateTime, int checkpointNumber)
         {
-            Headers = headers ?? new Dictionary<string, object>();
+            Headers = headers is object ? new Dictionary<string, object>(headers) : new Dictionary<string, object>();
 
             MessageId = messageId;
             Body = body;

@@ -22,6 +22,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
     {
         public PersistentEntityMap()
         {
+            Table("PersistentEntities");
+
             Id(x => x.Id, config =>
             {
                 //config.Generator(global::NHibernate.Mapping.ByCode.Generators.HighLow);

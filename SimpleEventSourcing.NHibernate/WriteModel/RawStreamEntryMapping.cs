@@ -8,6 +8,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
     {
         public RawStreamEntryMapping()
         {
+            Table("Commits");
+
             Property(x => x.StreamName, config =>
             {
                 config.Column(x =>
