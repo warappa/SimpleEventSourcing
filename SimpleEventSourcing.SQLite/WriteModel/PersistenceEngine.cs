@@ -169,40 +169,49 @@ streamRevision >= @minRevision and streamRevision <= @maxRevision ");
         public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
+            string payloadPredicate = null;
 
             var connection = connectionFactory();
+
             if (maxCheckpointNumber == int.MaxValue)
             {
                 maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
             }
 
+            if (payloadTypes != null &&
+                payloadTypes.Length > 0)
+            {
+                var commandText = new StringBuilder();
+                commandText.Append(" and (");
+
+                for (var i = 0; i < payloadTypes.Length; i++)
+                {
+                    commandText.Append($@"payloadType = '{Serializer.Binder.BindToName(payloadTypes[i])}' ");
+
+                    if (i < payloadTypes.Length - 1)
+                    {
+                        commandText.Append(" or ");
+                    }
+                }
+
+                commandText.Append(") ");
+
+                payloadPredicate = commandText.ToString();
+            }
+
             using (connection.Lock())
             {
+                var cmd = connection.CreateCommand("");
+
                 while (true)
                 {
-                    var cmd = connection.CreateCommand("");
-
                     var commandText = new StringBuilder();
                     commandText.Append(@"select streamName, commitId, messageId, streamRevision, payloadType, payload, headers, checkpointNumber, [group], category, dateTime from commits
 where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheckpointNumber ");
 
-                    if (payloadTypes != null &&
-                        payloadTypes.Length > 0)
+                    if (payloadPredicate is string)
                     {
-                        commandText.Append(" and (");
-
-                        for (var i = 0; i < payloadTypes.Length; i++)
-                        {
-                            commandText.Append(
-                                $@"payloadType = '{Serializer.Binder.BindToName(payloadTypes[i])}' ");
-
-                            if (i < payloadTypes.Length - 1)
-                            {
-                                commandText.Append(" or ");
-                            }
-                        }
-
-                        commandText.Append(") ");
+                        commandText.Append(payloadPredicate);
                     }
 
                     if (group != null &&
@@ -299,7 +308,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
         {
             var retryCount = 10;
 
-            var ret = default(T);
+            T ret;
             do
             {
                 try
