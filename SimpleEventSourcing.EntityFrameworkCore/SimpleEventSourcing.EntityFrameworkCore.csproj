@@ -11,10 +11,9 @@
       <RepositoryType>git</RepositoryType>
       <PackageTags>eventsourcing cqrs ddd</PackageTags>
       <Copyright>David Rettenbacher</Copyright>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+      <PackageLicenseFile>LICENSE</PackageLicenseFile>
       <Description>Library for simple event sourcing</Description>
-    <LangVersion>latest</LangVersion>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+      <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>

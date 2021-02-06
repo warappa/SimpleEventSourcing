@@ -5,9 +5,6 @@
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>SimpleEventSourcing.UI.ConsoleUI</RootNamespace>
     <AssetTargetFallback>net45</AssetTargetFallback>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup>
     <StartupObject>SimpleEventSourcing.UI.ConsoleCore.Program</StartupObject>
   </PropertyGroup>
 
