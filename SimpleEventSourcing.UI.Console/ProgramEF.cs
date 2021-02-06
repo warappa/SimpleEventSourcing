@@ -2,19 +2,19 @@
 using EntityFramework.DbContextScope.Interfaces;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.Domain;
-using SimpleEventSourcing.Messaging;
-using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.EntityFramework.ReadModel;
 using SimpleEventSourcing.EntityFramework.Storage;
-using SimpleEventSourcing.WriteModel;
 using SimpleEventSourcing.EntityFramework.WriteModel;
+using SimpleEventSourcing.Messaging;
+using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Data.Entity;
 
 namespace SimpleEventSourcing.UI.ConsoleUI
 {
@@ -65,9 +65,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
         }
     }
 
-    class ProgramEF
+    internal class ProgramEF
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             Console.WriteLine("Program started...");
 

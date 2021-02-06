@@ -3,7 +3,7 @@ using SimpleEventSourcing.WriteModel;
 
 namespace SimpleEventSourcing.SQLite.WriteModel.Tests
 {
-	[Versioned("TestEvent", 0)]
+    [Versioned("TestEvent", 0)]
 	public class TestEvent : IEvent
 	{
 		public string Value { get; set; }

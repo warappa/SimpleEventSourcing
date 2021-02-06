@@ -30,7 +30,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             TCheckpointInfo checkpointInfo = null;
             try
             {
-                checkpointInfo = this.connection.Get<TCheckpointInfo>(projectorIdentifier);
+                checkpointInfo = connection.Get<TCheckpointInfo>(projectorIdentifier);
             }
             catch
             {

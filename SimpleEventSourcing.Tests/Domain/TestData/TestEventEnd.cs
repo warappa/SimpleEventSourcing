@@ -1,10 +1,10 @@
 ﻿namespace SimpleEventSourcing.Tests
 {
-	public class TestEventEnd : IEventWithId
+    public class TestEventEnd : IEventWithId
 	{
 		public TestEventEnd(string id)
 		{
-			this.Id = id;
+			Id = id;
 		}
 
 		public string Id { get; private set; }
@@ -14,7 +14,7 @@
     {
         public TestEventUnknown(string id)
         {
-            this.Id = id;
+            Id = id;
         }
 
         public string Id { get; private set; }

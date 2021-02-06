@@ -7,7 +7,7 @@ namespace SimpleEventSourcing.Tests
         public ParentCreated(string id, string name, DateTime dateTime)
             : base(id, dateTime)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public string Name { get; private set; }
@@ -18,7 +18,7 @@ namespace SimpleEventSourcing.Tests
         public ParentRenamed(string id, string name, DateTime dateTime)
             : base(id, dateTime)
         {
-            this.Name = name;
+            Name = name;
         }
 
         public string Name { get; private set; }

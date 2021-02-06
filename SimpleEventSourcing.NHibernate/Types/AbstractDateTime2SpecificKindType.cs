@@ -1,10 +1,4 @@
-﻿using NHibernate;
-using NHibernate.SqlTypes;
-using NHibernate.Type;
-using System;
-using System.Data;
-
-namespace SimpleEventSourcing.NHibernate.WriteModel.Types
+﻿namespace SimpleEventSourcing.NHibernate.WriteModel.Types
 {/*
     [Serializable]
     public abstract class AbstractDateTime2SpecificKindType : DateTimeType

@@ -1,6 +1,6 @@
 ﻿namespace SimpleEventSourcing.UI.ConsoleUI
 {
-	public interface INameChangeEvent
+    public interface INameChangeEvent
 	{
 		string Name { get; }
 	}

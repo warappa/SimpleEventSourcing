@@ -2,8 +2,8 @@
 using Shop.Core.Domain.Articles;
 using Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles;
 using Shop.Core.Specifications;
-using System.Linq;
 using SimpleEventSourcing.WriteModel;
+using System.Linq;
 
 namespace Shop.Core.Domain.ShoppingCarts
 {

@@ -12,7 +12,7 @@ namespace SimpleEventSourcing.EntityFramework.Tests
         {
             Database.SetInitializer<WriteModelTestDbContext>(null);
 
-            this.Database.Log = msg => Debug.WriteLine(msg);
+            Database.Log = msg => Debug.WriteLine(msg);
         }
 
         public DbSet<RawStreamEntry> Commits { get; set; }

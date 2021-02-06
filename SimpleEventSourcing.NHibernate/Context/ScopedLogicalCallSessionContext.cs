@@ -50,7 +50,7 @@ namespace SimpleEventSourcing.NHibernate.Context
 
             var last = entries[entries.Length - 1];
 
-            scopes.TryRemove(last, out IDictionary dummy);
+            scopes.TryRemove(last, out var dummy);
 
             var newLogicalData = string.Join("|", entries.Take(entries.Length - 1));
 

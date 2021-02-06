@@ -13,7 +13,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
 {
     public class ReadRepository : IReadRepository, IDbScopeAware
     {
-        readonly ISessionFactory sessionFactory;
+        private readonly ISessionFactory sessionFactory;
 
         public ReadRepository(ISessionFactory sessionFactory)
         {

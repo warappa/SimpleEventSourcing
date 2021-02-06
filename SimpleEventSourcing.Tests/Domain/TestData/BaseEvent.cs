@@ -1,6 +1,6 @@
 ﻿using SimpleEventSourcing.Messaging;
-using System;
 using SimpleEventSourcing.Utils;
+using System;
 
 namespace SimpleEventSourcing.Tests
 {
@@ -8,18 +8,18 @@ namespace SimpleEventSourcing.Tests
     {
         public BaseEvent(string id, DateTime dateTime)
         {
-            this.Id = id;
-            this.DateTime = dateTime;
+            Id = id;
+            DateTime = dateTime;
         }
 
         public string Id { get; protected set; }
         public DateTime DateTime { get; protected set; }
 
-		object IEventSourcedEntityEvent.Id => this.Id;
+		object IEventSourcedEntityEvent.Id => Id;
 
 		void IBaseEvent.SetDateTime(DateTime dateTime)
 		{
-			this.DateTime = dateTime;
+			DateTime = dateTime;
 		}
 
 		public override bool Equals(object obj)

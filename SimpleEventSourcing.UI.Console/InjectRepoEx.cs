@@ -1,9 +1,9 @@
-﻿using System;
-using System.Reactive.Linq;
-using SimpleEventSourcing.WriteModel;
-using SimpleEventSourcing.Messaging;
-using SimpleEventSourcing.Bus;
+﻿using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.Domain;
+using SimpleEventSourcing.Messaging;
+using SimpleEventSourcing.WriteModel;
+using System;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.UI.ConsoleUI

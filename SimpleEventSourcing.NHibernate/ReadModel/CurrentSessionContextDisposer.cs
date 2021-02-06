@@ -24,7 +24,9 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
             {
                 var session = CurrentSessionContext.Unbind(sessionFactory);
                 if (session == null)
+                {
                     return;
+                }
 
                 session.Flush();
                 if (session.GetCurrentTransaction()?.IsActive == true)

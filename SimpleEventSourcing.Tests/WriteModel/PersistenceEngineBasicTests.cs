@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SimpleEventSourcing.Tests;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel.Tests
 {
@@ -13,17 +14,17 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [Test]
-        public void Can_initialize()
+        public async Task Can_initializeAsync()
         {
-            Initialize();
+            await InitializeAsync();
         }
 
         [Test]
-        public void Can_save_streamEntries()
+        public async Task Can_save_streamEntriesAsync()
         {
-            Initialize();
+            await InitializeAsync();
 
-            SaveStreamEntryAsync();
+            await SaveStreamEntryAsync();
         }
     }
 }

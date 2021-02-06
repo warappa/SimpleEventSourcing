@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace SimpleEventSourcing.Tests
 {
 
-	public class CommandMessage<TCommand> : Message, IMessage<TCommand>//, ICommandMessage<TCommand>
+    public class CommandMessage<TCommand> : Message, IMessage<TCommand>//, ICommandMessage<TCommand>
 		where TCommand : class, ICommand
 	{
 		public CommandMessage(string messageId, object body, IDictionary<string, object> headers, string correlationId, string causationId, DateTime dateTime, int checkpointNumber)

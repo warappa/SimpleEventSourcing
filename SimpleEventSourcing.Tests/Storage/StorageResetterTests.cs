@@ -22,8 +22,8 @@ namespace SimpleEventSourcing.Tests.Storage
         {
             this.config = config;
 
-            this.entityTypeA = config.ReadModel.GetTestEntityA().GetType();
-            this.entityTypeB = config.ReadModel.GetTestEntityB().GetType();
+            entityTypeA = config.ReadModel.GetTestEntityA().GetType();
+            entityTypeB = config.ReadModel.GetTestEntityB().GetType();
         }
 
         [SetUp]

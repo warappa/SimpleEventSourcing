@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SimpleEventSourcing.Tests
 {
-	public class ChildEntity : ChildEntity<ChildState, ParentEntityId, ChildEntityId>
+    public class ChildEntity : ChildEntity<ChildState, ParentEntityId, ChildEntityId>
 	{
 		public ChildEntity() : base() { }
 		public ChildEntity(IAggregateRoot aggregateRoot, ChildEntityId id, string name)

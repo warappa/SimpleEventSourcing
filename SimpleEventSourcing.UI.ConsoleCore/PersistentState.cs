@@ -1,6 +1,4 @@
-﻿using SimpleEventSourcing.Messaging;
-using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.Utils;
+﻿using SimpleEventSourcing.ReadModel;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.UI.ConsoleCore

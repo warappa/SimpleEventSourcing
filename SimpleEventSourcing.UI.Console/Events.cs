@@ -3,7 +3,7 @@ using SimpleEventSourcing.WriteModel;
 
 namespace SimpleEventSourcing.UI.ConsoleUI
 {
-	[Versioned("TestAggregateCreated", 0)]
+    [Versioned("TestAggregateCreated", 0)]
 	public class TestAggregateCreated : IEvent, INameChangeEvent
 	{
 		public string Id;
@@ -13,8 +13,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 			string id,
 			string name)
 		{
-			this.Id = id;
-			this.Name = name;
+			Id = id;
+			Name = name;
 		}
 
 		string INameChangeEvent.Name
@@ -33,8 +33,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 			string id,
 			string newName)
 		{
-			this.Id = id;
-			this.NewName = newName;
+			Id = id;
+			NewName = newName;
 		}
 
 		public string Name
@@ -53,8 +53,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 			string id,
 			string bla)
 		{
-			this.Id = id;
-			this.Bla = bla;
+			Id = id;
+			Bla = bla;
 		}
 	}
 	[Versioned("SomethingSpecialDone", 0)]
@@ -67,8 +67,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 			string id,
 			string bla)
 		{
-			this.Id = id;
-			this.Bla = bla;
+			Id = id;
+			Bla = bla;
 		}
 	}
 }

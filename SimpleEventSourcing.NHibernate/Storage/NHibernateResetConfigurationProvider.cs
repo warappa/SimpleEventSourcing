@@ -1,13 +1,13 @@
-﻿using NHibernate.Mapping.ByCode;
+﻿using NHibernate.Cfg;
+using NHibernate.Mapping.ByCode;
+using NHibernate.Mapping.ByCode.Conformist;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using NHibernate.Cfg;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using NHibernate.Mapping.ByCode.Conformist;
 
 namespace SimpleEventSourcing.NHibernate.Storage
 {

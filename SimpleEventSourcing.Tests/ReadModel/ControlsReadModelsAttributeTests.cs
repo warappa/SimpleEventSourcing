@@ -1,8 +1,7 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
-using SimpleEventSourcing.Tests;
 using SimpleEventSourcing.State;
+using System;
 
 namespace SimpleEventSourcing.ReadModel.Tests
 {

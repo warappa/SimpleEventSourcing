@@ -2,8 +2,8 @@
 using NUnit.Framework;
 using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.SQLite.WriteModel.Tests;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.SQLite.ReadModel.Tests
 {

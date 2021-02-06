@@ -1,9 +1,7 @@
 ﻿using NHibernate;
-using NHibernate.Context;
 using NUnit.Framework;
 using SimpleEventSourcing.NHibernate.Tests;
 using SimpleEventSourcing.WriteModel.Tests;
-using System.Diagnostics;
 
 namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
 {

@@ -32,7 +32,9 @@ namespace Shop.Core.Domain.Shared
         {
             var other = obj as T;
             if (obj == null)
+            {
                 return false;
+            }
 
             return Value == other.Value;
         }

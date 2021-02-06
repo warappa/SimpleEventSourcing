@@ -1,5 +1,5 @@
-﻿using System;
-using NHibernate;
+﻿using NHibernate;
+using System;
 using System.Diagnostics;
 
 [Serializable]

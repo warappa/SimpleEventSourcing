@@ -21,7 +21,7 @@ namespace SimpleEventSourcing.Utils
             {
                 var type = result.GetType();
 
-                if (!cachedResultProperties.TryGetValue(type, out PropertyInfo property))
+                if (!cachedResultProperties.TryGetValue(type, out var property))
                 {
                     property = type.GetRuntimeProperty("Result");
                     cachedResultProperties[type] = property;

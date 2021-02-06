@@ -1,7 +1,4 @@
-﻿using SimpleEventSourcing.Domain;
-using SimpleEventSourcing.Messaging;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace SimpleEventSourcing.Tests
 {

@@ -2,7 +2,7 @@
 
 namespace SimpleEventSourcing.UI.ConsoleUI
 {
-	public class TestAggregateRename : IEventSourcedEntityCommand
+    public class TestAggregateRename : IEventSourcedEntityCommand
 	{
 		public string Id { get; set; }
 		public string Name { get; set; }

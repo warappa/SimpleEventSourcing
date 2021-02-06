@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SimpleEventSourcing.Tests
 {
-	public static class MessageExtensions
+    public static class MessageExtensions
 	{
 		public static IMessage<TEvent> ToEventMessage<TEvent>(this TEvent @event)
 			where TEvent : class, IEvent

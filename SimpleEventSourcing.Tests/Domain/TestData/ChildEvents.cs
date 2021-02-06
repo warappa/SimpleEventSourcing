@@ -2,12 +2,12 @@
 
 namespace SimpleEventSourcing.Tests
 {
-	public class ChildCreated : ChildBaseEvent
+    public class ChildCreated : ChildBaseEvent
 	{
 		public ChildCreated(string aggregateRootId, string id, string name, DateTime dateTime)
 			: base(aggregateRootId, id, dateTime)
 		{
-			this.Name = name;
+			Name = name;
 		}
 
 		public string Name { get; private set; }
@@ -18,7 +18,7 @@ namespace SimpleEventSourcing.Tests
 		public ChildRenamed(string aggregateRootId, string id, string name, DateTime dateTime)
 			: base(aggregateRootId, id, dateTime)
 		{
-			this.Name = name;
+			Name = name;
 		}
 
 		public string Name { get; private set; }

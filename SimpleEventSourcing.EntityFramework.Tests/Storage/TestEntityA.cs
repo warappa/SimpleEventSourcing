@@ -2,7 +2,6 @@
 using SimpleEventSourcing.ReadModel.Tests;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System;
 
 namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
 {

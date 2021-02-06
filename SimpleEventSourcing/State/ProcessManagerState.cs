@@ -9,7 +9,7 @@ namespace SimpleEventSourcing.State
 
         public TState Apply(ProcessManagerHandledEvent processManagerEvent)
         {
-            TState newState = this.InvokeAssociatedApply(processManagerEvent.HandledEvent) ?? this as TState;
+            var newState = InvokeAssociatedApply(processManagerEvent.HandledEvent) ?? this as TState;
             (newState as ProcessManagerState<TState>).StreamName = processManagerEvent.Id;
             return newState;
         }

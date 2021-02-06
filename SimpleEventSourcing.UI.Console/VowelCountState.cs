@@ -17,7 +17,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             foreach (var character in str)
             {
                 if (character == c)
+                {
                     count++;
+                }
             }
             return count;
         }

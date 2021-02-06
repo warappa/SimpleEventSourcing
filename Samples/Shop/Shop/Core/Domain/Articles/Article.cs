@@ -1,8 +1,8 @@
 ﻿using Shop.Core.Domain.Shared;
-using System.Linq;
 using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
 using System;
+using System.Linq;
 
 namespace Shop.Core.Domain.Articles
 {

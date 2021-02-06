@@ -2,7 +2,7 @@
 
 namespace SimpleEventSourcing.State
 {
-	public interface IStateFactory
+    public interface IStateFactory
 	{
 		TState CreateState<TState>();
 		object CreateState(Type stateType);

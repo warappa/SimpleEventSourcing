@@ -14,7 +14,7 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
     public class ReadRepository<TDbContext> : IReadRepository, IDbScopeAware
         where TDbContext : DbContext, IDbContext
     {
-        readonly IDbContextScopeFactory dbContextScopeFactory;
+        private readonly IDbContextScopeFactory dbContextScopeFactory;
 
         public ReadRepository(IDbContextScopeFactory dbContextScopeFactory)
         {

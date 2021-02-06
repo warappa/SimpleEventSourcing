@@ -2,7 +2,7 @@
 
 namespace SimpleEventSourcing.Tests
 {
-	public class TestProcessManagerState : ProcessManagerState<TestProcessManagerState>
+    public class TestProcessManagerState : ProcessManagerState<TestProcessManagerState>
 	{
 		public string ProcessName { get; set; }
 

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Reactive;
+using System.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace SimpleEventSourcing.WriteModel
 {
@@ -77,7 +76,7 @@ namespace SimpleEventSourcing.WriteModel
 
             private async Task PollLoop()
             {
-                bool instant = true;
+                var instant = true;
 
                 while (true)
                 {

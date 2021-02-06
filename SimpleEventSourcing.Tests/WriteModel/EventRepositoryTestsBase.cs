@@ -218,8 +218,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         {
             public TestEntityCreated(string id, string name)
             {
-                this.Id = id;
-                this.Name = name;
+                Id = id;
+                Name = name;
             }
 
             public string Id { get; private set; }
@@ -230,8 +230,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         {
             public TestEntityRenamed(string id, string name)
             {
-                this.Id = id;
-                this.Name = name;
+                Id = id;
+                Name = name;
             }
 
             public string Id { get; private set; }
@@ -242,9 +242,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
         {
             public TestEntityChildAdded(string aggregateRootId, string id, string name)
             {
-                this.AggregateRootId = aggregateRootId;
-                this.Id = id;
-                this.Name = name;
+                AggregateRootId = aggregateRootId;
+                Id = id;
+                Name = name;
             }
 
             public string AggregateRootId { get; private set; }
@@ -260,9 +260,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
         {
             public TestChildEntityRenamed(string aggregateRootId, string id, string name)
             {
-                this.AggregateRootId = aggregateRootId;
-                this.Id = id;
-                this.Name = name;
+                AggregateRootId = aggregateRootId;
+                Id = id;
+                Name = name;
             }
 
             public string Id { get; private set; }

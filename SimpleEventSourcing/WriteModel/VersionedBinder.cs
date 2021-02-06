@@ -25,7 +25,7 @@ namespace SimpleEventSourcing.WriteModel
 
         public string BindToName(Type type)
         {
-            if (!bindTypeToNameDict.TryGetValue(type, out string name))
+            if (!bindTypeToNameDict.TryGetValue(type, out var name))
             {
                 lock (bindTypeToNameDict)
                 {
@@ -54,7 +54,7 @@ namespace SimpleEventSourcing.WriteModel
 
         public Type BindToType(string typename)
         {
-            if (!bindNameToTypeDict.TryGetValue(typename, out Type type))
+            if (!bindNameToTypeDict.TryGetValue(typename, out var type))
             {
                 lock (bindNameToTypeDict)
                 {

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace SimpleEventSourcing.WriteModel.Tests
 {
@@ -44,7 +43,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             if (initialize)
             {
-                await Initialize();
+                await InitializeAsync();
 
                 await SaveStreamEntryAsync();
             }
@@ -58,18 +57,18 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [OneTimeSetUp]
-        virtual protected void SetupFixture()
+        protected virtual void SetupFixture()
         {
 
         }
 
         [OneTimeTearDown]
-        virtual protected void CleanupFixture()
+        protected virtual void CleanupFixture()
         {
 
         }
 
-        virtual protected async Task Initialize()
+        protected virtual async Task InitializeAsync()
         {
             persistenceEngine = config.WriteModel.GetPersistenceEngine();
 

@@ -10,7 +10,7 @@ namespace SimpleEventSourcing.Messaging
     public abstract class ProcessManagerRouter
     {
         protected readonly IProcessManagerRepository processManagerRepository;
-        readonly Func<IMessage, string> processIdExtractor;
+        private readonly Func<IMessage, string> processIdExtractor;
         protected IDictionary<Type, List<Type>> eventTypeToProcessManagerTypes = new Dictionary<Type, List<Type>>();
 
         protected ProcessManagerRouter(IProcessManagerRepository processManagerRepository, Func<IMessage, string> processIdExtractor)
@@ -50,9 +50,8 @@ namespace SimpleEventSourcing.Messaging
 
             foreach (var startEventType in startEventTypes.Concat(handleEventTypes))
             {
-                List<Type> processManagerTypes = null;
 
-                if (eventTypeToProcessManagerTypes.TryGetValue(startEventType, out processManagerTypes) == false)
+                if (eventTypeToProcessManagerTypes.TryGetValue(startEventType, out var processManagerTypes) == false)
                 {
                     processManagerTypes = new List<Type>();
                     eventTypeToProcessManagerTypes.Add(startEventType.GetTypeInfo().GenericTypeArguments[0], processManagerTypes);
@@ -117,7 +116,7 @@ namespace SimpleEventSourcing.Messaging
 
         protected IEnumerable<Type> GetRegisteredProcessManagerTypesForEventType(Type eventType)
         {
-            if (!eventTypeToProcessManagerTypes.TryGetValue(eventType, out List<Type> processManagerTypes))
+            if (!eventTypeToProcessManagerTypes.TryGetValue(eventType, out var processManagerTypes))
             {
                 processManagerTypes = new List<Type>();
             }

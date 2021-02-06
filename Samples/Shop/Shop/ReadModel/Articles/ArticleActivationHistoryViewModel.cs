@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Shop.ReadModel.Shared;
 using SQLite;
-using Shop.ReadModel.Shared;
+using System;
 
 namespace Shop.ReadModel.Articles
 {

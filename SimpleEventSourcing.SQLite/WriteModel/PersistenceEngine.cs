@@ -87,7 +87,9 @@ streamRevision >= @minRevision and streamRevision <= @maxRevision ");
                             commandText.Append(
                                 $@"payloadType = '{Serializer.Binder.BindToName(payloadTypes[i])}' ");
                             if (i < payloadTypes.Length - 1)
+                            {
                                 commandText.Append(" or ");
+                            }
                         }
                         commandText.Append(") ");
                     }
@@ -297,7 +299,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
         {
             var retryCount = 10;
 
-            T ret = default(T);
+            var ret = default(T);
             do
             {
                 try
@@ -309,7 +311,9 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
                 {
                     retryCount--;
                     if (retryCount == 0)
+                    {
                         throw;
+                    }
 
                     await Task.Delay(100).ConfigureAwait(false);
                 }
@@ -317,7 +321,9 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
                 {
                     retryCount--;
                     if (retryCount == 0)
+                    {
                         throw;
+                    }
 
                     await Task.Delay(100).ConfigureAwait(false);
                 }
@@ -337,7 +343,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
                     return -1;
                 }
 
-                return (int)res;
+                return res;
             }
             catch
             {

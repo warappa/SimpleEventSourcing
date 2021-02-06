@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
-using System;
-using FakeItEasy;
+﻿using FakeItEasy;
+using FluentAssertions;
+using NUnit.Framework;
 using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
-using SimpleEventSourcing.WriteModel;
-using FluentAssertions;
 using SimpleEventSourcing.State;
+using SimpleEventSourcing.WriteModel;
+using System;
 
 namespace SimpleEventSourcing.Tests.Messaging
 {

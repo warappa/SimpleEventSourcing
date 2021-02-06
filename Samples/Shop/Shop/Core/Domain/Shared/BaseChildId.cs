@@ -76,11 +76,15 @@ namespace Shop.Core.Domain.Shared
         protected static T ConvertToId(string value)
         {
             if (string.IsNullOrEmpty(value))
+            {
                 return Empty;
+            }
 
             var strs = value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
             if (strs.Length != 2)
+            {
                 return Empty;
+            }
 
             return (T)Activator.CreateInstance(typeof(T), strs[1], CreateAggregateRootId(strs[0]));
         }

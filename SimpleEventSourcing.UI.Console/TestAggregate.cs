@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SimpleEventSourcing.UI.ConsoleUI
 {
-	[Versioned("TestAggregate", 0)]
+    [Versioned("TestAggregate", 0)]
 	public class TestAggregate : AggregateRoot<TestState, string>
 	{
 		public TestAggregate() : base(Enumerable.Empty<IEvent>()) { }
@@ -18,17 +18,17 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
 		public void DoSomething(string bla)
 		{
-			RaiseEvent(new SomethingDone(this.stateModel.StreamName, bla));
+			RaiseEvent(new SomethingDone(stateModel.StreamName, bla));
 		}
 
 		public void DoSomethingSpecial(string bla)
 		{
-			RaiseEvent(new SomethingSpecialDone(this.stateModel.StreamName, bla));
+			RaiseEvent(new SomethingSpecialDone(stateModel.StreamName, bla));
 		}
 
 		internal void Rename(string name)
 		{
-			RaiseEvent(new Renamed(this.stateModel.StreamName, name));
+			RaiseEvent(new Renamed(stateModel.StreamName, name));
 		}
 	}
 }

@@ -1,5 +1,4 @@
 ﻿using NHibernate;
-using NHibernate.Context;
 using NUnit.Framework;
 using SimpleEventSourcing.NHibernate.Tests;
 using SimpleEventSourcing.ReadModel.Tests;

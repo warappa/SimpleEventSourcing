@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using SimpleEventSourcing.EntityFrameworkCore.ReadModel;
 using SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests;
 using SimpleEventSourcing.ReadModel.Tests;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 {

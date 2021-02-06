@@ -19,11 +19,11 @@ namespace SimpleEventSourcing.NHibernate.Tests
 
             hierarchy = (Hierarchy)LogManager.GetRepository();
 
-            PatternLayout patternLayout = new PatternLayout();
+            var patternLayout = new PatternLayout();
             patternLayout.ConversionPattern = "%date [%thread] %-5level %logger - %message%newline";
             patternLayout.ActivateOptions();
 
-            RollingFileAppender roller = new RollingFileAppender();
+            var roller = new RollingFileAppender();
             roller.LockingModel = new FileAppender.MinimalLock();
             roller.AppendToFile = false;
             roller.File = @"C:\temp\EventLog.txt";
@@ -35,7 +35,7 @@ namespace SimpleEventSourcing.NHibernate.Tests
             roller.ActivateOptions();
             hierarchy.Root.AddAppender(roller);
 
-            MemoryAppender memory = new MemoryAppender();
+            var memory = new MemoryAppender();
             memory.ActivateOptions();
             hierarchy.Root.AddAppender(memory);
 

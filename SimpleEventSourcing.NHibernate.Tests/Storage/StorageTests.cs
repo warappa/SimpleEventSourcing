@@ -1,8 +1,7 @@
-﻿using NUnit.Framework;
+﻿using NHibernate;
+using NUnit.Framework;
 using SimpleEventSourcing.NHibernate.Tests;
 using SimpleEventSourcing.Tests.Storage;
-using NHibernate.Context;
-using NHibernate;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.WriteModel.Tests

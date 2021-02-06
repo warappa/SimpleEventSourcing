@@ -1,7 +1,6 @@
 ﻿using SimpleEventSourcing.Messaging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace SimpleEventSourcing.WriteModel
@@ -38,9 +37,9 @@ namespace SimpleEventSourcing.WriteModel
                             body,
                             headers,
                             headers?.ContainsKey(MessageConstants.CorrelationIdKey) == true ?
-                                            (string)headers[MessageConstants.CorrelationIdKey] : null,
+                                            headers[MessageConstants.CorrelationIdKey] : null,
                             headers?.ContainsKey(MessageConstants.CausationIdKey) == true ?
-                                            (string)headers[MessageConstants.CausationIdKey] : null,
+                                            headers[MessageConstants.CausationIdKey] : null,
                             DateTime.UtcNow,
                             rawStreamEntry.CheckpointNumber);
         }

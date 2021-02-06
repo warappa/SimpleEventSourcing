@@ -1,7 +1,7 @@
 ﻿using EntityFramework.DbContextScope.Interfaces;
 using SimpleEventSourcing.EntityFramework.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.EntityFramework.WriteModel.Tests;
+using SimpleEventSourcing.ReadModel.Tests;
 using System.Data.Entity;
 using System.Diagnostics;
 
@@ -14,7 +14,7 @@ namespace SimpleEventSourcing.EntityFramework.Tests
         {
             Database.SetInitializer<ReadModelTestDbContext>(null);
 
-            this.Database.Log = msg => Debug.WriteLine(msg);
+            Database.Log = msg => Debug.WriteLine(msg);
         }
 
         protected override void Dispose(bool disposing)

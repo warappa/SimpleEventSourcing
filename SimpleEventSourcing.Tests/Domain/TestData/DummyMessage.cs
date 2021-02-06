@@ -1,10 +1,10 @@
-﻿using System;
+﻿using SimpleEventSourcing.Messaging;
+using System;
 using System.Collections.Generic;
-using SimpleEventSourcing.Messaging;
 
 namespace SimpleEventSourcing.Tests
 {
-	public class DummyMessage<T> : TypedMessage<T>
+    public class DummyMessage<T> : TypedMessage<T>
 		where T : class
 	{
 		public DummyMessage(string correlationId, T body)

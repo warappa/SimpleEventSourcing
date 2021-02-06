@@ -1,6 +1,5 @@
 ﻿using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
-using System.Collections.Generic;
 
 namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
 {

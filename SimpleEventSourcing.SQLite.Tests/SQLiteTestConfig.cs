@@ -1,15 +1,14 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.SQLite.ReadModel;
 using SimpleEventSourcing.ReadModel.Tests;
-using SimpleEventSourcing.SQLite.Tests;
-using SimpleEventSourcing.Storage;
+using SimpleEventSourcing.SQLite.ReadModel;
 using SimpleEventSourcing.SQLite.Storage;
+using SimpleEventSourcing.Storage;
 using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.WriteModel;
+using SQLite;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using SimpleEventSourcing.WriteModel;
-using SQLite;
 
 namespace SimpleEventSourcing.SQLite.WriteModel.Tests
 {

@@ -82,7 +82,7 @@ namespace SimpleEventSourcing.State
         {
             IChildEventSourcedState childState = null;
 
-            if (ChildStateCreationMap.TryGetValue(@event.GetType(), out Func<object, IChildEventSourcedState> creator))
+            if (ChildStateCreationMap.TryGetValue(@event.GetType(), out var creator))
             {
                 childState = creator(@event).ExtractState<IChildEventSourcedState>();
                 childStates.Add(childState);

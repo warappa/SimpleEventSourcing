@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SimpleEventSourcing.State
+﻿namespace SimpleEventSourcing.State
 {
     public interface IAggregateRootState<TKey> : IAggregateRootState
     {

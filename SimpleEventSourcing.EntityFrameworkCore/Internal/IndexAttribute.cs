@@ -46,8 +46,8 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Internal
         /// <param name="order">A number which will be used to determine column ordering for multi-column indexes.</param>
         public IndexAttribute(string name, int order)
         {
-            this.Name = name;
-            this.Order = order;
+            Name = name;
+            Order = order;
         }
     }
 }

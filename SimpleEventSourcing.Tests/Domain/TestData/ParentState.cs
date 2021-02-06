@@ -1,5 +1,5 @@
-﻿using System;
-using SimpleEventSourcing.State;
+﻿using SimpleEventSourcing.State;
+using System;
 
 namespace SimpleEventSourcing.Tests
 {
@@ -15,8 +15,8 @@ namespace SimpleEventSourcing.Tests
 
         public ParentState Apply(ParentCreated @event)
         {
-            this.StreamName = @event.Id;
-            this.Name = @event.Name;
+            StreamName = @event.Id;
+            Name = @event.Name;
 
             return this;
         }

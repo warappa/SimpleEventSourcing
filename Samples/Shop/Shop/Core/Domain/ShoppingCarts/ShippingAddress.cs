@@ -11,11 +11,19 @@ namespace Shop.Core.Domain.ShoppingCarts
         public ShippingAddress(string street, string housenumber, string city)
         {
             if (string.IsNullOrWhiteSpace(street))
+            {
                 throw new ArgumentNullException(nameof(street));
+            }
+
             if (string.IsNullOrWhiteSpace(housenumber))
+            {
                 throw new ArgumentNullException(nameof(housenumber));
+            }
+
             if (string.IsNullOrWhiteSpace(city))
+            {
                 throw new ArgumentNullException(nameof(city));
+            }
 
             Street = street;
             Housenumber = housenumber;

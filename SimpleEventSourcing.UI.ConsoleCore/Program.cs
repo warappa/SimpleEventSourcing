@@ -88,9 +88,9 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         }
     }
 
-    class Program
+    internal class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             Console.WriteLine("Program started...");
 

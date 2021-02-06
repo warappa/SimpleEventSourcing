@@ -1,10 +1,10 @@
-﻿using System;
-using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.Storage;
+﻿using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.ReadModel.InMemory;
-using SimpleEventSourcing.ReadModel.Tests;
-using SimpleEventSourcing.Tests;
 using SimpleEventSourcing.ReadModel.InMemory.Tests;
+using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Storage;
+using SimpleEventSourcing.Tests;
+using System;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel.InMemory.Tests

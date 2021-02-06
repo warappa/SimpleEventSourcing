@@ -5,7 +5,7 @@ namespace SimpleEventSourcing.NHibernate.Context
 {
     public static class CallContext
     {
-        static ConcurrentDictionary<string, AsyncLocal<object>> state = new ConcurrentDictionary<string, AsyncLocal<object>>();
+        private static ConcurrentDictionary<string, AsyncLocal<object>> state = new ConcurrentDictionary<string, AsyncLocal<object>>();
 
         /// <summary>
         /// Stores a given object and associates it with the specified name.
@@ -21,6 +21,6 @@ namespace SimpleEventSourcing.NHibernate.Context
         /// <param name="name">The name of the item in the call context.</param>
         /// <returns>The object in the call context associated with the specified name, or <see langword="null"/> if not found.</returns>
         public static object GetData(string name) =>
-            state.TryGetValue(name, out AsyncLocal<object> data) ? data.Value : null;
+            state.TryGetValue(name, out var data) ? data.Value : null;
     }
 }

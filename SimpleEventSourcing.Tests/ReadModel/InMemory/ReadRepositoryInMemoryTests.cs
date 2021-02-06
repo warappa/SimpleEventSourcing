@@ -1,10 +1,9 @@
-﻿using System;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.WriteModel.InMemory.Tests;
-using System.Threading.Tasks;
-using FluentAssertions;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel.InMemory.Tests
 {

@@ -3,7 +3,6 @@ using SimpleEventSourcing.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 
 namespace SimpleEventSourcing.State
@@ -96,7 +95,7 @@ namespace SimpleEventSourcing.State
 
             if (eventOrMessage is IMessage message)
             {
-                if (methodForMessageType.TryGetValue(message.Body.GetType(), out MethodInfo mi))
+                if (methodForMessageType.TryGetValue(message.Body.GetType(), out var mi))
                 {
                     if (mi.ReturnType != typeof(void))
                     {
@@ -124,7 +123,7 @@ namespace SimpleEventSourcing.State
             {
                 var @event = eventOrMessage;
 
-                if (methodForEventType.TryGetValue(@event.GetType(), out MethodInfo mi))
+                if (methodForEventType.TryGetValue(@event.GetType(), out var mi))
                 {
                     if (mi.ReturnType != typeof(void))
                     {
@@ -148,7 +147,7 @@ namespace SimpleEventSourcing.State
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
-                state = ((IStateInternal<TState>)state).Apply(eventOrMessage).ExtractState<TState>() ?? state;
+                state = state.Apply(eventOrMessage).ExtractState<TState>() ?? state;
             }
 
             return state;
@@ -162,7 +161,7 @@ namespace SimpleEventSourcing.State
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
-                state = ((IStateInternal<TState>)state).Apply(eventOrMessage).ExtractState<TState>() ?? state;
+                state = state.Apply(eventOrMessage).ExtractState<TState>() ?? state;
             }
 
             return state;

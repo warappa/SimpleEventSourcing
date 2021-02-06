@@ -1,18 +1,17 @@
 ﻿using NHibernate;
 using NHibernate.Cfg;
-using SimpleEventSourcing.Storage;
 using NHibernate.Tool.hbm2ddl;
-using System.Data.Common;
+using SimpleEventSourcing.NHibernate.Context;
+using SimpleEventSourcing.NHibernate.ReadModel;
+using SimpleEventSourcing.NHibernate.Storage;
+using SimpleEventSourcing.NHibernate.WriteModel;
+using SimpleEventSourcing.NHibernate.WriteModel.Tests;
 using SimpleEventSourcing.ReadModel;
-using System;
 using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Storage;
 using SimpleEventSourcing.Tests;
 using SimpleEventSourcing.WriteModel;
-using SimpleEventSourcing.NHibernate.ReadModel;
-using SimpleEventSourcing.NHibernate.WriteModel;
-using SimpleEventSourcing.NHibernate.Storage;
-using SimpleEventSourcing.NHibernate.WriteModel.Tests;
-using SimpleEventSourcing.NHibernate.Context;
+using System;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.Tests
@@ -52,7 +51,7 @@ namespace SimpleEventSourcing.NHibernate.Tests
 
             public Configuration GetDbCreationConfiguration()
             {
-                Configuration cfg = new Configuration()
+                var cfg = new Configuration()
                     .DataBaseIntegration(db =>
                     {
                         //db.LogFormattedSql = true;
@@ -70,7 +69,7 @@ namespace SimpleEventSourcing.NHibernate.Tests
 
             public override async Task EnsureWriteDatabaseAsync()
             {
-                Configuration cfg = GetDbCreationConfiguration();
+                var cfg = GetDbCreationConfiguration();
 
                 using (var sessionFactory = GetSessionFactory(cfg))
                 using (var session = sessionFactory.OpenSession())
@@ -107,7 +106,7 @@ insert into hibernate_unique_key values ( 1 );";
 
             public Configuration GetBaseConfiguration()
             {
-                Configuration cfg = new Configuration()
+                var cfg = new Configuration()
                     .DataBaseIntegration(db =>
                     {
                         db.LogFormattedSql = true;
@@ -189,7 +188,7 @@ insert into hibernate_unique_key values ( 1 );";
 
                 using (var session = GetSessionFactory().OpenSession())
                 {
-                    var meta = new DatabaseMetadata((DbConnection)session.Connection, new global::NHibernate.Dialect.MsSql2012Dialect());
+                    var meta = new DatabaseMetadata(session.Connection, new global::NHibernate.Dialect.MsSql2012Dialect());
 
                     return meta.IsTable(name);
                 }
@@ -232,7 +231,7 @@ insert into hibernate_unique_key values ( 1 );";
 
             public Configuration GetBaseConfiguration()
             {
-                Configuration cfg = new Configuration()
+                var cfg = new Configuration()
                     .DataBaseIntegration(db =>
                     {
                         db.LogFormattedSql = true;
@@ -268,7 +267,7 @@ insert into hibernate_unique_key values ( 1 );";
 
             public override async Task EnsureReadDatabaseAsync()
             {
-                Configuration cfg = new Configuration()
+                var cfg = new Configuration()
                     .DataBaseIntegration(db =>
                     {
                         db.LogFormattedSql = true;
@@ -351,7 +350,7 @@ insert into hibernate_unique_key values ( 1 );";
 
                 using (var session = GetSessionFactory().OpenSession())
                 {
-                    var meta = new DatabaseMetadata((DbConnection)session.Connection, new global::NHibernate.Dialect.MsSql2012Dialect());
+                    var meta = new DatabaseMetadata(session.Connection, new global::NHibernate.Dialect.MsSql2012Dialect());
                     //TABLE_NAME e.g. "hibernate_unique_key"
                     return meta.IsTable(name);
                 }

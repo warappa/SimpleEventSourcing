@@ -1,7 +1,7 @@
-﻿using System;
-using Shop.Core.Domain.Shared;
+﻿using Shop.Core.Domain.Shared;
 using SimpleEventSourcing.State;
 using SimpleEventSourcing.WriteModel;
+using System;
 
 namespace Shop.Core.Domain.Articles
 {

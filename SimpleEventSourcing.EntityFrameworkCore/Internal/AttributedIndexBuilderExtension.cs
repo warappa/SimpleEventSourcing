@@ -18,9 +18,9 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Internal
 
             public IndexParam(IndexAttribute indexAttr, params PropertyInfo[] properties)
             {
-                this.IndexName = indexAttr.Name;
-                this.IsUnique = indexAttr.IsUnique;
-                this.PropertyNames = properties.Select(prop => prop.Name).ToArray();
+                IndexName = indexAttr.Name;
+                IsUnique = indexAttr.IsUnique;
+                PropertyNames = properties.Select(prop => prop.Name).ToArray();
             }
         }
 

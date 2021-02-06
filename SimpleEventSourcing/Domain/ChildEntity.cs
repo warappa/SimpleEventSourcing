@@ -1,6 +1,5 @@
 ﻿using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.State;
-using SimpleEventSourcing.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,7 +97,7 @@ namespace SimpleEventSourcing.Domain
             }
 
             this.aggregateRoot = aggregateRoot;
-            this.Id = (TChildKey)id;
+            Id = (TChildKey)id;
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using NHibernate;
-using System;
-using System.Threading.Tasks;
 using NHibernate.Context;
 using SimpleEventSourcing.ReadModel;
+using System;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.ReadModel
 {

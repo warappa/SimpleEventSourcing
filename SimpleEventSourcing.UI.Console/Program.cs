@@ -1,26 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Diagnostics;
-using SimpleEventSourcing.WriteModel;
+﻿using SimpleEventSourcing.Bus;
+using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.SQLite.ReadModel;
-using SimpleEventSourcing.Bus;
-using SimpleEventSourcing.SQLite.WriteModel;
-using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.SQLite.Storage;
-using System.Threading.Tasks;
+using SimpleEventSourcing.SQLite.WriteModel;
+using SimpleEventSourcing.WriteModel;
 using SQLite;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.UI.ConsoleUI
 {
-    class Program
+    internal class Program
     {
         private static SQLiteConnectionWithLock writeConn;
         private static SQLiteConnectionWithLock readConn;
-        static async Task Main(string[] args)
+
+        private static async Task Main(string[] args)
         {
             var disposables = new List<IDisposable>();
 

@@ -121,7 +121,7 @@ namespace SimpleEventSourcing.Utils
 
             var props = type.GetTypeInfo().DeclaredProperties;
 
-            int hash = 0;
+            var hash = 0;
 
             foreach (var prop in props)
             {

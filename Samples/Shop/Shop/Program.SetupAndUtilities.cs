@@ -17,7 +17,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-using static SQLite.SQLite3;
 
 namespace Shop
 {
@@ -52,7 +51,9 @@ namespace Shop
             path = Path.GetDirectoryName(path);
 
             if (path.EndsWith("bin", StringComparison.Ordinal))
+            {
                 path = path.Substring(0, path.Length - 4);
+            }
 
             return path;
         }

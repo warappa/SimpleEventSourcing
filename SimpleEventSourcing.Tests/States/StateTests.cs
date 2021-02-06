@@ -3,7 +3,6 @@ using NUnit.Framework;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.State;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SimpleEventSourcing.Tests.States
 {

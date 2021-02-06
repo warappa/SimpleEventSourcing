@@ -3,14 +3,14 @@ using NHibernate.Cfg;
 using NHibernate.Context;
 using NHibernate.Linq;
 using NHibernate.Tool.hbm2ddl;
-using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.NHibernate.ReadModel;
+using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using SimpleEventSourcing.WriteModel;
 
 namespace SimpleEventSourcing.NHibernate.WriteModel
 {
@@ -321,7 +321,9 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                 {
                     retryCount--;
                     if (retryCount == 0)
+                    {
                         throw;
+                    }
 
                     await Task.Delay(100).ConfigureAwait(false);
                 }
@@ -329,7 +331,9 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                 {
                     retryCount--;
                     if (retryCount == 0)
+                    {
                         throw;
+                    }
 
                     await Task.Delay(100).ConfigureAwait(false);
                 }
@@ -356,7 +360,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
         public async Task<int> GetCurrentEventStoreCheckpointNumberAsync()
         {
-            int result = -1;
+            var result = -1;
 
             using (var statelessSession = sessionFactory.OpenStatelessSession())
             using (var transaction = statelessSession.BeginTransaction())

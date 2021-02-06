@@ -11,16 +11,16 @@ namespace SimpleEventSourcing.Tests
 
 		public ChildState Apply(ChildCreated @event)
 		{
-			this.AggregateRootId = @event.AggregateRootId;
-			this.Id = @event.Id;
-			this.Name = @event.Name;
+			AggregateRootId = @event.AggregateRootId;
+			Id = @event.Id;
+			Name = @event.Name;
 
 			return new ChildState { AggregateRootId = AggregateRootId, Id = Id, Name = Name };
 		}
 
 		public ChildState Apply(ChildRenamed @event)
 		{
-			this.Name = @event.Name;
+			Name = @event.Name;
 
 			return new ChildState { AggregateRootId = AggregateRootId, Id = Id, Name = Name };
 		}

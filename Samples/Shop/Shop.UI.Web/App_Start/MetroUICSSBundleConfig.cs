@@ -4,7 +4,7 @@ using System.Web.Optimization;
 
 namespace Shop.UI.Web.App_Start
 {
-	public class MetroUICSSBundleConfig
+    public class MetroUICSSBundleConfig
 	{
 		public static void RegisterBundles()
 		{

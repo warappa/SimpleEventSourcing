@@ -20,7 +20,7 @@ namespace Shop.Core.Specifications
 
         protected override Expression VisitParameter(ParameterExpression node)
         {
-            if (map.TryGetValue(node, out ParameterExpression replacement))
+            if (map.TryGetValue(node, out var replacement))
             {
                 node = replacement;
             }

@@ -4,12 +4,10 @@ using SimpleEventSourcing.State;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.Tests
 {
-	public static class EventSourcedEntityExtensions
+    public static class EventSourcedEntityExtensions
 	{
 		public static IAggregateRoot AsIAggregateRoot(this IAggregateRoot entity)
 		{

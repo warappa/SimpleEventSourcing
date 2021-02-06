@@ -1,7 +1,4 @@
-﻿using System;
-using NUnit.Framework;
-using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.SQLite.Tests;
+﻿using NUnit.Framework;
 using SimpleEventSourcing.Tests.Storage;
 
 namespace SimpleEventSourcing.SQLite.WriteModel.Tests

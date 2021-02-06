@@ -1,8 +1,8 @@
 ﻿using NHibernate;
-using NHibernate.Context;
 using NUnit.Framework;
 using SimpleEventSourcing.NHibernate.Tests;
 using SimpleEventSourcing.WriteModel.Tests;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
 {
@@ -21,17 +21,17 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
         }
 
         [Test]
-        public void Can_initialize()
+        public async Task Can_initializeAsync()
         {
-            Initialize();
+            await InitializeAsync();
         }
 
         [Test]
-        public void Can_save_streamEntries()
+        public async Task Can_save_streamEntriesAsync()
         {
-            Initialize();
-            
-            SaveStreamEntryAsync();
+            await InitializeAsync();
+
+            await SaveStreamEntryAsync();
         }
 
 

@@ -1,7 +1,7 @@
-﻿using System;
-using NHibernate.Tool.hbm2ddl;
-using System.IO;
+﻿using NHibernate.Tool.hbm2ddl;
 using SimpleEventSourcing.Storage;
+using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.Storage

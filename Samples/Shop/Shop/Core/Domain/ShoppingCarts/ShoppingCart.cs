@@ -1,6 +1,5 @@
 ﻿using Shop.Core.Domain.Articles;
 using Shop.Core.Domain.Customers;
-using Shop.Core.Domain.Shared;
 using Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles;
 using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;

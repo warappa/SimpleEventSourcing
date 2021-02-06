@@ -9,7 +9,7 @@ namespace SimpleEventSourcing.Domain
         where TState : class, IStreamState<TState>, IEventSourcedState<TState>, new()
     {
         public TKey Id => (TKey)StateModel.ConvertFromStreamName(typeof(TKey), stateModel.StreamName);
-        public TState StateModel => EventSourcedState<TState>.LoadState(this.stateModel);
+        public TState StateModel => EventSourcedState<TState>.LoadState(stateModel);
 
         protected int committedVersion;
         protected int version;

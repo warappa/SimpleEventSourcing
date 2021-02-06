@@ -2,12 +2,12 @@
 
 namespace SimpleEventSourcing.Tests.Domain.TestData
 {
-	public class TestCommandsOne : ICommand
+    public class TestCommandsOne : ICommand
 	{
 		public TestCommandsOne(string id, string name)
 		{
-			this.Id = id;
-			this.Name = name;
+			Id = id;
+			Name = name;
 		}
 
 		public string Id { get; set; }

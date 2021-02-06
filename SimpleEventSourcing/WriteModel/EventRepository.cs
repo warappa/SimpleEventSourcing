@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Subjects;
-using System.Reactive.Linq;
-using System.Reflection;
-using SimpleEventSourcing.Domain;
+﻿using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel
@@ -137,14 +137,14 @@ namespace SimpleEventSourcing.WriteModel
         public virtual IObservable<T> SubscribeTo<T>()
             where T : class, IMessage
         {
-            return this
-                .committedMessagesSubject
+            return 
+                committedMessagesSubject
                 .Where(m =>
                     (
                         m is T || m.Body is T
                     ))
                     .Select(m =>
-                        typeof(IMessage).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()) ? (T)m : (T)(m as IMessage).Body
+                        typeof(IMessage).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()) ? (T)m : (T)m.Body
                         );
         }
 

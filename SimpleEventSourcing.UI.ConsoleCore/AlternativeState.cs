@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace SimpleEventSourcing.UI.ConsoleCore
 {
-	public class AlternativeState : EventSourcedState<AlternativeState>
+    public class AlternativeState : EventSourcedState<AlternativeState>
 	{
 		public int ChangeCount { get; protected set; }
 
@@ -12,7 +12,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 		{
 			Debug.WriteLine("Apply every event");
 
-			this.ChangeCount++;
+			ChangeCount++;
 
 			return this;
 		}

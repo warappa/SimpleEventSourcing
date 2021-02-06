@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -85,7 +84,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
         private Array ConvertToEntityArray<T>(IEnumerable<T> entities) where T : class
         {
             var objectArray = entities.Cast<object>().ToArray();
-            int length = objectArray.Length;
+            var length = objectArray.Length;
             var entitiesArray = Array.CreateInstance(entityType, length);
             for (var i = 0; i < length; i++)
             {

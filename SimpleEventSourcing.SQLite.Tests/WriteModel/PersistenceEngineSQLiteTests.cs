@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.Tests;
 using SimpleEventSourcing.SQLite.WriteModel.Tests;
+using SimpleEventSourcing.Tests;
 
 namespace SimpleEventSourcing.SQLite.Tests
 {

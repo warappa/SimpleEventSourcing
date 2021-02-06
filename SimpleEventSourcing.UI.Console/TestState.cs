@@ -13,8 +13,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
         public TestState(TestState state)
             : base(state)
         {
-            this.Name = state.Name;
-            this.SomethingDone = state.SomethingDone;
+            Name = state.Name;
+            SomethingDone = state.SomethingDone;
         }
 
         public Task<TestState> Apply(TestAggregateCreated @event)
