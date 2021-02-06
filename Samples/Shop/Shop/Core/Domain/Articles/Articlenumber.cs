@@ -2,7 +2,7 @@
 {
     public class Articlenumber
     {
-        public static readonly Articlenumber Empty = new Articlenumber("");
+        public static readonly Articlenumber Empty = new("");
 
         public string Value { get; private set; }
 

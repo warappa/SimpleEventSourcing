@@ -9,7 +9,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 {
     public class PersistenceEngine : IPersistenceEngine
     {
-        private readonly List<RawStreamEntry> streamEntries = new List<RawStreamEntry>();
+        private readonly List<RawStreamEntry> streamEntries = new();
         private readonly int batchSize;
         private int checkpointNumber = 0;
 

@@ -57,8 +57,10 @@ namespace Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles
 
         public ShoppingCartArticleState Apply(ShoppingCartArticleRemoved @event)
         {
-            var s = new ShoppingCartArticleState(this);
-            s.Active = false;
+            var s = new ShoppingCartArticleState(this)
+            {
+                Active = false
+            };
 
             return s;
         }

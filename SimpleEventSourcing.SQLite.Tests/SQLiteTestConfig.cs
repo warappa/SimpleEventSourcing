@@ -130,7 +130,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
                     using (writeConnection.Lock())
                     {
                         writeConnection.CreateCommand(@"PRAGMA synchronous = NORMAL;
-PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
+PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                     }
 
                     return writeConnection;
@@ -211,7 +211,7 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
                     using (readConnection.Lock())
                     {
                         readConnection.CreateCommand(@"PRAGMA synchronous = NORMAL;
-PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
+PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                     }
 
                     return readConnection;

@@ -8,7 +8,7 @@ namespace SimpleEventSourcing.Tests
 		IProcessManagerHandles<TestEventEnd>
 	{
 		public TestProcessManager()
-			: base(new IProcessManagerHandledEvent[0])
+			: base(System.Array.Empty<IProcessManagerHandledEvent>())
 		{
 
 		}

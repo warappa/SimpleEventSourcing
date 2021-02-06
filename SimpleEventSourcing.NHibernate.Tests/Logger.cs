@@ -19,19 +19,23 @@ namespace SimpleEventSourcing.NHibernate.Tests
 
             hierarchy = (Hierarchy)LogManager.GetRepository();
 
-            var patternLayout = new PatternLayout();
-            patternLayout.ConversionPattern = "%date [%thread] %-5level %logger - %message%newline";
+            var patternLayout = new PatternLayout
+            {
+                ConversionPattern = "%date [%thread] %-5level %logger - %message%newline"
+            };
             patternLayout.ActivateOptions();
 
-            var roller = new RollingFileAppender();
-            roller.LockingModel = new FileAppender.MinimalLock();
-            roller.AppendToFile = false;
-            roller.File = @"C:\temp\EventLog.txt";
-            roller.Layout = patternLayout;
-            roller.MaxSizeRollBackups = 5;
-            roller.MaximumFileSize = "1GB";
-            roller.RollingStyle = RollingFileAppender.RollingMode.Size;
-            roller.StaticLogFileName = true;
+            var roller = new RollingFileAppender
+            {
+                LockingModel = new FileAppender.MinimalLock(),
+                AppendToFile = false,
+                File = @"C:\temp\EventLog.txt",
+                Layout = patternLayout,
+                MaxSizeRollBackups = 5,
+                MaximumFileSize = "1GB",
+                RollingStyle = RollingFileAppender.RollingMode.Size,
+                StaticLogFileName = true
+            };
             roller.ActivateOptions();
             hierarchy.Root.AddAppender(roller);
 

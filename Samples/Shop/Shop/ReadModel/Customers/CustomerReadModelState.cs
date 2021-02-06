@@ -18,10 +18,12 @@ namespace Shop.ReadModel.Customers
 
         public Task Apply(CustomerCreated @event)
         {
-            var customer = new CustomerViewModel();
-            customer.CustomerId = @event.Id;
-            customer.Name = @event.Name;
-            customer.Active = true;
+            var customer = new CustomerViewModel
+            {
+                CustomerId = @event.Id,
+                Name = @event.Name,
+                Active = true
+            };
 
             return InsertAsync(customer);
         }

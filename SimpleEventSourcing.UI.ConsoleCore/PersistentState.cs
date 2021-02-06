@@ -19,9 +19,11 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         public async Task Apply(TestAggregateCreated @event)
         {
             Count++;
-            var s = new PersistentEntity();
-            s.Streamname = @event.Id;
-            s.Name = @event.Name;
+            var s = new PersistentEntity
+            {
+                Streamname = @event.Id,
+                Name = @event.Name
+            };
 
             await readRepository.InsertAsync(s).ConfigureAwait(false);
         }

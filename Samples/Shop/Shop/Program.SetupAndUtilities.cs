@@ -29,7 +29,7 @@ namespace Shop
         private static PersistenceEngine engine;
         public static IEventRepository repository;
         public static JsonNetSerializer serializer;
-        private static List<IDisposable> disposeables = new List<IDisposable>();
+        private static List<IDisposable> disposeables = new();
         private static Func<SQLiteConnectionWithLock> connectionFactory;
         private static Func<SQLiteConnectionWithLock> readConnectionFactory;
 
@@ -68,8 +68,10 @@ namespace Shop
 
                     var connectionString = new SQLiteConnectionString(databaseFile, true, null);
 
-                    writeConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.SharedCache);
-                    writeConn.BusyTimeout = TimeSpan.FromSeconds(2);
+                    writeConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.SharedCache)
+                    {
+                        BusyTimeout = TimeSpan.FromSeconds(2)
+                    };
 
                     ConfigureConnection(writeConn);
                 }
@@ -116,8 +118,10 @@ namespace Shop
 
                     var connectionString = new SQLiteConnectionString(databaseFile, true, null);
 
-                    readConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.SharedCache);
-                    readConn.BusyTimeout = TimeSpan.FromSeconds(2);
+                    readConn = new SQLiteConnectionWithLock(connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.SharedCache)
+                    {
+                        BusyTimeout = TimeSpan.FromSeconds(2)
+                    };
 
                     ConfigureConnection(readConn);
                 }

@@ -84,7 +84,7 @@ namespace SimpleEventSourcing.EntityFramework.Storage
             }
         }
 
-        private string GetTablenameForType(DbContext dbContext, Type type)
+        private static string GetTablenameForType(DbContext dbContext, Type type)
         {
             var metadata = ((IObjectContextAdapter)dbContext).ObjectContext.MetadataWorkspace;
 

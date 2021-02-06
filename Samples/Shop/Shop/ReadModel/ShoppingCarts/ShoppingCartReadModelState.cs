@@ -19,13 +19,15 @@ namespace Shop.ReadModel.ShoppingCarts
 
         public Task Apply(ShoppingCartCreated @event)
         {
-            var shoppingCart = new ShoppingCartViewModel();
-            shoppingCart.ShoppingCartId = @event.Id;
-            shoppingCart.CustomersId = @event.CustomerId;
-            shoppingCart.CustomerName = @event.CustomerName;
-            shoppingCart.Status = (int)ShoppingCartStatus.Open;
-            shoppingCart.Active = true;
-            shoppingCart.CreatedAt = @event.DateTime;
+            var shoppingCart = new ShoppingCartViewModel
+            {
+                ShoppingCartId = @event.Id,
+                CustomersId = @event.CustomerId,
+                CustomerName = @event.CustomerName,
+                Status = (int)ShoppingCartStatus.Open,
+                Active = true,
+                CreatedAt = @event.DateTime
+            };
 
             return InsertAsync(shoppingCart);
         }

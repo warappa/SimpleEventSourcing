@@ -20,7 +20,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 {
     public class ReadModelDbContext : DbContext
     {
-        private string connectionName;
+        private readonly string connectionName;
 
         public ReadModelDbContext(string connectionName = null)
             : base()
@@ -46,7 +46,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
     public class WriteModelDbContext : DbContext
     {
-        private string connectionName;
+        private readonly string connectionName;
 
         public WriteModelDbContext(string connectionName = null)
             : base()

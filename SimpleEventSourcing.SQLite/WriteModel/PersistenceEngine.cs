@@ -113,7 +113,7 @@ streamRevision >= @minRevision and streamRevision <= @maxRevision ");
 
                     var nextBatchSize = Math.Min(take - taken, batchSize);
 
-                    commandText.Append($" limit {nextBatchSize.ToString()}");
+                    commandText.Append($" limit {nextBatchSize}");
 
                     cmd.CommandText = commandText.ToString();
 
@@ -224,7 +224,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
 
                     var nextBatchSize = Math.Min(take - taken, batchSize);
 
-                    commandText.Append($" limit {nextBatchSize.ToString()}");
+                    commandText.Append($" limit {nextBatchSize}");
 
                     cmd.Bind("@minCheckpointNumber", minCheckpointNumber);
                     cmd.Bind("@maxCheckpointNumber", maxCheckpointNumber);

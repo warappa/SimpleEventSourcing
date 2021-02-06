@@ -20,15 +20,15 @@ namespace Shop
     {
         private static IObserveRawStreamEntries observer;
 
+        private static async Task Main()
+        {
+            await ExecuteAsync();
+        }
+
         public static async Task InitializeAsync()
         {
             await SetupWriteModelAsync().ConfigureAwait(false);
             SetupReadModel();
-        }
-
-        private static void Main()
-        {
-            ExecuteAsync().Wait();
         }
 
         private static async Task ExecuteAsync()
@@ -113,7 +113,7 @@ namespace Shop
                     {
                         return new
                         {
-                            CustomerName = created.CustomerName,
+                            created.CustomerName,
                             ShoppingCartId = created.Id,
                             ShoppingCartOrdered = orderedAt
                         };
@@ -264,7 +264,7 @@ namespace Shop
             Console.WriteLine("Almost ordered shopping cart articles: ");
             foreach (var entry in state.AlmostOrderedShoppingCartArticles)
             {
-                Console.WriteLine($"{entry.CustomerName}: {string.Join(", ", entry.Articlenumber)} - {entry.Timespan.ToString()} before placing order");
+                Console.WriteLine($"{entry.CustomerName}: {string.Join(", ", entry.Articlenumber)} - {entry.Timespan} before placing order");
             }
             Console.WriteLine();
         }

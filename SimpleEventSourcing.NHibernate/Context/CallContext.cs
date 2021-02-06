@@ -5,7 +5,7 @@ namespace SimpleEventSourcing.NHibernate.Context
 {
     public static class CallContext
     {
-        private static ConcurrentDictionary<string, AsyncLocal<object>> state = new ConcurrentDictionary<string, AsyncLocal<object>>();
+        private static ConcurrentDictionary<string, AsyncLocal<object>> state = new();
 
         /// <summary>
         /// Stores a given object and associates it with the specified name.

@@ -28,15 +28,17 @@ namespace Shop.Web.UI.Controllers
 
             var wkId = wk.ShoppingCartId;
 
-            var wkExt = new ShoppingCartViewModelExt();
-            wkExt.ShoppingCartId = wk.ShoppingCartId;
-            wkExt.Id = wk.Id;
-            wkExt.CustomersId = wk.CustomersId;
-            wkExt.CustomerName = wk.CustomerName;
-            wkExt.Status = wk.Status;
-            wkExt.ShoppingCartArticles = (await Program.readRepository
+            var wkExt = new ShoppingCartViewModelExt
+            {
+                ShoppingCartId = wk.ShoppingCartId,
+                Id = wk.Id,
+                CustomersId = wk.CustomersId,
+                CustomerName = wk.CustomerName,
+                Status = wk.Status,
+                ShoppingCartArticles = (await Program.readRepository
                 .QueryAsync<ShoppingCartArticleViewModel>(x => x.Streamname == wkId))
-                .ToList();
+                .ToList()
+            };
 
             return wkExt;
         }

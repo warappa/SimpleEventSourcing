@@ -9,7 +9,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
     [TestFixture]
     public abstract class PersistenceEngineByStreamNameTestsBase : PersistenceEngineTestsBase
     {
-        public PersistenceEngineByStreamNameTestsBase(TestsBaseConfig config)
+        protected PersistenceEngineByStreamNameTestsBase(TestsBaseConfig config)
             : base(config, true)
         {
 

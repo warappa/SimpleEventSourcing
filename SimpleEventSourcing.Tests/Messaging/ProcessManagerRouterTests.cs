@@ -116,7 +116,7 @@ namespace SimpleEventSourcing.Tests.Messaging
         public class ProcessManagerWithNoStartEvent : ProcessManager<ProcessManagerWithNoStartEventState, string>
         {
             public ProcessManagerWithNoStartEvent()
-                : base(new IProcessManagerHandledEvent[0])
+                : base(Array.Empty<IProcessManagerHandledEvent>())
             {
 
             }

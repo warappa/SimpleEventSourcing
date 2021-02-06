@@ -18,13 +18,15 @@ namespace Shop.ReadModel.Articles
 
         public Task Apply(ArticleCreated @event)
         {
-            var article = new ArticleViewModel();
-            article.ArticleId = @event.Id;
-            article.Articlenumber = @event.Articlenumber;
-            article.Description = @event.Description;
-            article.PriceIsoCode = @event.Price.IsoCode;
-            article.PriceValue = @event.Price.Value;
-            article.Active = true;
+            var article = new ArticleViewModel
+            {
+                ArticleId = @event.Id,
+                Articlenumber = @event.Articlenumber,
+                Description = @event.Description,
+                PriceIsoCode = @event.Price.IsoCode,
+                PriceValue = @event.Price.Value,
+                Active = true
+            };
 
             return InsertAsync(article);
         }

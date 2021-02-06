@@ -7,7 +7,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
     [TestFixture]
     public abstract class PersistenceEngineBasicTestsBase : PersistenceEngineTestsBase
     {
-        public PersistenceEngineBasicTestsBase(TestsBaseConfig config, bool initialize = true)
+        protected PersistenceEngineBasicTestsBase(TestsBaseConfig config, bool initialize = true)
             : base(config, initialize)
         {
 

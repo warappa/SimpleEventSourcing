@@ -8,7 +8,7 @@ namespace Shop.Core.Domain.Shared
         public DateTime DateTime { get; private set; }
         public string Id { get; private set; }
 
-        public BaseEvent(string id, DateTime dateTime)
+        protected BaseEvent(string id, DateTime dateTime)
         {
             Id = id;
             DateTime = dateTime;

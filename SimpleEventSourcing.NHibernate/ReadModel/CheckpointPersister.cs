@@ -51,9 +51,11 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
 
             if (checkpointInfo == null)
             {
-                checkpointInfo = new TCheckpointInfo();
-                checkpointInfo.StateModel = projectorIdentifier;
-                checkpointInfo.CheckpointNumber = checkpoint;
+                checkpointInfo = new TCheckpointInfo
+                {
+                    StateModel = projectorIdentifier,
+                    CheckpointNumber = checkpoint
+                };
 
                 session.Save(checkpointInfo);
             }

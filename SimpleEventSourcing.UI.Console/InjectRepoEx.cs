@@ -15,14 +15,14 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             where TMessage : class, IMessage<IEventSourcedEntityCommand>
             where TEntity : class, IEventSourcedEntity
         {
-            Func<TMessage, Task> a = async obj =>
+            async Task a(TMessage obj)
             {
                 var ent = await repo.GetAsync<TEntity>(obj.Body.Id);
 
                 onNext(ent, obj);
 
                 await repo.SaveAsync(ent);
-            };
+            }
 
             return BusExtensions.SubscribeTo<TMessage>(source)
                 .Select(x => Observable.FromAsync(() => a(x)))
@@ -32,8 +32,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
         
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T, IEventRepository> onNext, IEventRepository repo)
         {
-            Action<T> a = null;
-            a = obj => onNext(obj, repo);
+            void a(T obj) => onNext(obj, repo);
             return source.Subscribe(a);
         }
 

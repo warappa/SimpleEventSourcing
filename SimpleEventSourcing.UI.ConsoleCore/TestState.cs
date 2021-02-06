@@ -23,9 +23,11 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             // Console.Write(Environment.CurrentManagedThreadId);
             // Console.Write("|" + Environment.CurrentManagedThreadId);
 
-            var s = new TestState(this);
-            s.StreamName = @event.Id;
-            s.Name = @event.Name;
+            var s = new TestState(this)
+            {
+                StreamName = @event.Id,
+                Name = @event.Name
+            };
 
             return Task.FromResult(s);
         }
@@ -34,11 +36,13 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         {
             Console.Write("S");
             // Console.Write(Environment.CurrentManagedThreadId);
-            
+
             // Console.Write("|" + Environment.CurrentManagedThreadId);
 
-            var s = new TestState(this);
-            s.SomethingDone = @event.Bla;
+            var s = new TestState(this)
+            {
+                SomethingDone = @event.Bla
+            };
 
             return Task.FromResult(s);
         }
@@ -48,8 +52,10 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             // Console.Write(Environment.CurrentManagedThreadId);
             // Console.Write("|" + Environment.CurrentManagedThreadId);
 
-            var s = new TestState(this);
-            s.Name = @event.Name;
+            var s = new TestState(this)
+            {
+                Name = @event.Name
+            };
 
             return Task.FromResult(s);
         }

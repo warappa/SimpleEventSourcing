@@ -143,7 +143,7 @@ namespace SimpleEventSourcing.Tests
 
             parentState.AsIAggregateRootStateInternal().AddChildState(childState);
 
-            var parent = new ParentEntity(new IEvent[0], parentState);
+            var parent = new ParentEntity(Array.Empty<IEvent>(), parentState);
 
             parent.FixDateTime(dateTime);
 
@@ -170,7 +170,7 @@ namespace SimpleEventSourcing.Tests
             
             parentState.AsIAggregateRootStateInternal().AddChildState(childState);
 
-            var parent = new ParentEntity(new IEvent[0], parentState);
+            var parent = new ParentEntity(Array.Empty<IEvent>(), parentState);
 
             parent.FixDateTime(dateTime);
 
@@ -193,7 +193,7 @@ namespace SimpleEventSourcing.Tests
 
             parentState.AsIAggregateRootStateInternal().AddChildState(childState);
 
-            var parent = new ParentEntity(new IEvent[0], parentState);
+            var parent = new ParentEntity(Array.Empty<IEvent>(), parentState);
 
             parent.FixDateTime(dateTime);
 

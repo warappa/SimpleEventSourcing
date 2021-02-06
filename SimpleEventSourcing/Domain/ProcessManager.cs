@@ -10,7 +10,7 @@ namespace SimpleEventSourcing.Domain
     {
         public bool ProcessEnded => StateModel.ProcessEnded;
 
-        protected List<ICommand> uncommittedCommands = new List<ICommand>();
+        protected List<ICommand> uncommittedCommands = new();
 
 #pragma warning disable S2365 // Properties should not make collection or array copies
         IEnumerable<ICommand> IProcessManager.UncommittedCommands => uncommittedCommands.ToList();

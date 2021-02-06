@@ -18,11 +18,13 @@ namespace Shop.ReadModel.ShoppingCarts
 
         public Task Apply(ShoppingCartCreated @event)
         {
-            var shoppingCart = new ShoppingCartOverviewViewModel();
-            shoppingCart.ShoppingCartId = @event.Id;
-            shoppingCart.CustomerId = @event.CustomerId;
-            shoppingCart.CustomerName = @event.CustomerName;
-            shoppingCart.Status = (int)ShoppingCartStatus.Open;
+            var shoppingCart = new ShoppingCartOverviewViewModel
+            {
+                ShoppingCartId = @event.Id,
+                CustomerId = @event.CustomerId,
+                CustomerName = @event.CustomerName,
+                Status = (int)ShoppingCartStatus.Open
+            };
 
             return InsertAsync(shoppingCart);
         }

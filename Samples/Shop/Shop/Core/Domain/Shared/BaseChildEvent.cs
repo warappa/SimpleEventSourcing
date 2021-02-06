@@ -9,7 +9,7 @@ namespace Shop.Core.Domain.Shared
         public DateTime DateTime { get; private set; }
         public object Id { get; private set; }
 
-        public BaseChildEvent(string aggregateRootId, string id, DateTime dateTime)
+        protected BaseChildEvent(string aggregateRootId, string id, DateTime dateTime)
         {
             AggregateRootId = aggregateRootId;
             Id = id;

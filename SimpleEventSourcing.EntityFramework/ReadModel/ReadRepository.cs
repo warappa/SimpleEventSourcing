@@ -215,11 +215,11 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
 
             var dbContextType = dbContext.GetType();
 
-            var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), new Type[0]);
+            var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), Array.Empty<Type>());
 
             var setMethod = setMethodGeneric.MakeGenericMethod(type);
 
-            var set = (IQueryable)setMethod.Invoke(dbContext, new object[0]);
+            var set = (IQueryable)setMethod.Invoke(dbContext, Array.Empty<object>());
 
             var whereMethod = typeof(Queryable).GetRuntimeMethods()
                 .Where(x =>

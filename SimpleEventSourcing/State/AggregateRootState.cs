@@ -40,7 +40,7 @@ namespace SimpleEventSourcing.State
         }
 
         private TKey id;
-        private List<IChildEventSourcedState> childStates = new List<IChildEventSourcedState>();
+        private List<IChildEventSourcedState> childStates = new();
 
         object IAggregateRootState.Id => Id;
 

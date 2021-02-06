@@ -172,9 +172,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                     .AsQueryable()
                     .Where(x =>
                         x.Streamname != null &&
-#pragma warning disable CS0253 // Möglicher unbeabsichtigter Referenzvergleich; rechte Seite muss umgewandelt werden
                         x.Streamname == (string)streamname)
-#pragma warning restore CS0253 // Möglicher unbeabsichtigter Referenzvergleich; rechte Seite muss umgewandelt werden
                     .FirstOrDefault();
                 }
 
@@ -221,11 +219,11 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
             var dbContextType = dbContext.GetType();
 
-            var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), new Type[0]);
+            var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), Array.Empty<Type>());
 
             var setMethod = setMethodGeneric.MakeGenericMethod(type);
 
-            var set = (IQueryable)setMethod.Invoke(dbContext, new object[0]);
+            var set = (IQueryable)setMethod.Invoke(dbContext, Array.Empty<object>());
 
             var whereMethod = typeof(Queryable).GetRuntimeMethods()
                 .Where(x =>

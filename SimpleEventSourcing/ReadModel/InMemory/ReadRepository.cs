@@ -10,8 +10,8 @@ namespace SimpleEventSourcing.ReadModel.InMemory
 {
     public class ReadRepository : IReadRepository, IStorageResetter, IDbScopeAware
     {
-        private List<string> existingTables = new List<string>();
-        private readonly List<IReadModelBase> savedEntities = new List<IReadModelBase>();
+        private List<string> existingTables = new();
+        private readonly List<IReadModelBase> savedEntities = new();
 
         public bool IsTableInDatabase(Type type)
         {

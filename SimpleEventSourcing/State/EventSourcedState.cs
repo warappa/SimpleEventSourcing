@@ -143,7 +143,7 @@ namespace SimpleEventSourcing.State
         {
             state = state ?? new TState();
 
-            eventsOrMessages = eventsOrMessages ?? new object[0];
+            eventsOrMessages = eventsOrMessages ?? Array.Empty<object>();
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
@@ -157,7 +157,7 @@ namespace SimpleEventSourcing.State
         {
             var state = stateFactory.CreateState<TState>();
 
-            eventsOrMessages = eventsOrMessages ?? new object[0];
+            eventsOrMessages = eventsOrMessages ?? Array.Empty<object>();
 
             foreach (var eventOrMessage in eventsOrMessages)
             {

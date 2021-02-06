@@ -18,9 +18,11 @@ namespace Shop.ReadModel.Articles
 
         public Task Apply(ArticleCreated @event)
         {
-            var article = new ArticleActivationHistoryArticleViewModel();
-            article.ArticleId = @event.Id;
-            article.Articlenumber = @event.Articlenumber;
+            var article = new ArticleActivationHistoryArticleViewModel
+            {
+                ArticleId = @event.Id,
+                Articlenumber = @event.Articlenumber
+            };
 
             return InsertAsync(article);
         }
@@ -39,12 +41,14 @@ namespace Shop.ReadModel.Articles
             var article = await readRepository.GetByStreamnameAsync<ArticleActivationHistoryArticleViewModel>(@event.Id)
                 .ConfigureAwait(false);
 
-            var history = new ArticleActivationHistoryViewModel();
-            history.ArticleId = @event.Id;
-            history.Articlenumber = article.Articlenumber;
-            history.Active = false;
-            history.Reason = @event.Reason;
-            history.Date = @event.DateTime;
+            var history = new ArticleActivationHistoryViewModel
+            {
+                ArticleId = @event.Id,
+                Articlenumber = article.Articlenumber,
+                Active = false,
+                Reason = @event.Reason,
+                Date = @event.DateTime
+            };
 
             await InsertAsync(history).ConfigureAwait(false);
         }
@@ -54,12 +58,14 @@ namespace Shop.ReadModel.Articles
             var article = await readRepository.GetByStreamnameAsync<ArticleActivationHistoryArticleViewModel>(@event.Id)
                 .ConfigureAwait(false);
 
-            var history = new ArticleActivationHistoryViewModel();
-            history.ArticleId = @event.Id;
-            history.Articlenumber = article.Articlenumber;
-            history.Active = true;
-            history.Reason = @event.Reason;
-            history.Date = @event.DateTime;
+            var history = new ArticleActivationHistoryViewModel
+            {
+                ArticleId = @event.Id,
+                Articlenumber = article.Articlenumber,
+                Active = true,
+                Reason = @event.Reason,
+                Date = @event.DateTime
+            };
 
             await InsertAsync(history).ConfigureAwait(false);
         }

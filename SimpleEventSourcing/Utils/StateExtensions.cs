@@ -7,7 +7,7 @@ namespace SimpleEventSourcing.Utils
 {
     public static class StateExtensions
     {
-        private static readonly Dictionary<Type, PropertyInfo> cachedResultProperties = new Dictionary<Type, PropertyInfo>();
+        private static readonly Dictionary<Type, PropertyInfo> cachedResultProperties = new();
 
         public static TState ExtractState<TState>(this object result)
             where TState : class

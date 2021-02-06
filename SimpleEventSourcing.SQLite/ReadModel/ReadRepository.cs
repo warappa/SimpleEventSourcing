@@ -23,7 +23,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             var connectionType = typeof(SQLiteConnectionWithLock);
 
             getGenericMethodInfo = typeof(ReadOperations).GetRuntimeMethod(nameof(ReadOperations.GetWithChildren), new[] { typeof(SQLiteConnection), typeof(object), typeof(bool) });
-            tableGenericMethodInfo = connectionType.GetRuntimeMethod(nameof(SQLiteConnectionWithLock.Table), new Type[0]);
+            tableGenericMethodInfo = connectionType.GetRuntimeMethod(nameof(SQLiteConnectionWithLock.Table), Array.Empty<Type>());
             getAllWithChildrenGenericMethodInfo = typeof(ReadOperations).GetRuntimeMethods().Where(x => x.Name == nameof(ReadOperations.GetAllWithChildren)).First();
         }
 

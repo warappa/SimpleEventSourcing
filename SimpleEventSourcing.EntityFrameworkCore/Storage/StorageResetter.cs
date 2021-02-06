@@ -30,7 +30,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 
                 var connection = originalDbContext.Database.GetDbConnection();
                 var dbContext = DynamicDbContext.Create(originalDbContext, options, connection, entityTypes);
-                var emptyDbContext = DynamicDbContext.Create(originalDbContext, options, connection, new Type[0]);
+                var emptyDbContext = DynamicDbContext.Create(originalDbContext, options, connection, Array.Empty<Type>());
 
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
                 {
@@ -55,9 +55,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                             try
                             {
                                 var cmd = $"drop table [{tablename}]";
-#pragma warning disable EF1000 // Possible SQL injection vulnerability.
                                 originalDbContext.Database.ExecuteSqlRaw(cmd);
-#pragma warning restore EF1000 // Possible SQL injection vulnerability.
                             }
                             catch
                             {
@@ -101,7 +99,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
             }
         }
 
-        private string GetTablenameForType(DbContext dbContext, Type type)
+        private static string GetTablenameForType(DbContext dbContext, Type type)
         {
             var modelNames = dbContext.Model.FindEntityType(type);
             return modelNames.GetTableName();

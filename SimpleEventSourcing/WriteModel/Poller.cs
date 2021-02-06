@@ -36,8 +36,8 @@ namespace SimpleEventSourcing.WriteModel
             private readonly IPersistenceEngine persistenceEngine;
             private readonly Type[] payloadTypes;
             private readonly int interval;
-            private readonly Subject<IRawStreamEntry> subject = new Subject<IRawStreamEntry>();
-            private readonly Random random = new Random();
+            private readonly Subject<IRawStreamEntry> subject = new();
+            private readonly Random random = new();
             private int lastKnownCheckpointNumber;
             private int isPolling;
             private CancellationTokenSource tokenSource;

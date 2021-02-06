@@ -11,7 +11,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         public int OCount { get; set; }
         public int UCount { get; set; }
 
-        private int GetCharCount(char c, string str)
+        private static int GetCharCount(char c, string str)
         {
             var count = 0;
             foreach (var character in str)

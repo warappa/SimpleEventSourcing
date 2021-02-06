@@ -9,8 +9,8 @@ namespace SimpleEventSourcing.WriteModel
     {
         public const char VersionSeparator = '|';
 
-        private static Dictionary<Type, string> bindTypeToNameDict = new Dictionary<Type, string>();
-        private static Dictionary<string, Type> bindNameToTypeDict = new Dictionary<string, Type>();
+        private static Dictionary<Type, string> bindTypeToNameDict = new();
+        private static Dictionary<string, Type> bindNameToTypeDict = new();
 
         private readonly Func<string, Type> bindToTypeFallback;
         private readonly Func<Type, string> bindToNameFallback;

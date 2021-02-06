@@ -10,7 +10,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests
     [TestFixture]
     public abstract class PersistenceEngineCheckpointNumberTestsInMemory : PersistenceEngineTestsBase
     {
-        public PersistenceEngineCheckpointNumberTestsInMemory()
+        protected PersistenceEngineCheckpointNumberTestsInMemory()
             : base(new InMemoryTestConfig())
         {
 

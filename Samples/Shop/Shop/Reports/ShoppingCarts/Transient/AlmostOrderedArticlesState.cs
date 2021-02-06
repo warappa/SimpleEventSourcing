@@ -47,7 +47,7 @@ namespace Shop.Core.Reports.ShoppingCarts.Transient
             var orderedAt = shoppingCartOrdered.DateTime;
             var fiveMinutesUntilPlacingOrder = orderedAt.AddMinutes(-5);
 
-            Predicate<ShoppingCartArticleRemovedInfo> notRelevant = removed =>
+            bool notRelevant(ShoppingCartArticleRemovedInfo removed) =>
                 removed.ShoppingCartId == shoppingCartOrdered.Id &&
                 removed.RemovedAt < fiveMinutesUntilPlacingOrder;
 

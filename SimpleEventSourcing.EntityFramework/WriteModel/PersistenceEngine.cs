@@ -309,7 +309,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
         {
             var retryCount = 10;
 
-            var ret = default(T);
+            T ret;
             do
             {
                 try

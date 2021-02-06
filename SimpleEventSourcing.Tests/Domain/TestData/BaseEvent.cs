@@ -6,7 +6,7 @@ namespace SimpleEventSourcing.Tests
 {
     public abstract class BaseEvent : IBaseEvent, IEventSourcedEntityEvent
     {
-        public BaseEvent(string id, DateTime dateTime)
+        protected BaseEvent(string id, DateTime dateTime)
         {
             Id = id;
             DateTime = dateTime;

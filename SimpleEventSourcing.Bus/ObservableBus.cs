@@ -8,7 +8,7 @@ namespace SimpleEventSourcing.Bus
     {
         public IObservable<IMessage> ObservableSource => messageSubject;
 
-        internal readonly Subject<IMessage> messageSubject = new Subject<IMessage>();
+        internal readonly Subject<IMessage> messageSubject = new();
 
         public void Publish<T>(T message)
             where T : IMessage<IEvent>

@@ -20,18 +20,22 @@ namespace Shop.Core.Domain.Customers
 
         public CustomerState Apply(CustomerCreated @event)
         {
-            var s = new CustomerState(this);
-            s.StreamName = @event.Id;
-            s.Name = @event.Name;
-            s.Active = true;
+            var s = new CustomerState(this)
+            {
+                StreamName = @event.Id,
+                Name = @event.Name,
+                Active = true
+            };
 
             return s;
         }
 
         public CustomerState Apply(CustomerRenamed @event)
         {
-            var s = new CustomerState(this);
-            s.Name = @event.NewName;
+            var s = new CustomerState(this)
+            {
+                Name = @event.NewName
+            };
 
             return s;
         }

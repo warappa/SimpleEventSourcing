@@ -138,7 +138,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             Console.WriteLine("Database Persistence");
             Console.WriteLine("-------");
 
-            Func<SQLiteConnectionWithLock> connectionFactory = () =>
+            SQLiteConnectionWithLock connectionFactory()
             {
                 if (writeConn != null)
                 {
@@ -156,13 +156,13 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 using (writeConn.Lock())
                 {
                     writeConn.CreateCommand(@"PRAGMA synchronous = NORMAL;
-PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
+PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                 }
 
                 return writeConn;
-            };
+            }
 
-            Func<SQLiteConnectionWithLock> readConnectionFactory = () =>
+            SQLiteConnectionWithLock readConnectionFactory()
             {
                 if (readConn != null)
                 {
@@ -182,11 +182,11 @@ PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
 PRAGMA temp_store = MEMORY;
 PRAGMA page_size = 4096;
 PRAGMA cache_size = 10000;
-PRAGMA journal_mode = WAL;", new object[0]).ExecuteScalar<int>();
+PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                 }
 
                 return readConn;
-            };
+            }
 
             var engine = new PersistenceEngine(connectionFactory, serializer);
 

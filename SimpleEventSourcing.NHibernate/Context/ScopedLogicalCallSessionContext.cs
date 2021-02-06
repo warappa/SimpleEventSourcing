@@ -14,7 +14,7 @@ namespace SimpleEventSourcing.NHibernate.Context
     {
         private const string SessionFactoryMapKey = "75921a87-ef0c-43c7-9b41-c5687df9a0be";
 
-        private static readonly ConcurrentDictionary<string, IDictionary> scopes = new ConcurrentDictionary<string, IDictionary>();
+        private static readonly ConcurrentDictionary<string, IDictionary> scopes = new();
 
         public ScopedLogicalCallSessionContext(ISessionFactoryImplementor factory)
             : base(factory)

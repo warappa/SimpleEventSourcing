@@ -74,7 +74,7 @@ namespace SimpleEventSourcing.WriteModel
         {
             if (value == null)
             {
-                return default(T);
+                return default;
             }
 
             return JsonConvert.DeserializeObject<T>(value, settings);

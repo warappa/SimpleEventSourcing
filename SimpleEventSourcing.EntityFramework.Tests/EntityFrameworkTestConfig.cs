@@ -128,11 +128,11 @@ namespace SimpleEventSourcing.EntityFramework.Tests
                     var dbContext = GetDbContext();
                     var dbContextType = dbContext.GetType();
 
-                    var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), new Type[0]);
+                    var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), Array.Empty<Type>());
 
                     var setMethod = setMethodGeneric.MakeGenericMethod(type);
 
-                    var set = (IQueryable)setMethod.Invoke(dbContext, new object[0]);
+                    var set = (IQueryable)setMethod.Invoke(dbContext, Array.Empty<object>());
 
                     var setType = set.GetType().GetTypeInfo();
 
@@ -234,11 +234,11 @@ namespace SimpleEventSourcing.EntityFramework.Tests
                     var dbContext = GetDbContext();
                     var dbContextType = dbContext.GetType();
 
-                    var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), new Type[0]);
+                    var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), Array.Empty<Type>());
 
                     var setMethod = setMethodGeneric.MakeGenericMethod(type);
 
-                    var set = (IQueryable)setMethod.Invoke(dbContext, new object[0]);
+                    var set = (IQueryable)setMethod.Invoke(dbContext, Array.Empty<object>());
 
                     var setType = set.GetType().GetTypeInfo();
 

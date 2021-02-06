@@ -60,7 +60,6 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
             public override async Task EnsureWriteDatabaseAsync()
             {
-                var connectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("integrationtest");
                 using (var dbContext = new EmptyDbContext("integrationtest"))
                 {
                     dbContext.Database.EnsureCreated();
@@ -130,11 +129,11 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
                     var dbContext = GetDbContext();
                     var dbContextType = dbContext.GetType();
 
-                    var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), new Type[0]);
+                    var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), Array.Empty<Type>());
 
                     var setMethod = setMethodGeneric.MakeGenericMethod(type);
 
-                    var set = (IQueryable)setMethod.Invoke(dbContext, new object[0]);
+                    var set = (IQueryable)setMethod.Invoke(dbContext, Array.Empty<object>());
 
                     var setType = set.GetType().GetTypeInfo();
 
@@ -163,7 +162,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
         public class ReadModelEntityFrameworkCoreConfig : ReadModelConfig
         {
-            private EntityFrameworkCoreTestConfig parent;
+            private readonly EntityFrameworkCoreTestConfig parent;
 
             public ReadModelEntityFrameworkCoreConfig(EntityFrameworkCoreTestConfig parent)
             {
@@ -237,11 +236,11 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
                     var dbContext = GetDbContext();
                     var dbContextType = dbContext.GetType();
 
-                    var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), new Type[0]);
+                    var setMethodGeneric = dbContextType.GetTypeInfo().GetRuntimeMethod(nameof(DbContext.Set), Array.Empty<Type>());
 
                     var setMethod = setMethodGeneric.MakeGenericMethod(type);
 
-                    var set = (IQueryable)setMethod.Invoke(dbContext, new object[0]);
+                    var set = (IQueryable)setMethod.Invoke(dbContext, Array.Empty<object>());
 
                     var setType = set.GetType().GetTypeInfo();
 
@@ -265,7 +264,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
         public class StorageEntityFrameworkCoreConfig : StorageConfig
         {
-            private EntityFrameworkCoreTestConfig parent;
+            private readonly EntityFrameworkCoreTestConfig parent;
 
             public StorageEntityFrameworkCoreConfig(EntityFrameworkCoreTestConfig parent)
             {

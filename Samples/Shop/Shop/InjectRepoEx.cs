@@ -9,7 +9,7 @@ namespace Shop
     {
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T, IEventRepository> onNext, IEventRepository repo)
         {
-            Action<T> a = x => onNext(x, repo);
+            void a(T x) => onNext(x, repo);
             return source.Subscribe(a);
         }
 

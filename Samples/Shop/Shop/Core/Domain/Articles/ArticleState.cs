@@ -25,28 +25,34 @@ namespace Shop.Core.Domain.Articles
 
         public ArticleState Apply(ArticleCreated @event)
         {
-            var s = new ArticleState(this);
-            s.StreamName = @event.Id;
-            s.Articlenumber = @event.Articlenumber;
-            s.Description = @event.Description;
-            s.Price = @event.Price;
-            s.Active = true;
+            var s = new ArticleState(this)
+            {
+                StreamName = @event.Id,
+                Articlenumber = @event.Articlenumber,
+                Description = @event.Description,
+                Price = @event.Price,
+                Active = true
+            };
 
             return s;
         }
 
         public ArticleState Apply(ArticleDeactivated @event)
         {
-            var s = new ArticleState(this);
-            s.Active = false;
+            var s = new ArticleState(this)
+            {
+                Active = false
+            };
 
             return s;
         }
 
         public ArticleState Apply(ArticleActivated @event)
         {
-            var s = new ArticleState(this);
-            s.Active = true;
+            var s = new ArticleState(this)
+            {
+                Active = true
+            };
 
             return s;
         }

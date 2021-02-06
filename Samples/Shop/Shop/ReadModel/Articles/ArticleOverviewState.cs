@@ -18,9 +18,11 @@ namespace Shop.ReadModel.Articles
 
         public Task Apply(ArticleCreated @event)
         {
-            var article = new ArticleOverviewViewModel();
-            article.ArticleId = @event.Id;
-            article.Articlenumber = @event.Articlenumber;
+            var article = new ArticleOverviewViewModel
+            {
+                ArticleId = @event.Id,
+                Articlenumber = @event.Articlenumber
+            };
 
             return InsertAsync(article);
         }

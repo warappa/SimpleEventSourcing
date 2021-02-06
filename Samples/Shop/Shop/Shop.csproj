@@ -1,9 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssetTargetFallback>$(AssetTargetFallback);net472</AssetTargetFallback>
     <OutputType>Exe</OutputType>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <LangVersion>latest</LangVersion>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   
   <ItemGroup>
@@ -31,21 +34,26 @@
     <PackageReference Include="knockout.punches" Version="0.5.1" />
     <PackageReference Include="knockout.TypeScript.DefinitelyTyped" Version="1.1.6" />
     <PackageReference Include="knockoutjs" Version="3.5.1" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <!--<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />-->
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.14" />
+    
     <PackageReference Include="SQLitePCLRaw.core" Version="1.1.14" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.linux" Version="1.1.14" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.osx" Version="1.1.14" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.v110_xp" Version="1.1.14" />
     <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3.net45" Version="1.1.14" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="System.Reactive" Version="5.0.0" />
-    <PackageReference Include="System.Reactive.Core" Version="5.0.0" />
-    <PackageReference Include="System.Reactive.Interfaces" Version="5.0.0" />
+
+    <!--<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />-->
+    <!--<PackageReference Include="System.Reactive" Version="5.0.0" />-->
+    <!--<PackageReference Include="System.Reactive.Core" Version="5.0.0" />
+    <PackageReference Include="System.Reactive.Interfaces" Version="5.0.0" />-->
     <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
     <PackageReference Include="System.Reactive.PlatformServices" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
+    <!--<PackageReference Include="System.Runtime" Version="4.3.1" />-->
+    <!--<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />-->
   </ItemGroup>
 </Project>
