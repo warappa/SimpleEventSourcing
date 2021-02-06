@@ -142,6 +142,8 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                         yield break;
                     }
 
+                    scope.Dispose(); // workaround IAsyncEnumerable vs. AsyncLocal design bug
+
                     foreach (var streamEntry in rawStreamEntries)
                     {
                         yield return streamEntry;
@@ -179,17 +181,16 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
         {
             var taken = 0;
 
-            using (var scope = dbContextScopeFactory.Create())
+            if (maxCheckpointNumber == int.MaxValue)
             {
-                var dbContext = scope.DbContexts.Get<TDbContext>();
+                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
+            }
 
-                if (maxCheckpointNumber == int.MaxValue)
+            while (true)
+            {
+                using (var scope = dbContextScopeFactory.Create())
                 {
-                    maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
-                }
-
-                while (true)
-                {
+                    var dbContext = scope.DbContexts.Get<TDbContext>();
                     var query = dbContext.Set<RawStreamEntry>().AsNoTracking();
 
                     query = query.Where(x => x.CheckpointNumber >= minCheckpointNumber && x.CheckpointNumber <= maxCheckpointNumber);
@@ -236,6 +237,8 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 
                         throw;
                     }
+
+                    scope.Dispose();
 
                     if (rawStreamEntries.Count == 0)
                     {

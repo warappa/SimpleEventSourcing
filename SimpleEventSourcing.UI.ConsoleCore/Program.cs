@@ -94,14 +94,18 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         {
             Console.WriteLine("Program started...");
 
+            var cb = new ConfigurationBuilder()
+                  .AddJsonFile("appsettings.json")
+                  .Build();
+
             using (var writeDbContext = new WriteModelDbContext("efWrite"))
             {
-                //writeDbContext.Database.EnsureCreated();
+                writeDbContext.Database.EnsureCreated();
             }
 
             using (var readDbContext = new ReadModelDbContext("efRead"))
             {
-                //readDbContext.Database.EnsureCreated();
+                readDbContext.Database.EnsureCreated();
             }
 
             var binder = new VersionedBinder();
@@ -284,7 +288,8 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 //.Result
                 );
 
-            var builder = new DbContextOptionsBuilder<ReadModelDbContext>();
+            var builder = new DbContextOptionsBuilder<ReadModelDbContext>()
+                .UseSqlServer(cb.GetConnectionString("efRead"));
             var viewModelResetter = new StorageResetter<ReadModelDbContext>(dbContextScopeFactory, builder.Options);
             // viewModelResetter.Reset(new[] { typeof(CheckpointInfo), typeof(PersistentEntity) });
             var checkpointPersister = new CheckpointPersister<ReadModelDbContext, CheckpointInfo>(dbContextScopeFactory);

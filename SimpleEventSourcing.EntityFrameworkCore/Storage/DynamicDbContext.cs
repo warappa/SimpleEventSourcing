@@ -24,7 +24,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 
         private static DbContextOptions BuildOptions(DbContextOptions options, DbConnection connection, IModel model)
         {
-            var builder = new DbContextOptionsBuilder(options)
+            var builder = new DbContextOptionsBuilder<DynamicDbContext>()
                 .UseModel(model);
 
             var newExtension = options.Extensions.OfType<RelationalOptionsExtension>().First().WithConnection(connection).WithConnectionString(connection.ConnectionString);
@@ -42,14 +42,9 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
             return newOptions;
         }
 
-        public static DynamicDbContext Create(DbContextOptions options, DbConnection connection, Type[] typesOfModel)
+        public static DynamicDbContext Create(DbContext dbContext, DbContextOptions options, DbConnection connection, Type[] typesOfModel)
         {
-            ConventionSet conventionSet = null;
-
-            using (var db = new DynamicDbContext(options))
-            {
-                conventionSet = ConventionSet.CreateConventionSet(db);
-            }
+            var conventionSet = ConventionSet.CreateConventionSet(dbContext);
 
             var modelBuilder = new ModelBuilder(conventionSet);
             
