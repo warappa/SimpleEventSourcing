@@ -40,9 +40,9 @@ namespace SimpleEventSourcing.ReadModel.Tests
         }
 
         [Test]
-        public void Can_save_entity()
+        public async Task Can_save_entity()
         {
-            readRepository.InsertAsync(config.ReadModel.GetTestEntityA()).Wait();
+            await readRepository.InsertAsync(config.ReadModel.GetTestEntityA());
         }
 
         [Test]

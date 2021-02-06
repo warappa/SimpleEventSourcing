@@ -58,7 +58,19 @@ namespace SimpleEventSourcing.EntityFramework.Storage
 
                             foreach (var step in creationSteps)
                             {
-                                dbContext.Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, step);
+                                if (string.IsNullOrWhiteSpace(step))
+                                {
+                                    continue;
+                                }
+
+                                try
+                                {
+                                    dbContext.Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, step);
+                                }
+                                catch
+                                {
+                                    // TODO: error handling
+                                }
                             }
                         }
 

@@ -130,6 +130,8 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                     rawStreamEntries = await query.ToListAsync();
 
+                    scope.Dispose(); // workaround
+
                     if (rawStreamEntries.Count == 0)
                     {
                         yield break;
@@ -172,17 +174,17 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
         {
             var taken = 0;
 
-            using (var scope = dbContextScopeFactory.Create())
+            if (maxCheckpointNumber == int.MaxValue)
             {
-                var dbContext = scope.DbContexts.Get<TDbContext>();
+                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
+            }
 
-                if (maxCheckpointNumber == int.MaxValue)
+            while (true)
+            {
+                using (var scope = dbContextScopeFactory.Create())
                 {
-                    maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
-                }
+                    var dbContext = scope.DbContexts.Get<TDbContext>();
 
-                while (true)
-                {
                     IQueryable<RawStreamEntry> query = dbContext.Set<RawStreamEntry>().AsNoTracking();
 
                     query = query.Where(x => x.CheckpointNumber >= minCheckpointNumber && x.CheckpointNumber <= maxCheckpointNumber);
@@ -230,6 +232,8 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                         throw;
                     }
 
+                    scope.Dispose(); // workaround
+
                     if (rawStreamEntries.Count == 0)
                     {
                         yield break;
@@ -276,7 +280,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                 dbContext.Set<RawStreamEntry>().AddRange(rawStreamEntries.Cast<RawStreamEntry>());
 
-                int rowCount = 0;
+                var rowCount = 0;
                 scope.RefreshEntitiesInParentScope(rawStreamEntries);
                 rowCount = await scope.SaveChangesAsync();
                 //RetryHelper(() => rowCount = scope.SaveChanges()).Wait();
@@ -288,7 +292,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                 result = await GetCurrentEventStoreCheckpointNumberInternalAsync(dbContext);
             }
-            
+
             return result;
         }
 
@@ -317,7 +321,9 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                 {
                     retryCount--;
                     if (retryCount == 0)
+                    {
                         throw;
+                    }
 
                     await Task.Delay(100).ConfigureAwait(false);
                 }
@@ -325,7 +331,9 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                 {
                     retryCount--;
                     if (retryCount == 0)
+                    {
                         throw;
+                    }
 
                     await Task.Delay(100).ConfigureAwait(false);
                 }

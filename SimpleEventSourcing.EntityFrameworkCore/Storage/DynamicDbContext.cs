@@ -53,6 +53,14 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                 modelBuilder.Entity(type);
             }
 
+            foreach(var t in modelBuilder.Model.GetEntityTypes().ToList())
+            {
+                if (!typesOfModel.Contains(t.ClrType))
+                {
+                    modelBuilder.Model.RemoveEntityType(t);
+                }
+            }
+
             modelBuilder.BuildIndexesFromAnnotations();
 
             return new DynamicDbContext(

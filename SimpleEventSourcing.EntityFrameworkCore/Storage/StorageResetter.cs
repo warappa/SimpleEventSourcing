@@ -80,7 +80,14 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                                     continue;
                                 }
 
-                                originalDbContext.Database.ExecuteSqlRaw(step);
+                                try
+                                {
+                                    originalDbContext.Database.ExecuteSqlRaw(step);
+                                }
+                                catch
+                                {
+                                    // TODO: error handling
+                                }
                             }
                         }
 

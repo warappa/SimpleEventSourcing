@@ -60,13 +60,13 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             using (var catchUp = (await target.StartAsync() as IObserveRawStreamEntries))
             {
-                var hasResults = catchUp.PollNowAsync();
+                var hasResults = await catchUp.PollNowAsync();
                 hasResults.Should().Be(false);
                 target.StateModel.Count.Should().Be(0);
 
-                SaveRawStreamEntry();
+                await SaveRawStreamEntryAsync();
 
-                hasResults = catchUp.PollNowAsync();
+                hasResults = await catchUp.PollNowAsync();
 
                 hasResults.Should().Be(true);
 
@@ -74,9 +74,9 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
                 target.StateModel.Count.Should().Be(1);
 
-                SaveRawStreamEntry();
+                await SaveRawStreamEntryAsync();
 
-                hasResults = catchUp.PollNowAsync();
+                hasResults = await catchUp.PollNowAsync();
                 hasResults.Should().Be(true);
 
                 await Task.Delay(2000).ConfigureAwait(false);
@@ -84,16 +84,18 @@ namespace SimpleEventSourcing.ReadModel.Tests
             }
         }
 
-        private void SaveRawStreamEntry()
+        private async Task SaveRawStreamEntryAsync()
         {
-            engine.SaveStreamEntriesAsync(
-                                new[]{config.WriteModel.GetRawStreamEntryFactory().CreateRawStreamEntry(
+            await engine.SaveStreamEntriesAsync(
+                new[]
+                {
+                    config.WriteModel.GetRawStreamEntryFactory().CreateRawStreamEntry(
                         engine.Serializer,
                         Guid.NewGuid().ToString(),
                         Guid.NewGuid().ToString(),
                         1,
-                         new TestCatchUpEvent().ToTypedMessage(Guid.NewGuid().ToString(), null, null, null, DateTime.UtcNow, 0))
-                                });
+                        new TestCatchUpEvent().ToTypedMessage(Guid.NewGuid().ToString(), null, null, null, DateTime.UtcNow, 0))
+                });
         }
     }
 

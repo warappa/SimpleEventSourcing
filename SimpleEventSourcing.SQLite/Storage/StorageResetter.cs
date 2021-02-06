@@ -31,7 +31,14 @@ namespace SimpleEventSourcing.SQLite.Storage
 
                     if (!justDrop)
                     {
-                        c.CreateTable(type);
+                        try
+                        {
+                            c.CreateTable(type);
+                        }
+                        catch
+                        {
+                            // TODO: error handling
+                        }
                     }
                 }
             });
