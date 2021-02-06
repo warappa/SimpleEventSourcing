@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
+      <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
       <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
     </ItemGroup>
 
