@@ -61,7 +61,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             return cfg;
         }
 
-        public static IServiceProvider BuildNHibernate(IConfigurationRoot cb)
+        public static IServiceProvider BuildNHibernate(IConfigurationRoot configuration)
         {
             var services = new ServiceCollection();
 

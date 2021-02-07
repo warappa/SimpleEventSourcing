@@ -24,11 +24,11 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         {
             Console.WriteLine("Program started...");
 
-            var cb = new ConfigurationBuilder()
+            var configuration = new ConfigurationBuilder()
                   .AddJsonFile("appsettings.json")
                   .Build();
 
-            var serviceProvider = serviceProviderFactory(cb);
+            var serviceProvider = serviceProviderFactory(configuration);
 
             var bus = serviceProvider.GetRequiredService<IObservableMessageBus>();
             var persistenceEngine = serviceProvider.GetRequiredService<IPersistenceEngine>();
@@ -40,14 +40,6 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             var persistentState = serviceProvider.GetRequiredService<IProjector<PersistentState>>();
             var viewModelResetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
 
-            // var dbContextScope = dbContextScopeFactory.Create();
-
-            //var writeDbContext = dbContextFactory.CreateDbContext<WriteModelDbContext>();
-            //writeDbContext.Database.EnsureCreated();
-
-            //var readDbContext = dbContextFactory.CreateDbContext<ReadModelDbContext>();
-            //readDbContext.Database.EnsureCreated();
-
             await persistenceEngine.InitializeAsync();
 
             // let bus subscribe to repository and publish its committed events
@@ -57,18 +49,18 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             // normal event processing
             bus.SubscribeTo<IMessage<IEvent>>().Subscribe((e) =>
             {
-                Console.WriteLine("Look, an event: " + e.ToString());
+                // Console.WriteLine("Look, an event: " + e.ToString());
             });
 
             bus.SubscribeTo<SomethingDone>()
                 .Subscribe((e) =>
                 {
-                    Console.WriteLine("Something done: " + e.Bla);
+                    //Console.WriteLine("Something done: " + e.Bla);
                 });
             bus.SubscribeTo<Renamed>()
                 .Subscribe((e) =>
                 {
-                    Console.WriteLine("Renamed: " + e.Name);
+                    //Console.WriteLine("Renamed: " + e.Name);
                 });
 
             // complex event processing
@@ -79,7 +71,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                     x.Last() is INameChangeEvent)
                 .Subscribe((e) =>
                 {
-                    Console.WriteLine("IMessage<IEvent>: Look, a new name after something done: " + (e.First() as SomethingDone).Bla + " -> " + (e.Last() as INameChangeEvent).Name);
+                    //Console.WriteLine("IMessage<IEvent>: Look, a new name after something done: " + (e.First() as SomethingDone).Bla + " -> " + (e.Last() as INameChangeEvent).Name);
                 });
 
             bus.SubscribeTo<IEvent>()
@@ -89,7 +81,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                     x.Last() is INameChangeEvent)
                 .Subscribe((e) =>
                 {
-                    Console.WriteLine("IEvent: Look, a new name after something done: " + (e.First() as SomethingDone).Bla + " -> " + (e.Last() as INameChangeEvent).Name);
+                    //Console.WriteLine("IEvent: Look, a new name after something done: " + (e.First() as SomethingDone).Bla + " -> " + (e.Last() as INameChangeEvent).Name);
                 });
 
             bus

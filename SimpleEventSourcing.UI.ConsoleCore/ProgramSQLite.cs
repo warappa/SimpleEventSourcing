@@ -15,7 +15,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         private static SQLiteConnectionWithLock writeConn;
         private static SQLiteConnectionWithLock readConn;
 
-        public static IServiceProvider BuildSQLite(IConfigurationRoot cb)
+        public static IServiceProvider BuildSQLite(IConfigurationRoot configuration)
         {
             var services = new ServiceCollection();
 

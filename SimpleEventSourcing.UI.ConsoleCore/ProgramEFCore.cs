@@ -13,17 +13,17 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 {
     internal class ProgramEFCore
     {
-        public static IServiceProvider BuildEntityFrameworkCore(IConfigurationRoot cb)
+        public static IServiceProvider BuildEntityFrameworkCore(IConfigurationRoot configuration)
         {
             var services = new ServiceCollection();
 
             services.AddDbContext<WriteModelDbContext>(options =>
             {
-                options.UseSqlServer(cb.GetConnectionString("efWrite"));
+                options.UseSqlServer(configuration.GetConnectionString("efWrite"));
             }, ServiceLifetime.Transient);
             services.AddDbContext<ReadModelDbContext>(options =>
             {
-                options.UseSqlServer(cb.GetConnectionString("efRead"));
+                options.UseSqlServer(configuration.GetConnectionString("efRead"));
             }, ServiceLifetime.Transient);
 
             services.AddSimpleEventSourcing<WriteModelDbContext, ReadModelDbContext>();
@@ -34,6 +34,16 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             services.AddBus();
 
             var serviceProvider = services.BuildServiceProvider();
+
+            using (var writeDbContext = serviceProvider.GetRequiredService<WriteModelDbContext>())
+            {
+                writeDbContext.Database.EnsureCreated();
+            }
+
+            using (var readDbContext = serviceProvider.GetRequiredService<ReadModelDbContext>())
+            {
+                readDbContext.Database.EnsureCreated();
+            }
 
             return serviceProvider;
         }
