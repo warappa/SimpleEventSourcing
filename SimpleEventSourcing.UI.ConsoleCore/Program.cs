@@ -4,10 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.Domain;
-using SimpleEventSourcing.EntityFrameworkCore;
 using SimpleEventSourcing.EntityFrameworkCore.ReadModel;
 using SimpleEventSourcing.Messaging;
-using SimpleEventSourcing.Newtonsoft;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.Storage;
 using SimpleEventSourcing.WriteModel;
@@ -22,7 +20,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 {
     internal class Program
     {
-        private static async Task Main(string[] args)
+        public static async Task Run(Func<IConfigurationRoot, IServiceProvider> serviceProviderFactory)
         {
             Console.WriteLine("Program started...");
 
@@ -30,45 +28,25 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                   .AddJsonFile("appsettings.json")
                   .Build();
 
-            var services = new ServiceCollection();
-
-            services.AddDbContext<WriteModelDbContext>(options =>
-            {
-                options.UseSqlServer(cb.GetConnectionString("efWrite"));
-            }, ServiceLifetime.Transient);
-            services.AddDbContext<ReadModelDbContext>(options =>
-            {
-                options.UseSqlServer(cb.GetConnectionString("efRead"));
-            }, ServiceLifetime.Transient);
-
-            services.AddSimpleEventSourcing<WriteModelDbContext, ReadModelDbContext>();
-            services.AddCatchupProjector<TestState, ReadModelDbContext>(new TestState());
-            services.AddCatchupProjector<PersistentState, ReadModelDbContext>(
-                sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
-            services.AddNewtonsoftJson();
-            services.AddBus();
-
-
-            var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = serviceProviderFactory(cb);
 
             var bus = serviceProvider.GetRequiredService<IObservableMessageBus>();
             var persistenceEngine = serviceProvider.GetRequiredService<IPersistenceEngine>();
-            var dbContextFactory = serviceProvider.GetRequiredService<IDbContextFactory>();
             var repo = serviceProvider.GetRequiredService<IEventRepository>();
             var repository = serviceProvider.GetRequiredService<IEventRepository>();
             var checkpointPersister = serviceProvider.GetRequiredService<ICheckpointPersister>();
             var polling = serviceProvider.GetRequiredService<IPoller>();
             var readRepository = serviceProvider.GetRequiredService<IReadRepository>();
             var persistentState = serviceProvider.GetRequiredService<IProjector<PersistentState>>();
-            var dbContextScopeFactory = serviceProvider.GetRequiredService<IDbContextScopeFactory>();
+            var viewModelResetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
 
             // var dbContextScope = dbContextScopeFactory.Create();
 
-            var writeDbContext = dbContextFactory.CreateDbContext<WriteModelDbContext>();
-            writeDbContext.Database.EnsureCreated();
+            //var writeDbContext = dbContextFactory.CreateDbContext<WriteModelDbContext>();
+            //writeDbContext.Database.EnsureCreated();
 
-            var readDbContext = dbContextFactory.CreateDbContext<ReadModelDbContext>();
-            readDbContext.Database.EnsureCreated();
+            //var readDbContext = dbContextFactory.CreateDbContext<ReadModelDbContext>();
+            //readDbContext.Database.EnsureCreated();
 
             await persistenceEngine.InitializeAsync();
 
@@ -219,10 +197,10 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 .CountAsync());
             Console.WriteLine("Current CheckpointNumber: " + await engine.GetCurrentEventStoreCheckpointNumberAsync());
 
-            var viewModelResetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
+            
             await viewModelResetter.ResetAsync(new[] { typeof(CheckpointInfo), typeof(PersistentEntity) });
 
-            //WaitForInput();
+            WaitForInput();
 
             /*
             var live = new CatchUpProjector<TestState>(
@@ -288,6 +266,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         private static void WaitForInput()
         {
             Console.WriteLine("\n\nPress any key to continue");
+            Console.ReadKey();
         }
     }
 }

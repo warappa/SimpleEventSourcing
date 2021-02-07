@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.Storage
 {
-    public class StorageResetter : IStorageResetter
+    public class StorageResetter : IStorageResetter, IWriteModelStorageResetter, IReadModelStorageResetter
     {
         private readonly INHibernateResetConfigurationProvider nHibernateResetConfigurationProvider;
 
