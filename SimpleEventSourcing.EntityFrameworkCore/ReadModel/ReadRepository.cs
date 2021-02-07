@@ -31,7 +31,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                 scope.SaveChanges();
             }
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         public Task InsertAsync(params IReadModelBase[] entities)
@@ -45,7 +45,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                 scope.SaveChanges();
             }
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         protected void UpdateInternal(DbContext dbContext, IEnumerable<IReadModelBase> allEntities)
@@ -99,7 +99,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                 scope.SaveChanges();
             }
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         public Task<T> GetAsync<T>(object id)

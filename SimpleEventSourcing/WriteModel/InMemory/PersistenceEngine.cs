@@ -251,7 +251,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 
         public Task InitializeAsync()
         {
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
     }
 }

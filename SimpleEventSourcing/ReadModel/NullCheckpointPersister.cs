@@ -28,7 +28,7 @@ namespace SimpleEventSourcing.ReadModel
 
         public Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber)
         {
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
     }
 }

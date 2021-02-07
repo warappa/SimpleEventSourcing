@@ -49,7 +49,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                 // TODO: error handling
             }
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         public IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)

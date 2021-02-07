@@ -47,7 +47,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel
                 }
             }
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
 

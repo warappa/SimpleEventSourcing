@@ -28,7 +28,7 @@ namespace SimpleEventSourcing.ReadModel.InMemory
                 savedEntities.RemoveAll(x => x.Id == entity.Id);
             }
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         public async Task<T> GetAsync<T>(object id)

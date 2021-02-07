@@ -53,7 +53,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             var conn = connectionFactory();
             conn.RunInLock(() => UpdateInternal(conn, entities));
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         public Task InsertAsync(params IReadModelBase[] entities)
@@ -61,7 +61,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             var conn = connectionFactory();
             conn.RunInLock(() => InsertInternal(conn, entities));
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         public Task DeleteAsync(params IReadModelBase[] entities)
@@ -75,7 +75,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
                 }
             });
 
-            return Task.Delay(0);
+            return Task.CompletedTask;
         }
 
         public Task<T> GetAsync<T>(object id)

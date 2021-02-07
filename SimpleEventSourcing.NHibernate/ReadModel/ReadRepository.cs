@@ -56,7 +56,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
 
                 UpdateInternal(session, entities);
 
-                return Task.Delay(0);
+                return Task.CompletedTask;
             }
         }
 
@@ -68,7 +68,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
 
                 InsertInternal(session, entities);
 
-                return Task.Delay(0);
+                return Task.CompletedTask;
             }
         }
 
@@ -83,7 +83,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
                     session.Delete(entity);
                 }
 
-                return Task.Delay(0);
+                return Task.CompletedTask;
             }
         }
 
