@@ -28,4 +28,5 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
             await SaveStreamEntryAsync();
         }
     }
+
 }

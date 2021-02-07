@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
+using System.Transactions;
 
 namespace SimpleEventSourcing.Utils
 {

@@ -1,10 +1,7 @@
-﻿using EntityFrameworkCore.DbContextScope;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.Domain;
-using SimpleEventSourcing.EntityFrameworkCore.ReadModel;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.Storage;
@@ -15,6 +12,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using EfCoreCheckpointInfo = SimpleEventSourcing.EntityFrameworkCore.ReadModel.CheckpointInfo;
+using NHCheckpointInfo = SimpleEventSourcing.NHibernate.ReadModel.CheckpointInfo;
+using SQLiteCheckpointInfo = SimpleEventSourcing.SQLite.ReadModel.CheckpointInfo;
 
 namespace SimpleEventSourcing.UI.ConsoleCore
 {
@@ -39,7 +39,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             var readRepository = serviceProvider.GetRequiredService<IReadRepository>();
             var persistentState = serviceProvider.GetRequiredService<IProjector<PersistentState>>();
             var viewModelResetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
-
+            
             await persistenceEngine.InitializeAsync();
 
             // let bus subscribe to repository and publish its committed events
@@ -87,7 +87,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             bus
                 .SubscribeToAndUpdate<IMessage<TestAggregateRename>, TestAggregate>((aggr, cmd) =>
                 {
-                    aggr.Rename(cmd.Body.Name);
+                    //aggr.Rename(cmd.Body.Name);
                 }, repo);
 
             bus.SubscribeTo<IMessage<TestAggregateDoSomething>>()
@@ -157,7 +157,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             Console.WriteLine("Generate 1000 entities");
 
             var list = new List<IEventSourcedEntity>();
-            for (var i = 0; i < 10000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 Console.Write(".");
 
@@ -176,21 +176,25 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             var loadedEntity = await repository.GetAsync<TestAggregate>(entityId);
 
-            Console.WriteLine("Commits: " + await engine.LoadStreamEntriesAsync().CountAsync());
-            Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(payloadTypes: new[] { typeof(Renamed) })
-                .CountAsync());
+            //Console.WriteLine("Commits: " + await engine.LoadStreamEntriesAsync().CountAsync());
+            //Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(payloadTypes: new[] { typeof(Renamed) })
+            //    .CountAsync());
 
-            Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", await engine
-                .LoadStreamEntriesAsync(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
-                .Select(x => "" + x.CheckpointNumber)
-                .ToListAsync()));
-            Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(minCheckpointNumber: await engine.GetCurrentEventStoreCheckpointNumberAsync()
-                - 5, payloadTypes: new[] { typeof(Renamed) })
-                .CountAsync());
-            Console.WriteLine("Current CheckpointNumber: " + await engine.GetCurrentEventStoreCheckpointNumberAsync());
+            //Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", await engine
+            //    .LoadStreamEntriesAsync(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
+            //    .Select(x => "" + x.CheckpointNumber)
+            //    .ToListAsync()));
+            //Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(minCheckpointNumber: await engine.GetCurrentEventStoreCheckpointNumberAsync()
+            //    - 5, payloadTypes: new[] { typeof(Renamed) })
+            //    .CountAsync());
+            //Console.WriteLine("Current CheckpointNumber: " + await engine.GetCurrentEventStoreCheckpointNumberAsync());
 
-            
-            await viewModelResetter.ResetAsync(new[] { typeof(CheckpointInfo), typeof(PersistentEntity) });
+            var checkpointInfotype = viewModelResetter.GetType().Namespace.Contains("EntityFrameworkCore") ?
+                typeof(EfCoreCheckpointInfo) : viewModelResetter.GetType().Namespace.Contains("NHibernate") ?
+                typeof(NHCheckpointInfo) :
+                typeof(SQLiteCheckpointInfo);
+
+            await viewModelResetter.ResetAsync(new[] { checkpointInfotype, typeof(PersistentEntity) });
 
             WaitForInput();
 
@@ -218,6 +222,8 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             //resetter.Reset(new[] { typeof(MyPersistentEntity) });
             */
 
+            var initialCheckpointNumber = await checkpointPersister.LoadLastCheckpointAsync(nameof(PersistentState));
+
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             await persistentState.StartAsync();
@@ -231,7 +237,18 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 }
             });
 
-            WaitForInput();
+            var endCP = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            while (true)
+            {
+                var cp = await checkpointPersister.LoadLastCheckpointAsync(nameof(PersistentState));
+
+                if (cp == endCP)
+                {
+                    break;
+                }
+
+                await Task.Delay(333);
+            }
 
             stopwatch.Stop();
 

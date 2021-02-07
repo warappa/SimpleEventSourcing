@@ -8,6 +8,7 @@ using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,10 +31,10 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
         public PersistenceEngine(ISessionFactory sessionFactory, Configuration configuration, ISerializer serializer, int batchSize)
         {
-            this.sessionFactory = sessionFactory;
-            Serializer = serializer;
-            this.configuration = configuration;
-            this.batchSize = 1000;
+            this.sessionFactory = sessionFactory ?? throw new ArgumentNullException(nameof(sessionFactory));
+            Serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.batchSize = batchSize;
         }
 
         public Task InitializeAsync()
@@ -60,92 +61,88 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
         {
             var taken = 0;
             List<RawStreamEntry> rawStreamEntries = null;
+            
+            var payloadValues = GetPayloadValues(payloadTypes);
 
-            using (var scope = OpenScope())
-            using (var statelessSession = sessionFactory.OpenStatelessSession())
-            using (var transaction = statelessSession.BeginTransaction())
+            while (true)
             {
-                List<string> payloadValues = null;
-
-                if (payloadTypes != null &&
-                    payloadTypes.Length > 0)
+                using (var scope = OpenScope())
+                using (var statelessSession = sessionFactory.OpenStatelessSession())
+                using (var transaction = statelessSession.BeginTransaction(IsolationLevel.RepeatableRead))
                 {
-                    payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
+                    try
+                    {
+                        var query = statelessSession.Query<RawStreamEntry>();
+
+                        query = query.Where(x => x.StreamRevision >= minRevision && x.StreamRevision <= maxRevision);
+
+                        if (!string.IsNullOrWhiteSpace(streamName))
+                        {
+                            query = query.Where(x => x.StreamName == streamName);
+                        }
+
+                        if (payloadValues is object)
+                        {
+                            query = query.Where(x => payloadValues.Contains(x.PayloadType));
+                        }
+
+                        if (group != null &&
+                            group != GroupConstants.All)
+                        {
+                            query = query.Where(x => x.Group == group);
+                        }
+
+                        if (category != null)
+                        {
+                            query = query.Where(x => x.Category == category);
+                        }
+
+                        if (ascending)
+                        {
+                            query = query.OrderBy(x => x.CheckpointNumber);
+                        }
+                        else
+                        {
+                            query = query.OrderByDescending(x => x.CheckpointNumber);
+                        }
+
+                        var nextBatchSize = Math.Min(take - taken, batchSize);
+
+                        query = query.Take(nextBatchSize);
+
+                        rawStreamEntries = await query.ToListAsync();
+                    }
+                    finally
+                    {
+                        transaction.Commit();
+                    }
                 }
 
-                try
+                if (rawStreamEntries.Count == 0)
                 {
-                    var query = statelessSession.Query<RawStreamEntry>();
-
-                    query = query.Where(x => x.StreamRevision >= minRevision && x.StreamRevision <= maxRevision);
-
-                    if (!string.IsNullOrWhiteSpace(streamName))
-                    {
-                        query = query.Where(x => x.StreamName == streamName);
-                    }
-
-                    if (payloadValues is object)
-                    {
-                        query = query.Where(x => payloadValues.Contains(x.PayloadType));
-                    }
-
-                    if (group != null &&
-                        group != GroupConstants.All)
-                    {
-                        query = query.Where(x => x.Group == group);
-                    }
-
-                    if (category != null)
-                    {
-                        query = query.Where(x => x.Category == category);
-                    }
-
-                    if (ascending)
-                    {
-                        query = query.OrderBy(x => x.CheckpointNumber);
-                    }
-                    else
-                    {
-                        query = query.OrderByDescending(x => x.CheckpointNumber);
-                    }
-
-                    query = query.Take(take);
-
-                    // TODO: utilize async enumerable
-                    rawStreamEntries = await query.ToListAsync();
-
-                    if (rawStreamEntries.Count == 0)
-                    {
-                        yield break;
-                    }
-
-                    foreach (var streamEntry in rawStreamEntries)
-                    {
-                        yield return streamEntry;
-                    }
-
-                    taken += rawStreamEntries.Count;
-
-                    if (taken >= take)
-                    {
-                        yield break;
-                    }
-
-                    if (ascending)
-                    {
-                        minRevision = rawStreamEntries[rawStreamEntries.Count - 1].StreamRevision + 1;
-                    }
-                    else
-                    {
-                        maxRevision -= take;
-                    }
-                }
-                finally
-                {
-                    // TODO: error handling
+                    yield break;
                 }
 
-                transaction.Commit();
+                foreach (var streamEntry in rawStreamEntries)
+                {
+                    yield return streamEntry;
+                }
+
+                taken += rawStreamEntries.Count;
+
+                if (taken >= take)
+                {
+                    yield break;
+                }
+
+                if (ascending)
+                {
+                    minRevision = rawStreamEntries[rawStreamEntries.Count - 1].StreamRevision + 1;
+                }
+                else
+                {
+                    maxRevision -= take;
+                }
             }
         }
 
@@ -172,20 +169,21 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
         public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
+            List<RawStreamEntry> rawStreamEntries = null;
+            
+            var payloadValues = GetPayloadValues(payloadTypes);
 
-            //using (var scope = OpenScope())
-            using (var statelessSession = sessionFactory.OpenStatelessSession())
-            using (var transaction = statelessSession.BeginTransaction())
+            if (!ascending &&
+                maxCheckpointNumber == int.MaxValue)
             {
-                List<string> payloadValues = null;
+                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
+            }
 
-                if (payloadTypes != null &&
-                    payloadTypes.Length > 0)
-                {
-                    payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
-                }
-
-                while (true)
+            while (true)
+            {
+                //using (var scope = OpenScope())
+                using (var statelessSession = sessionFactory.OpenStatelessSession())
+                using (var transaction = statelessSession.BeginTransaction(IsolationLevel.RepeatableRead))
                 {
                     var query = statelessSession.Query<RawStreamEntry>();
 
@@ -220,7 +218,6 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
                     query = query.Take(nextBatchSize);
 
-                    List<RawStreamEntry> rawStreamEntries = null;
                     try
                     {
                         // TODO: utilize async enumerable
@@ -233,35 +230,33 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                         throw;
                     }
 
-                    if (rawStreamEntries.Count == 0)
-                    {
-                        transaction.Commit();
+                    transaction.Commit();
+                }
 
-                        yield break;
-                    }
+                if (rawStreamEntries.Count == 0)
+                {
+                    yield break;
+                }
 
-                    foreach (var streamEntry in rawStreamEntries)
-                    {
-                        yield return streamEntry;
-                    }
+                foreach (var streamEntry in rawStreamEntries)
+                {
+                    yield return streamEntry;
+                }
 
-                    taken += rawStreamEntries.Count;
+                taken += rawStreamEntries.Count;
 
-                    if (taken >= take)
-                    {
-                        transaction.Commit();
+                if (taken >= take)
+                {
+                    yield break;
+                }
 
-                        yield break;
-                    }
-
-                    if (ascending)
-                    {
-                        minCheckpointNumber = rawStreamEntries[rawStreamEntries.Count - 1].CheckpointNumber + 1;
-                    }
-                    else
-                    {
-                        maxCheckpointNumber -= take;
-                    }
+                if (ascending)
+                {
+                    minCheckpointNumber = rawStreamEntries[rawStreamEntries.Count - 1].CheckpointNumber + 1;
+                }
+                else
+                {
+                    maxCheckpointNumber -= take;
                 }
             }
         }
@@ -272,9 +267,9 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
             //using (var scope = OpenScope())
             using (var statelessSession = sessionFactory.OpenStatelessSession())
-            using (var transaction = statelessSession.BeginTransaction())
+            using (var transaction = statelessSession.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
-                statelessSession.SetBatchSize(100);
+                statelessSession.SetBatchSize(batchSize);
 
                 var commitId = Guid.NewGuid().ToString();
 
@@ -378,6 +373,17 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                 transaction.Commit();
                 return result;
             }
+        }
+
+        private List<string> GetPayloadValues(Type[] payloadTypes)
+        {
+            if (payloadTypes != null &&
+                payloadTypes.Length > 0)
+            {
+                return payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
+            }
+
+            return null;
         }
     }
 }

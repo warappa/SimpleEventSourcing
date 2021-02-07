@@ -59,53 +59,46 @@ namespace SimpleEventSourcing.SQLite.WriteModel
         public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string group, string category, string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
-            var conn = connectionFactory();
             List<RawStreamEntry> rawStreamEntries = null;
+            
+            var payloadPredicate = GetPayloadPredicate(payloadTypes);
 
-            using (conn.Lock())
+            while (true)
             {
-                try
+                var conn = connectionFactory();
+                using (conn.Lock())
                 {
                     var cmd = conn.CreateCommand("");
 
                     var commandText = new StringBuilder();
-                    commandText.Append(@"select streamName, commitId, messageId, streamRevision, payloadType, payload, headers, [group], category, checkpointNumber, dateTime from commits
-where
-streamRevision >= @minRevision and streamRevision <= @maxRevision ");
+                    commandText.Append(@"SELECT streamName, commitId, messageId, streamRevision, payloadType, payload, headers, [group], category, checkpointNumber, dateTime
+FROM commits
+WHERE
+streamRevision >= @minRevision AND streamRevision <= @maxRevision ");
+                    cmd.Bind("@minRevision", minRevision);
+                    cmd.Bind("@maxRevision", maxRevision);
 
                     if (!string.IsNullOrWhiteSpace(streamName))
                     {
                         commandText.Append(@" and streamName = @streamName ");
+                        cmd.Bind("@streamName", streamName);
                     }
 
-                    if (payloadTypes != null &&
-                        payloadTypes.Length > 0)
+                    if (payloadPredicate is string)
                     {
-                        commandText.Append(" and (");
-                        for (var i = 0; i < payloadTypes.Length; i++)
-                        {
-                            commandText.Append(
-                                $@"payloadType = '{Serializer.Binder.BindToName(payloadTypes[i])}' ");
-                            if (i < payloadTypes.Length - 1)
-                            {
-                                commandText.Append(" or ");
-                            }
-                        }
-                        commandText.Append(") ");
+                        commandText.Append(payloadPredicate);
                     }
 
                     if (group != null &&
                         group != GroupConstants.All)
                     {
                         commandText.Append(" and [group]=@group");
-
                         cmd.Bind("@group", group);
                     }
 
                     if (category != null)
                     {
                         commandText.Append(" and category=@category");
-
                         cmd.Bind("@category", category);
                     }
 
@@ -117,46 +110,35 @@ streamRevision >= @minRevision and streamRevision <= @maxRevision ");
 
                     cmd.CommandText = commandText.ToString();
 
-                    if (!string.IsNullOrWhiteSpace(streamName))
-                    {
-                        cmd.Bind("@streamName", streamName);
-                    }
-                    cmd.Bind("@minRevision", minRevision);
-                    cmd.Bind("@maxRevision", maxRevision);
-
                     rawStreamEntries = cmd.ExecuteQuery<RawStreamEntry>();
-
-                    if (rawStreamEntries.Count == 0)
-                    {
-                        yield break;
-                    }
-
-                    foreach (var streamEntry in rawStreamEntries)
-                    {
-                        yield return streamEntry;
-                    }
-
-                    taken += rawStreamEntries.Count;
-
-                    if (taken >= take)
-                    {
-                        yield break;
-                    }
-
-                    if (ascending)
-                    {
-                        minRevision = rawStreamEntries
-                            [rawStreamEntries.Count - 1]
-                            .StreamRevision + 1;
-                    }
-                    else
-                    {
-                        maxRevision -= take;
-                    }
                 }
-                finally
+
+                if (rawStreamEntries.Count == 0)
                 {
-                    // TODO: error handling
+                    yield break;
+                }
+
+                foreach (var streamEntry in rawStreamEntries)
+                {
+                    yield return streamEntry;
+                }
+
+                taken += rawStreamEntries.Count;
+
+                if (taken >= take)
+                {
+                    yield break;
+                }
+
+                if (ascending)
+                {
+                    minRevision = rawStreamEntries
+                        [rawStreamEntries.Count - 1]
+                        .StreamRevision + 1;
+                }
+                else
+                {
+                    maxRevision -= take;
                 }
             }
         }
@@ -169,42 +151,25 @@ streamRevision >= @minRevision and streamRevision <= @maxRevision ");
         public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
-            string payloadPredicate = null;
+            List<RawStreamEntry> rawStreamEntries = null;
+            
+            var payloadPredicate = GetPayloadPredicate(payloadTypes);
 
             var connection = connectionFactory();
 
-            if (maxCheckpointNumber == int.MaxValue)
+            if (!ascending &&
+                maxCheckpointNumber == int.MaxValue)
             {
                 maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
             }
 
-            if (payloadTypes != null &&
-                payloadTypes.Length > 0)
+            while (true)
             {
-                var commandText = new StringBuilder();
-                commandText.Append(" and (");
-
-                for (var i = 0; i < payloadTypes.Length; i++)
+                using (connection.Lock())
                 {
-                    commandText.Append($@"payloadType = '{Serializer.Binder.BindToName(payloadTypes[i])}' ");
+                    var cmd = connection.CreateCommand("");
 
-                    if (i < payloadTypes.Length - 1)
-                    {
-                        commandText.Append(" or ");
-                    }
-                }
 
-                commandText.Append(") ");
-
-                payloadPredicate = commandText.ToString();
-            }
-
-            using (connection.Lock())
-            {
-                var cmd = connection.CreateCommand("");
-
-                while (true)
-                {
                     var commandText = new StringBuilder();
                     commandText.Append(@"select streamName, commitId, messageId, streamRevision, payloadType, payload, headers, checkpointNumber, [group], category, dateTime from commits
 where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheckpointNumber ");
@@ -240,7 +205,6 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
 
                     cmd.CommandText = commandText.ToString();
 
-                    List<RawStreamEntry> rawStreamEntries = null;
                     try
                     {
                         rawStreamEntries = cmd.ExecuteQuery<RawStreamEntry>().ToList();
@@ -251,32 +215,32 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
                         connection.Rollback();
                         throw;
                     }
+                }
 
-                    if (rawStreamEntries.Count == 0)
-                    {
-                        yield break;
-                    }
+                if (rawStreamEntries.Count == 0)
+                {
+                    yield break;
+                }
 
-                    foreach (var streamEntry in rawStreamEntries)
-                    {
-                        yield return streamEntry;
-                    }
+                foreach (var streamEntry in rawStreamEntries)
+                {
+                    yield return streamEntry;
+                }
 
-                    taken += rawStreamEntries.Count;
+                taken += rawStreamEntries.Count;
 
-                    if (taken >= take)
-                    {
-                        yield break;
-                    }
+                if (taken >= take)
+                {
+                    yield break;
+                }
 
-                    if (ascending)
-                    {
-                        minCheckpointNumber = rawStreamEntries[rawStreamEntries.Count - 1].CheckpointNumber + 1;
-                    }
-                    else
-                    {
-                        maxCheckpointNumber -= take;
-                    }
+                if (ascending)
+                {
+                    minCheckpointNumber = rawStreamEntries[rawStreamEntries.Count - 1].CheckpointNumber + 1;
+                }
+                else
+                {
+                    maxCheckpointNumber -= take;
                 }
             }
         }
@@ -343,22 +307,14 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
 
         protected async Task<int> GetCurrentEventStoreCheckpointNumberInternalAsync(SQLiteConnection connection)
         {
-            try
+            var cmd = connection.CreateCommand("SELECT checkpointNumber FROM commits ORDER BY checkpointNumber DESC LIMIT 1");
+            var res = cmd.ExecuteScalar<int>();
+            if (res == 0)
             {
-                var cmd = connection.CreateCommand("select checkpointNumber from commits order by checkpointNumber desc limit 1");
-                var res = cmd.ExecuteScalar<int>();
-                if (res == 0)
-                {
-                    return -1;
-                }
+                return -1;
+            }
 
-                return res;
-            }
-            catch
-            {
-                // blank
-            }
-            return -1;
+            return res;
         }
 
         public async Task<int> GetCurrentEventStoreCheckpointNumberAsync()
@@ -366,16 +322,34 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             var connection = connectionFactory();
             using (connection.Lock())
             {
-                try
-                {
-                    return await GetCurrentEventStoreCheckpointNumberInternalAsync(connection);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.ToString());
-                    throw;
-                }
+                return await GetCurrentEventStoreCheckpointNumberInternalAsync(connection);
             }
+        }
+
+        private string GetPayloadPredicate(Type[] payloadTypes)
+        {
+            if (payloadTypes != null &&
+                payloadTypes.Length > 0)
+            {
+                var commandText = new StringBuilder();
+                commandText.Append(" and (");
+
+                for (var i = 0; i < payloadTypes.Length; i++)
+                {
+                    commandText.Append($@"payloadType = '{Serializer.Binder.BindToName(payloadTypes[i])}' ");
+
+                    if (i < payloadTypes.Length - 1)
+                    {
+                        commandText.Append(" or ");
+                    }
+                }
+
+                commandText.Append(") ");
+
+                return commandText.ToString();
+            }
+
+            return null;
         }
     }
 }

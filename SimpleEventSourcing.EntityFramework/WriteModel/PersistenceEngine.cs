@@ -1,4 +1,5 @@
-﻿using EntityFramework.DbContextScope.Interfaces;
+﻿using EntityFramework.BulkInsert.Extensions;
+using EntityFramework.DbContextScope.Interfaces;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace SimpleEventSourcing.EntityFramework.WriteModel
 {
@@ -82,85 +84,91 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
             var taken = 0;
             List<RawStreamEntry> rawStreamEntries = null;
 
-            using (var scope = dbContextScopeFactory.Create())
+            var payloadValues = GetPayloadValues(payloadTypes);
+
+            while (true)
             {
-                var dbContext = scope.DbContexts.Get<TDbContext>();
-
-                try
+                using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required, new TransactionOptions
                 {
-                    IQueryable<RawStreamEntry> query = dbContext.Set<RawStreamEntry>().AsNoTracking();
+                    IsolationLevel = IsolationLevel.RepeatableRead
+                }))
+                using (var scope = dbContextScopeFactory.Create())
+                {
+                    var dbContext = scope.DbContexts.Get<TDbContext>();
 
-                    query = query.Where(x => x.StreamRevision >= minRevision && x.StreamRevision <= maxRevision);
-
-                    if (!string.IsNullOrWhiteSpace(streamName))
+                    try
                     {
-                        query = query.Where(x => x.StreamName == streamName);
+                        IQueryable<RawStreamEntry> query = dbContext.Set<RawStreamEntry>().AsNoTracking();
+
+                        query = query.Where(x => x.StreamRevision >= minRevision && x.StreamRevision <= maxRevision);
+
+                        if (!string.IsNullOrWhiteSpace(streamName))
+                        {
+                            query = query.Where(x => x.StreamName == streamName);
+                        }
+
+                        if (payloadValues is object)
+                        {
+                            query = query.Where(x => payloadValues.Contains(x.PayloadType));
+                        }
+
+                        if (group != null &&
+                            group != GroupConstants.All)
+                        {
+                            query = query.Where(x => x.Group == group);
+                        }
+
+                        if (category != null)
+                        {
+                            query = query.Where(x => x.Category == category);
+                        }
+
+                        if (ascending)
+                        {
+                            query = query.OrderBy(x => x.CheckpointNumber);
+                        }
+                        else
+                        {
+                            query = query.OrderByDescending(x => x.CheckpointNumber);
+                        }
+
+                        var nextBatchSize = Math.Min(take - taken, batchSize);
+
+                        query = query.Take(nextBatchSize);
+
+                        rawStreamEntries = await query.ToListAsync();
+                    }
+                    finally
+                    {
+                        transaction.Complete();
                     }
 
-                    if (payloadTypes != null &&
-                        payloadTypes.Length > 0)
-                    {
-                        var payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
-                        query = query.Where(x => payloadValues.Contains(x.PayloadType));
-                    }
-
-                    if (group != null &&
-                        group != GroupConstants.All)
-                    {
-                        query = query.Where(x => x.Group == group);
-                    }
-
-                    if (category != null)
-                    {
-                        query = query.Where(x => x.Category == category);
-                    }
-
-                    if (ascending)
-                    {
-                        query = query.OrderBy(x => x.CheckpointNumber);
-                    }
-                    else
-                    {
-                        query = query.OrderByDescending(x => x.CheckpointNumber);
-                    }
-
-                    var nextBatchSize = Math.Min(take - taken, batchSize);
-
-                    query = query.Take(nextBatchSize);
-
-                    rawStreamEntries = await query.ToListAsync();
-
-                    scope.Dispose(); // workaround
-
-                    if (rawStreamEntries.Count == 0)
-                    {
-                        yield break;
-                    }
-
-                    foreach (var streamEntry in rawStreamEntries)
-                    {
-                        yield return streamEntry;
-                    }
-
-                    taken += rawStreamEntries.Count;
-
-                    if (taken >= take)
-                    {
-                        yield break;
-                    }
-
-                    if (ascending)
-                    {
-                        minRevision = rawStreamEntries[rawStreamEntries.Count - 1].StreamRevision + 1;
-                    }
-                    else
-                    {
-                        maxRevision -= take;
-                    }
                 }
-                finally
-                {
 
+                if (rawStreamEntries.Count == 0)
+                {
+                    yield break;
+                }
+
+                foreach (var streamEntry in rawStreamEntries)
+                {
+                    yield return streamEntry;
+                }
+
+                taken += rawStreamEntries.Count;
+
+                if (taken >= take)
+                {
+                    yield break;
+                }
+
+                if (ascending)
+                {
+                    minRevision = rawStreamEntries[rawStreamEntries.Count - 1].StreamRevision + 1;
+                }
+                else
+                {
+                    maxRevision -= take;
                 }
             }
         }
@@ -173,14 +181,22 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
         public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesAsync(string group, string category, int minCheckpointNumber = 0, int maxCheckpointNumber = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
+            List<RawStreamEntry> rawStreamEntries = null;
 
-            if (maxCheckpointNumber == int.MaxValue)
+            var payloadValues = GetPayloadValues(payloadTypes);
+
+            if (!ascending &&
+                maxCheckpointNumber == int.MaxValue)
             {
                 maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
             }
 
             while (true)
             {
+                using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required, new TransactionOptions
+                {
+                    IsolationLevel = IsolationLevel.RepeatableRead
+                }))
                 using (var scope = dbContextScopeFactory.Create())
                 {
                     var dbContext = scope.DbContexts.Get<TDbContext>();
@@ -189,10 +205,8 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                     query = query.Where(x => x.CheckpointNumber >= minCheckpointNumber && x.CheckpointNumber <= maxCheckpointNumber);
 
-                    if (payloadTypes != null &&
-                        payloadTypes.Length > 0)
+                    if (payloadValues is object)
                     {
-                        var payloadValues = payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
                         query = query.Where(x => payloadValues.Contains(x.PayloadType));
                     }
 
@@ -220,7 +234,6 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                     query = query.Take(nextBatchSize);
 
-                    List<RawStreamEntry> rawStreamEntries = null;
                     try
                     {
                         rawStreamEntries = await query.ToListAsync();
@@ -232,33 +245,33 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                         throw;
                     }
 
-                    scope.Dispose(); // workaround
+                    transaction.Complete();
+                }
 
-                    if (rawStreamEntries.Count == 0)
-                    {
-                        yield break;
-                    }
+                if (rawStreamEntries.Count == 0)
+                {
+                    yield break;
+                }
 
-                    foreach (var streamEntry in rawStreamEntries)
-                    {
-                        yield return streamEntry;
-                    }
+                foreach (var streamEntry in rawStreamEntries)
+                {
+                    yield return streamEntry;
+                }
 
-                    taken += rawStreamEntries.Count;
+                taken += rawStreamEntries.Count;
 
-                    if (taken >= take)
-                    {
-                        yield break;
-                    }
+                if (taken >= take)
+                {
+                    yield break;
+                }
 
-                    if (ascending)
-                    {
-                        minCheckpointNumber = rawStreamEntries[rawStreamEntries.Count - 1].CheckpointNumber + 1;
-                    }
-                    else
-                    {
-                        maxCheckpointNumber -= take;
-                    }
+                if (ascending)
+                {
+                    minCheckpointNumber = rawStreamEntries[rawStreamEntries.Count - 1].CheckpointNumber + 1;
+                }
+                else
+                {
+                    maxCheckpointNumber -= take;
                 }
             }
         }
@@ -267,6 +280,10 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
         {
             int result;
 
+            using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required, new TransactionOptions
+            {
+                IsolationLevel = IsolationLevel.ReadUncommitted
+            }))
             using (var scope = dbContextScopeFactory.Create())
             {
                 var dbContext = scope.DbContexts.Get<TDbContext>();
@@ -278,19 +295,11 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                     rawStreamEntry.CommitId = commitId;
                 }
 
-                dbContext.Set<RawStreamEntry>().AddRange(rawStreamEntries.Cast<RawStreamEntry>());
-
-                var rowCount = 0;
-                scope.RefreshEntitiesInParentScope(rawStreamEntries);
-                rowCount = await scope.SaveChangesAsync();
-                //RetryHelper(() => rowCount = scope.SaveChanges()).Wait();
-
-                if (rowCount == 0)
-                {
-                    //throw new Exception("Stream entries not inserted!");
-                }
+                dbContext.BulkInsert(rawStreamEntries.Cast<RawStreamEntry>());
 
                 result = await GetCurrentEventStoreCheckpointNumberInternalAsync(dbContext);
+
+                transaction.Complete();
             }
 
             return result;
@@ -389,6 +398,17 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                 return result;
             }
+        }
+
+        private List<string> GetPayloadValues(Type[] payloadTypes)
+        {
+            if (payloadTypes != null &&
+                payloadTypes.Length > 0)
+            {
+                return payloadTypes.Select(x => Serializer.Binder.BindToName(x)).ToList();
+            }
+
+            return null;
         }
     }
 }
