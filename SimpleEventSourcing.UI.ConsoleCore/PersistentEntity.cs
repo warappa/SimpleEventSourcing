@@ -4,9 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SimpleEventSourcing.UI.ConsoleCore
 {
     [Table("PersistentEntities")]
+    [global::SQLite.Table("PersistentEntities")]
     public class PersistentEntity : IStreamReadModel, IReadModel<string>
     {
-        //[PrimaryKey]
+        [global::SQLite.PrimaryKey]
         public virtual string Id { get; set; }
 
         object IReadModelBase.Id { get { return Id; } set { Id = (string)value; } }

@@ -5,13 +5,14 @@
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>SimpleEventSourcing.UI.ConsoleUI</RootNamespace>
     <AssetTargetFallback>net45</AssetTargetFallback>
-    <StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramNH</StartupObject>
+    <StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramSQLite</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SimpleEventSourcing.Bus\SimpleEventSourcing.Bus.csproj" />
     <ProjectReference Include="..\SimpleEventSourcing.EntityFrameworkCore\SimpleEventSourcing.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\SimpleEventSourcing.NHibernate\SimpleEventSourcing.NHibernate.csproj" />
+    <ProjectReference Include="..\SimpleEventSourcing.SQLite\SimpleEventSourcing.SQLite.csproj" />
     <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
     <ProjectReference Include="..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />
   </ItemGroup>
@@ -23,6 +24,7 @@
     <PackageReference Include="NHibernate" Version="5.3.5" />
     <PackageReference Include="NHibernate.Caches.CoreDistributedCache.SqlServer" Version="5.7.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.1" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
