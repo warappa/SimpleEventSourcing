@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using EFCore.BulkExtensions;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 {
@@ -284,7 +285,13 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                     rawStreamEntry.CommitId = commitId;
                 }
 
-                dbContext.Set<RawStreamEntry>().AddRange(rawStreamEntries.Cast<RawStreamEntry>());
+                dbContext.BulkInsert<RawStreamEntry>(rawStreamEntries.Cast<RawStreamEntry>().ToList(), 
+                    new BulkConfig
+                    {
+                        PreserveInsertOrder = true,
+                        
+                    });
+                //dbContext.Set<RawStreamEntry>().AddRange(rawStreamEntries.Cast<RawStreamEntry>());
 
                 var rowCount = 0;
                 //scope.RefreshEntitiesInParentScope(rawStreamEntries);
