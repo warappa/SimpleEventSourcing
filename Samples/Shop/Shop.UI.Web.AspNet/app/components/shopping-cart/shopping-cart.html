@@ -1,0 +1,37 @@
+﻿<script id="shopping-cart" type="text/html">
+    <!-- ko withProperties: { page: $data }-->
+    <appheader class="bg-grayDarker" params="{ title: title, entries: [
+               { template: 'shopping-cart-order', title: 'Order' }]}"></appheader>
+    <!-- /ko -->
+    <!-- ko if: model() != null -->
+    Status: {{model().status}}
+    <table style="color: black;">
+        <thead>
+            <tr>
+                <th>Article</th>
+                <th style="padding: 0 15px;">Description</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th style="padding: 0 15px;">Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: model().shoppingCartArticles">
+            <tr data-bind="if: removedAt == null">
+                <td data-bind="text: articlenumber"></td>
+                <td style="padding: 0 15px;" data-bind="text: description"></td>
+                <td>{{quantity}}</td>
+                <td>{{priceValue}} {{priceIsoCode}}</td>
+                <td style="padding: 0 15px;">{{totalValue}} {{totalIsoCode}}</td>
+                <td><a class="button" data-bind="visible: $component.model().status == 1,click: $component.removeArticleFromShoppingCart"><span class="fa fa-trash"></span></a></td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- /ko -->
+</script>
+
+<script id="shopping-cart-order" type="text/html">
+    <a class="element" data-bind="click: page.order">
+        <span class="fa fa-dollar"></span> {{title}}
+    </a>
+</script>

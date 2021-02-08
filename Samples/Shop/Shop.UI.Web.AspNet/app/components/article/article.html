@@ -1,0 +1,73 @@
+﻿<script id="article" type="text/html">
+    <!-- ko withProperties: { page: $data }-->
+    <appheader class="bg-grayDarker" params="{ title: title, entries: menuItems }"></appheader>
+
+    <!-- ko with: model -->
+
+    <h2>{{articlenumber}}</h2>
+    <div>{{description}}</div>
+    <div>{{priceValue}} {{priceIsoCode}}</div>
+    <!-- ko if: active == false-->
+    <span style="color: red">DEACTIVATED</span>
+    <!-- /ko-->
+    <!-- /ko -->
+    <!-- if: history -->
+    <br />
+    <div>Activation history</div>
+    <table style="color: black">
+        <thead>
+            <tr>
+                <th></th>
+                <th style="padding: 0 15px;">Reason</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: history">
+            <tr>
+                <td data-bind="style: { color: active ? 'green' : 'red'}">{{active ?'Activated': 'Deactivated'}}</td>
+                <td style="padding: 0 15px;">{{reason}}</td>
+                <td>{{moment(date).format('MM.DD.YYYY HH:mm:ss')}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- /ko-->
+    <!-- /ko -->
+</script>
+
+<script id="orderForm" type="text/html">
+    <form data-bind="submit: $commit.bind(null, $data)" style="width: 300px">
+        <select data-bind="options: customers, optionsValue: 'customerId', optionsText: 'name', value: customerId"></select>
+
+        <input-text params="value: quantity, label: 'Quantity'"></input-text>
+        <button><span class="fa fa-check-square fg-green"></span></button>
+    </form>
+</script>
+<script id="order" type="text/html">
+    <div class="element" data-bind="dialog: { title: 'Order', childTemplate: 'orderForm', data: page.getOrderData }">
+        <span class="fa fa-plus-circle"></span> {{title}}
+    </div>
+</script>
+
+<script id="deactivateForm" type="text/html">
+    <form data-bind="submit: $commit.bind(null, $data)" style="width: 300px">
+        <input-text params="value: reason, label: 'Reason'"></input-text>
+        <button><span class="fa fa-check-square fg-green"></span></button>
+    </form>
+</script>
+<script id="article-deactivate" type="text/html">
+    <div class="element" data-bind="dialog: { title: 'Deactivate', childTemplate: 'deactivateForm', data: page.getDeactivateData }">
+        <span class="fa fa-plus-circle"></span> {{title}}
+    </div>
+</script>
+
+<script id="activateForm" type="text/html">
+    <form data-bind="submit: $commit.bind(null, $data)" style="width: 300px">
+        <input-text params="value: reason, label: 'Reason'"></input-text>
+        <button><span class="fa fa-check-square fg-green"></span></button>
+    </form>
+</script>
+<script id="article-activate" type="text/html">
+    <div class="element" data-bind="dialog: { title: 'Activate', childTemplate: 'activateForm', data: page.getActivateData }">
+        <span class="fa fa-plus-circle"></span> {{title}}
+    </div>
+</script>

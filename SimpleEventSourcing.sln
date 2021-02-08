@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{C7B1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop", "Samples\Shop\Shop\Shop.csproj", "{D7962030-E8BA-4260-8E3D-E3A8F65D36F4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.UI.Web", "Samples\Shop\Shop.UI.Web\Shop.UI.Web.csproj", "{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shop.UI.Web.AspNet", "Samples\Shop\Shop.UI.Web.AspNet\Shop.UI.Web.AspNet.csproj", "{98AE5C7F-A8F0-4D40-ABD5-5BA3E83878DB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shop", "Shop", "{9100ACF7-2719-4848-81B7-AE10473C960A}"
 EndProject
