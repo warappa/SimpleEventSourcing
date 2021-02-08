@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
     <AssetTargetFallback>$(AssetTargetFallback);net472</AssetTargetFallback>
     <OutputType>Exe</OutputType>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />
     <ProjectReference Include="..\..\..\SimpleEventSourcing.SQLite\SimpleEventSourcing.SQLite.csproj" />
     <ProjectReference Include="..\..\..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
+    <ProjectReference Include="..\Shop.UI.Web.Shared\Shop.UI.Web.Shared.csproj" />
   </ItemGroup>
   
   <ItemGroup>

@@ -4,6 +4,7 @@ using SimpleEventSourcing.State;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Shop.Core.Domain.ShoppingCarts
@@ -31,6 +32,13 @@ namespace Shop.Core.Domain.ShoppingCarts
         }
 
         public List<ShoppingCartArticleState> ShoppingCartArticleStates => ChildStates.OfType<ShoppingCartArticleState>().ToList();
+
+        public ShoppingCartState Apply(ShoppingCartArticleRemoved @event)
+        {
+            Debug.WriteLine($"Article removed '{@event.Articlenumber}'");
+
+            return this;
+        }
 
         public ShoppingCartState Apply(ShoppingCartCreated @event)
         {

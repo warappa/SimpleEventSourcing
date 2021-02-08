@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\SimpleEventSourcing.SQLite\SimpleEventSourcing.SQLite.csproj" />
+    <ProjectReference Include="..\..\Shop.UI.Web.Shared\Shop.UI.Web.Shared.csproj" />
+    <ProjectReference Include="..\..\Shop\Shop.csproj" />
+    <ProjectReference Include="..\Client\Shop.UI.Web.AspNetCore.Blazor.Client.csproj" />
+    <ProjectReference Include="..\Shared\Shop.UI.Web.AspNetCore.Blazor.Shared.csproj" />
+  </ItemGroup>
+
+
+</Project>

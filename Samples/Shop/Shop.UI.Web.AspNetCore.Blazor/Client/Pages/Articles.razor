@@ -1,0 +1,73 @@
+﻿@page "/articles"
+@using Shop.UI.Web.AspNetCore.Blazor.Shared
+@inject HttpClient Http
+
+<h1>Articles</h1>
+
+@if (articles == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Article</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var article in articles)
+            {
+                <tr>
+                    <td style="background: @(article.Active ? "green" : "red")">@article.Articlenumber</td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <EditForm Model="CreateArticle" OnValidSubmit="@CreateArticleAsync">
+        <div>Article number</div>
+        <InputText @bind-Value="CreateArticle.Articlenumber"></InputText>
+        <div>Description</div>
+        <InputText @bind-Value="CreateArticle.Description"></InputText>
+        <div>Price</div>
+        <InputNumber @bind-Value="CreateArticle.PriceValue"></InputNumber>
+        <div>Currency (EUR,...)</div>
+        <InputText @bind-Value="CreateArticle.PriceIsoCode"></InputText>
+        <button type="submit">Create Article</button>
+    </EditForm>
+}
+
+@code {
+    private ArticleViewModel[] articles;
+    private CreateArticle CreateArticle = new CreateArticle
+    {
+        Id = Guid.NewGuid().ToString()
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        articles = await Http.GetFromJsonAsync<ArticleViewModel[]>("api/articles");
+    }
+
+    protected async Task CreateArticleAsync()
+    {
+        await Http.PostAsJsonAsync("api/articles/CreateArticle", CreateArticle);
+
+        CreateArticle = new CreateArticle
+        {
+            Id = Guid.NewGuid().ToString()
+        };
+
+        await LoadAsync();
+    }
+
+}
