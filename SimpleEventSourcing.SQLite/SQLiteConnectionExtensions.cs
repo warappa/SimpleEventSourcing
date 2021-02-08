@@ -8,7 +8,8 @@ namespace SimpleEventSourcing.SQLite
         {
             var cmd = connection.CreateCommand("SELECT name FROM sqlite_master WHERE type='table' AND name=@tableName;");
             cmd.Bind("@tableName", tableName);
-            return cmd.ExecuteQuery<object>() != null;
+            var result = cmd.ExecuteQuery<object>();
+            return result?.Count > 0;
         }
     }
 }

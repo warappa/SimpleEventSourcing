@@ -3,6 +3,7 @@ using SQLite;
 
 namespace SimpleEventSourcing.SQLite.ReadModel
 {
+    [Table("CheckpointInfos")]
     public class CheckpointInfo : IReadModel<string>, ICheckpointInfo
     {
         [PrimaryKey]

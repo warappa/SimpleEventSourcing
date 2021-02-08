@@ -69,6 +69,7 @@ namespace SimpleEventSourcing.SQLite
                     return new CatchUpProjector<TState>(state, checkpointPersister, engine, storageResetter, interval);
 
                 });
+            services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
 
             return services;
         }
@@ -88,6 +89,7 @@ namespace SimpleEventSourcing.SQLite
                     return new CatchUpProjector<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, interval);
 
                 });
+            services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
 
             return services;
         }

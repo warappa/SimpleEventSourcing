@@ -34,6 +34,18 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             }
             catch
             {
+                try
+                {
+                    if (!connection.TableExists("CheckpointInfos"))
+                    {
+                        connection.CreateTable(typeof(CheckpointInfo));
+                        checkpointInfo = connection.Get<TCheckpointInfo>(projectorIdentifier);
+                    }
+                }
+                catch
+                {
+
+                }
                 // TODO: error handling
             }
 
@@ -47,22 +59,38 @@ namespace SimpleEventSourcing.SQLite.ReadModel
 
         public async Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint)
         {
-            connection.RunInLock((SQLiteConnection conn) =>
+            void Run()
             {
-                var cmd = conn.CreateCommand("update checkpointinfo set checkpointnumber=@p0 where checkpointinfo.statemodel=@p1");
-                cmd.Bind("@p0", checkpoint);
-                cmd.Bind("@p1", projectorIdentifier);
-
-                var res = cmd.ExecuteNonQuery();
-
-                if (res == 0)
+                connection.RunInLock((SQLiteConnection conn) =>
                 {
-                    cmd.CommandText = "insert into checkpointinfo (statemodel, checkpointnumber) values (@p0, @p1)";
-                    cmd.Bind("@p0", projectorIdentifier);
-                    cmd.Bind("@p1", checkpoint);
-                    cmd.ExecuteNonQuery();
+                    var cmd = conn.CreateCommand("UPDATE CheckpointInfos SET checkpointnumber=@p0 WHERE CheckpointInfos.statemodel=@p1");
+                    cmd.Bind("@p0", checkpoint);
+                    cmd.Bind("@p1", projectorIdentifier);
+
+                    var res = cmd.ExecuteNonQuery();
+
+                    if (res == 0)
+                    {
+                        cmd.CommandText = "INSERT INTO CheckpointInfos (statemodel, checkpointnumber) VALUES (@p0, @p1)";
+                        cmd.Bind("@p0", projectorIdentifier);
+                        cmd.Bind("@p1", checkpoint);
+                        cmd.ExecuteNonQuery();
+                    }
+                });
+            }
+
+            try
+            {
+                Run();
+            }
+            catch
+            {
+                if (!connection.TableExists("CheckpointInfos"))
+                {
+                    connection.CreateTable(typeof(CheckpointInfo));
+                    Run();
                 }
-            });
+            }
         }
 
         public async Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber)
