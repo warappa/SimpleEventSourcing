@@ -165,3 +165,4 @@ Samples/Shop/Shop.UI.Web/Scripts/_references.js
 *.nupkg
 .vs
 node_modules
+Samples/Shop/Shop.UI.Web.AspNet/Scripts/_references.js
