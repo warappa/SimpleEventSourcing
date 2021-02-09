@@ -4,13 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.SQLite.ReadModel;
-using SimpleEventSourcing.Storage;
-using SimpleEventSourcing.WriteModel;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Shop.UI.Web.AspNetCore.Blazor.Server
 {
@@ -39,25 +32,8 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-            IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var initializeTask = Task.Run(async () =>
-            {
-                var persistenceEngine = serviceProvider.GetRequiredService<IPersistenceEngine>();
-                await persistenceEngine.InitializeAsync();
-
-                var projectors = serviceProvider.GetRequiredService<IEnumerable<IProjector>>();
-                foreach (var projector in projectors)
-                {
-                    await projector.StartAsync();
-                }
-
-                //var resetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
-                //await resetter.ResetAsync(new[] { typeof(CheckpointInfo});
-            });
-            initializeTask.Wait();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
