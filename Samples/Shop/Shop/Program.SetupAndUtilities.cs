@@ -23,6 +23,7 @@ namespace Shop
     public partial class Program
     {
         public static ICheckpointPersister checkpointPersister;
+        private static PollingObserverFactory observerFactory;
         public static IReadRepository readRepository;
         private static SQLiteConnectionWithLock writeConn;
         private static SQLiteConnectionWithLock readConn;
@@ -137,26 +138,28 @@ namespace Shop
 
             var viewModelResetter = new StorageResetter(readConnectionFactory());
             checkpointPersister = new CheckpointPersister<CheckpointInfo>(readConnectionFactory());
+            observerFactory = new PollingObserverFactory(engine);
 
             // nicht-persistente Projektion
             var liveProjector = new CatchUpProjector<CustomerState>(
                 new CustomerState(),
                 checkpointPersister,
                 engine,
-                viewModelResetter);
+                viewModelResetter,
+                observerFactory);
 
             // persistente Projektionen
             readRepository = new ReadRepository(readConnectionFactory);
 
-            StartPersistentProjector(new CustomerReadModelState(readRepository), checkpointPersister, viewModelResetter);
-            StartPersistentProjector(new ArticleReadModelState(readRepository), checkpointPersister, viewModelResetter);
-            StartPersistentProjector(new ShoppingCartReadModelState(readRepository), checkpointPersister, viewModelResetter);
+            StartPersistentProjector(new CustomerReadModelState(readRepository), checkpointPersister, viewModelResetter, observerFactory);
+            StartPersistentProjector(new ArticleReadModelState(readRepository), checkpointPersister, viewModelResetter, observerFactory);
+            StartPersistentProjector(new ShoppingCartReadModelState(readRepository), checkpointPersister, viewModelResetter, observerFactory);
 
-            StartPersistentProjector(new CustomerOverviewState(readRepository), checkpointPersister, viewModelResetter);
-            StartPersistentProjector(new ArticleOverviewState(readRepository), checkpointPersister, viewModelResetter);
-            StartPersistentProjector(new ShoppingCartOverviewState(readRepository), checkpointPersister, viewModelResetter);
+            StartPersistentProjector(new CustomerOverviewState(readRepository), checkpointPersister, viewModelResetter, observerFactory);
+            StartPersistentProjector(new ArticleOverviewState(readRepository), checkpointPersister, viewModelResetter, observerFactory);
+            StartPersistentProjector(new ShoppingCartOverviewState(readRepository), checkpointPersister, viewModelResetter, observerFactory);
 
-            StartPersistentProjector(new ArticleActivationHistoryReadModelState(readRepository), checkpointPersister, viewModelResetter);
+            StartPersistentProjector(new ArticleActivationHistoryReadModelState(readRepository), checkpointPersister, viewModelResetter, observerFactory);
 
             disposeables.Add(liveProjector.StartAsync());
         }
@@ -175,14 +178,16 @@ namespace Shop
         public static void StartPersistentProjector<TReadModelState>(
             TReadModelState readModelState,
             ICheckpointPersister checkpointPersister,
-            IStorageResetter StorageResetter)
+            IStorageResetter StorageResetter,
+            IObserverFactory observerFactory)
             where TReadModelState : ReadRepositoryState<TReadModelState>, new()
         {
             var projection = new CatchUpProjector<TReadModelState>(
                 readModelState,
                 checkpointPersister,
                 engine,
-                StorageResetter);
+                StorageResetter,
+                observerFactory);
 
             disposeables.Add(projection.StartAsync());
         }

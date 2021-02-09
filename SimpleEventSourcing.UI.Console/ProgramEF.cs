@@ -203,8 +203,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             // engine.Initialize().Wait();
 
-            var poller = new Poller(engine, TimeSpan.FromMilliseconds(500));
-            var observer = poller.ObserveFrom(0);
+            var observerFactory = new PollingObserverFactory(engine, TimeSpan.FromMilliseconds(500));
+            var observer = await observerFactory.CreateObserverAsync(0); 
             observer.Subscribe((s) =>
             {
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);
@@ -298,7 +298,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 checkpointPersister,
                 engine,
                 viewModelResetter,
-                poller);
+                observerFactory);
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             await persistentState.StartAsync();

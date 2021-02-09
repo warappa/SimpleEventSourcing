@@ -233,8 +233,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             //var engine = new PersistenceEngine(sessionFactory, configuration, serializer);
 
-            var poller = new Poller(persistenceEngine, TimeSpan.FromMilliseconds(500));
-            var observer = poller.ObserveFrom(0);
+            var observerFactory = new PollingObserverFactory(persistenceEngine, TimeSpan.FromMilliseconds(500));
+            var observer = await observerFactory.CreateObserverAsync(0);
             observer.Subscribe((s) =>
             {
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);
@@ -329,7 +329,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 checkpointPersister,
                 persistenceEngine,
                 viewModelResetter,
-                poller);
+                observerFactory);
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();

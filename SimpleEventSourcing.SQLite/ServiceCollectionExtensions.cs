@@ -46,11 +46,12 @@ namespace SimpleEventSourcing.SQLite
                 return new ReadRepository(readConnectionFactory);
             });
 
-            services.AddScoped<IPoller>(sp =>
+            services.AddScoped<IPollingObserverFactory>(sp =>
             {
                 var engine = sp.GetRequiredService<IPersistenceEngine>();
-                return new Poller(engine, TimeSpan.FromMilliseconds(100));
+                return new PollingObserverFactory(engine, TimeSpan.FromMilliseconds(100));
             });
+            services.AddScoped<IObserverFactory>(sp => sp.GetRequiredService<IPollingObserverFactory>());
 
             return services;
         }
@@ -65,9 +66,9 @@ namespace SimpleEventSourcing.SQLite
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
                     var engine = sp.GetRequiredService<IPersistenceEngine>();
                     var storageResetter = sp.GetRequiredService<IReadModelStorageResetter>();
-                    var poller = sp.GetRequiredService<IPoller>();
+                    var observerFactory = sp.GetRequiredService<IObserverFactory>();
 
-                    return new CatchUpProjector<TState>(state, checkpointPersister, engine, storageResetter, poller);
+                    return new CatchUpProjector<TState>(state, checkpointPersister, engine, storageResetter, observerFactory);
 
                 });
             services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
@@ -85,9 +86,9 @@ namespace SimpleEventSourcing.SQLite
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
                     var engine = sp.GetRequiredService<IPersistenceEngine>();
                     var storageResetter = sp.GetRequiredService<IReadModelStorageResetter>();
-                    var poller = sp.GetRequiredService<IPoller>();
+                    var observerFactory = sp.GetRequiredService<IObserverFactory>();
 
-                    return new CatchUpProjector<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, poller);
+                    return new CatchUpProjector<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, observerFactory);
 
                 });
             services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());

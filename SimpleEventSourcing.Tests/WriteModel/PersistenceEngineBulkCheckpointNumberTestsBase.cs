@@ -17,7 +17,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [SetUp]
-        public async Task TestSetupAsync()
+        public new async Task TestSetupAsync()
         {
             EarlySetup();
 

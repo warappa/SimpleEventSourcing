@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -21,6 +22,9 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
         {
             using (var scope = serviceProvider.CreateScope())
             {
+                var engine = scope.ServiceProvider.GetRequiredService<IPersistenceEngine>();
+                await engine.InitializeAsync();
+
                 var projectors = scope.ServiceProvider.GetRequiredService<IEnumerable<IProjector>>();
                 foreach (var projector in projectors)
                 {

@@ -15,7 +15,7 @@ namespace SimpleEventSourcing.ReadModel
         where TState : class, IEventSourcedState<TState>, new()
     {
         protected readonly IPersistenceEngine engine;
-        protected readonly IPoller poller;
+        protected readonly IObserverFactory observerFactory;
         private readonly string projectorIdentifier;
         private readonly ICheckpointPersister checkpointPersister;
         private readonly IStorageResetter storageResetter;
@@ -27,14 +27,14 @@ namespace SimpleEventSourcing.ReadModel
             ICheckpointPersister checkpointPersister,
             IPersistenceEngine engine,
             IStorageResetter storageResetter,
-            IPoller poller
+            IObserverFactory observerFactory
             )
             : base(state)
         {
             this.checkpointPersister = checkpointPersister ?? throw new ArgumentNullException(nameof(checkpointPersister));
             this.storageResetter = storageResetter ?? throw new ArgumentNullException(nameof(storageResetter));
             this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
-            this.poller = poller ?? throw new ArgumentNullException(nameof(poller));
+            this.observerFactory = observerFactory ?? throw new ArgumentNullException(nameof(observerFactory));
 
             projectorIdentifier = checkpointPersister.GetProjectorIdentifier(typeof(TState));
         }
@@ -48,7 +48,7 @@ namespace SimpleEventSourcing.ReadModel
                 await storageResetter.ResetAsync(ControlsReadModelsAttribute.GetControlledReadModels(typeof(TState)));
             }
 
-            observer = poller.ObserveFrom(lastKnownCheckpointNumber, StateModel.PayloadTypes);
+            observer = await observerFactory.CreateObserverAsync(lastKnownCheckpointNumber, StateModel.PayloadTypes);
 
             subscription = observer
                 .Buffer(TimeSpan.FromSeconds(0.1))

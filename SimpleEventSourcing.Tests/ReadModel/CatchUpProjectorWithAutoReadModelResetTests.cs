@@ -42,11 +42,11 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             var checkpointPersister = config.ReadModel.GetCheckpointPersister();
             var readStorageResetter = config.ReadModel.GetStorageResetter();
-            var poller = config.ReadModel.GetPoller(TimeSpan.FromMilliseconds(100000));
+            var observerFactory = config.ReadModel.GetPollingObserverFactory(TimeSpan.FromMilliseconds(100000));
 
             readRepository = config.ReadModel.GetReadRepository();
 
-            target = new CatchUpProjector<CatchUpStateWithReadModel>(new CatchUpStateWithReadModel(readRepository), checkpointPersister, engine, readStorageResetter, poller);
+            target = new CatchUpProjector<CatchUpStateWithReadModel>(new CatchUpStateWithReadModel(readRepository), checkpointPersister, engine, readStorageResetter, observerFactory);
 
             await engine.InitializeAsync().ConfigureAwait(false);
 

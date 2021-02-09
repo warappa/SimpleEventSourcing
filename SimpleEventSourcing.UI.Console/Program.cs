@@ -192,8 +192,8 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
 
             engine.InitializeAsync().Wait();
 
-            var poller = new Poller(engine, TimeSpan.FromMilliseconds(500));
-            var observer = poller.ObserveFrom(0);
+            var observerFactory = new PollingObserverFactory(engine, TimeSpan.FromMilliseconds(500));
+            var observer = await observerFactory.CreateObserverAsync(0);
             var subscription = observer.Subscribe((s) =>
             {
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);
@@ -305,7 +305,7 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                 checkpointPersister,
                 engine,
                 viewModelResetter,
-                poller);
+                observerFactory);
             stopwatch.Start();
 
             await persistentState.StartAsync();

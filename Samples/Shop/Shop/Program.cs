@@ -35,7 +35,7 @@ namespace Shop
         {
             await InitializeAsync().ConfigureAwait(false);
 
-            AnalyseAlmostOrdered();
+            await AnalyseAlmostOrderedAsync();
 
             await OrderAsync().ConfigureAwait(false);
 
@@ -86,10 +86,10 @@ namespace Shop
             var projection = CustomerState.LoadState(greatCustomer.StateModel);
         }
 
-        public static void AnalyseAlmostOrdered()
+        public static async Task AnalyseAlmostOrderedAsync()
         {
-            var poller = new Poller(engine, TimeSpan.FromMilliseconds(500));
-            observer = poller.ObserveFrom(0);
+            var observerFactory = new PollingObserverFactory(engine, TimeSpan.FromMilliseconds(500));
+            observer = await observerFactory.CreateObserverAsync();
 
             var removedObservable = observer
                 .Where(x => x.PayloadType.StartsWith(nameof(ShoppingCartArticleRemoved)))
@@ -121,7 +121,7 @@ namespace Shop
                 )
                 .Where(x => x != null);
 
-            orderedWithCustomerNameObservable
+            await orderedWithCustomerNameObservable
                 .Join(
                     removedObservable,
                     _ => Observable.Never<Unit>(), // triggers window-data reset for left side (never)
@@ -143,7 +143,7 @@ namespace Shop
                 //.Subscribe(x => Console.WriteLine($"ShoppingCart: {x.CustomerName}: " + string.Join(", ", x.relevant.Articlenumber)))
                 ;
 
-            observer.StartAsync();
+            await observer.StartAsync();
         }
 
         public static async IAsyncEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo> AnalyseAlmostOrderedWithState()

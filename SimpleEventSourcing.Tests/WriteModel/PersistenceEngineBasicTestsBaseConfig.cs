@@ -42,7 +42,7 @@ namespace SimpleEventSourcing.Tests
 
             public abstract Type GetCheckpointInfoType();
 
-            public abstract IPoller GetPoller(TimeSpan interval);
+            public abstract IPollingObserverFactory GetPollingObserverFactory(TimeSpan interval);
         }
 
         public abstract class WriteModelConfig

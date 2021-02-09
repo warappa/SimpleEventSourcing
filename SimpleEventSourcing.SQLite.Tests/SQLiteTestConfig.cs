@@ -272,9 +272,9 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                 return GetReadConnectionFactory()();
             }
 
-            public override IPoller GetPoller(TimeSpan interval)
+            public override IPollingObserverFactory GetPollingObserverFactory(TimeSpan interval)
             {
-                return new Poller(parent.WriteModel.GetPersistenceEngine(), interval);
+                return new PollingObserverFactory(parent.WriteModel.GetPersistenceEngine(), interval);
             }
         }
     }

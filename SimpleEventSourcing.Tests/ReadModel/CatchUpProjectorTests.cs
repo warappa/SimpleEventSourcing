@@ -18,7 +18,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         private ICheckpointPersister checkpointPersister;
         private IPersistenceEngine engine;
         private IStorageResetter storageResetter;
-        private IPoller poller;
+        private IPollingObserverFactory observerFactory;
 
         protected CatchUpProjectorTests(TestsBaseConfig config)
         {
@@ -48,11 +48,11 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             checkpointPersister = config.ReadModel.GetCheckpointPersister();
             storageResetter = config.WriteModel.GetStorageResetter();
-            poller = config.ReadModel.GetPoller(TimeSpan.FromMinutes(1));
+            observerFactory = config.ReadModel.GetPollingObserverFactory(TimeSpan.FromMinutes(1));
 
             await engine.InitializeAsync().ConfigureAwait(false);
 
-            target = new CatchUpProjector<CatchUpState>(null, checkpointPersister, engine, storageResetter, poller);
+            target = new CatchUpProjector<CatchUpState>(null, checkpointPersister, engine, storageResetter, observerFactory);
 
             var readResetter = config.ReadModel.GetStorageResetter();
             await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetCheckpointInfoType() });
