@@ -41,12 +41,12 @@ namespace SimpleEventSourcing.ReadModel.Tests
         public async Task Initialize()
         {
             var checkpointPersister = config.ReadModel.GetCheckpointPersister();
-
             var readStorageResetter = config.ReadModel.GetStorageResetter();
+            var poller = config.ReadModel.GetPoller(TimeSpan.FromMilliseconds(100000));
 
             readRepository = config.ReadModel.GetReadRepository();
 
-            target = new CatchUpProjector<CatchUpStateWithReadModel>(new CatchUpStateWithReadModel(readRepository), checkpointPersister, engine, readStorageResetter, 100000);
+            target = new CatchUpProjector<CatchUpStateWithReadModel>(new CatchUpStateWithReadModel(readRepository), checkpointPersister, engine, readStorageResetter, poller);
 
             await engine.InitializeAsync().ConfigureAwait(false);
 
@@ -65,33 +65,32 @@ namespace SimpleEventSourcing.ReadModel.Tests
         [Test]
         public async Task Resets_ReadModel_automatically()
         {
-            using (var catchUp = (await target.StartAsync() as IObserveRawStreamEntries))
-            {
-                var hasResults = await catchUp.PollNowAsync();
-                hasResults.Should().Be(false);
+            await target.StartAsync();
 
-                var model = await Load().ConfigureAwait(false);
-                model.Should().Be(null);
+            var hasResults = await target.PollNowAsync();
+            hasResults.Should().Be(false);
 
-                await SaveRawStreamEntryAsync();
+            var model = await Load().ConfigureAwait(false);
+            model.Should().Be(null);
 
-                hasResults = await catchUp.PollNowAsync();
-                hasResults.Should().Be(true);
+            await SaveRawStreamEntryAsync();
 
-                await Task.Delay(2000).ConfigureAwait(false);
+            hasResults = await target.PollNowAsync();
+            hasResults.Should().Be(true);
 
-                model = await Load().ConfigureAwait(false);
-                model.Count.Should().Be(1);
+            await Task.Delay(2000).ConfigureAwait(false);
 
-                await SaveRawStreamEntryAsync();
+            model = await Load().ConfigureAwait(false);
+            model.Count.Should().Be(1);
 
-                hasResults = await catchUp.PollNowAsync();
-                hasResults.Should().Be(true);
+            await SaveRawStreamEntryAsync();
 
-                await Task.Delay(1000).ConfigureAwait(false);
-                model = await Load().ConfigureAwait(false);
-                model.Count.Should().Be(2);
-            }
+            hasResults = await target.PollNowAsync();
+            hasResults.Should().Be(true);
+
+            await Task.Delay(1000).ConfigureAwait(false);
+            model = await Load().ConfigureAwait(false);
+            model.Count.Should().Be(2);
         }
 
         private async Task SaveRawStreamEntryAsync()

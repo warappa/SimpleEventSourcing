@@ -122,9 +122,9 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
                     }
 
                     var databaseFile = "writeDatabase.db";
-                    
+
                     var connectionString = new SQLiteConnectionString(databaseFile, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex, true, null);
-                    
+
                     writeConnection = new SQLiteConnectionWithLock(connectionString);
 
                     using (writeConnection.Lock())
@@ -270,6 +270,11 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
             public SQLiteConnection GetConnection()
             {
                 return GetReadConnectionFactory()();
+            }
+
+            public override IPoller GetPoller(TimeSpan interval)
+            {
+                return new Poller(parent.WriteModel.GetPersistenceEngine(), interval);
             }
         }
     }

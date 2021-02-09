@@ -28,7 +28,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             // this.Database.Log = msg => Debug.WriteLine(msg);
             Configuration.AutoDetectChangesEnabled = false;
         }
-        
+
         public DbSet<PersistentEntity> PersistentEntities { get; set; }
         public DbSet<CheckpointInfo> CheckpointInfos { get; set; }
     }
@@ -83,7 +83,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             var binder = new VersionedBinder();
             var serializer = new JsonNetSerializer(binder);
-            
+
             var bus = new ObservableMessageBus();
             var dbContextScopeFactory = new DbContextScopeFactory(new DbContextFactory());
             var persistenceEngine = new PersistenceEngine<WriteModelDbContext>(dbContextScopeFactory, serializer);
@@ -203,8 +203,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             // engine.Initialize().Wait();
 
-            var polling = new Poller(engine, 500);
-            var observer = polling.ObserveFrom(0);
+            var poller = new Poller(engine, TimeSpan.FromMilliseconds(500));
+            var observer = poller.ObserveFrom(0);
             observer.Subscribe((s) =>
             {
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);
@@ -297,7 +297,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 new PersistentState(readRepository),
                 checkpointPersister,
                 engine,
-                viewModelResetter);
+                viewModelResetter,
+                poller);
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             await persistentState.StartAsync();
@@ -314,7 +315,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             Console.ReadKey();
             stopwatch.Stop();
             Console.WriteLine($"persistent: {persistentState.StateModel.Count} msgs, {stopwatch.ElapsedMilliseconds}ms -> {persistentState.StateModel.Count / (stopwatch.ElapsedMilliseconds / 1000.0)}");
-            
+
             observer.Dispose();
             /*
             Console.WriteLine(live.StateModel.Name);

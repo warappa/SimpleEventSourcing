@@ -15,48 +15,58 @@ namespace SimpleEventSourcing.ReadModel
         where TState : class, IEventSourcedState<TState>, new()
     {
         protected readonly IPersistenceEngine engine;
-        protected readonly Poller poller;
-
+        protected readonly IPoller poller;
+        private readonly string projectorIdentifier;
         private readonly ICheckpointPersister checkpointPersister;
         private readonly IStorageResetter storageResetter;
+        private IObserveRawStreamEntries observer;
+        private IDisposable subscription;
 
         public CatchUpProjector(
             TState state,
             ICheckpointPersister checkpointPersister,
             IPersistenceEngine engine,
             IStorageResetter storageResetter,
-            int interval = 100
+            IPoller poller
             )
             : base(state)
         {
-            this.checkpointPersister = checkpointPersister;
-            this.storageResetter = storageResetter;
+            this.checkpointPersister = checkpointPersister ?? throw new ArgumentNullException(nameof(checkpointPersister));
+            this.storageResetter = storageResetter ?? throw new ArgumentNullException(nameof(storageResetter));
+            this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
+            this.poller = poller ?? throw new ArgumentNullException(nameof(poller));
 
-            this.engine = engine;
-
-            poller = new Poller(engine, interval);
+            projectorIdentifier = checkpointPersister.GetProjectorIdentifier(typeof(TState));
         }
 
-        public override async Task<IDisposable> StartAsync()
+        public override async Task StartAsync()
         {
-            var lastKnownCheckpointNumber = await checkpointPersister.LoadLastCheckpointAsync(typeof(TState).Name);
+            var lastKnownCheckpointNumber = await checkpointPersister.LoadLastCheckpointAsync(projectorIdentifier);
 
             if (lastKnownCheckpointNumber == -1)
             {
                 await storageResetter.ResetAsync(ControlsReadModelsAttribute.GetControlledReadModels(typeof(TState)));
             }
 
-            var observer = poller.ObserveFrom(lastKnownCheckpointNumber, StateModel.PayloadTypes);
+            observer = poller.ObserveFrom(lastKnownCheckpointNumber, StateModel.PayloadTypes);
 
-            observer
+            subscription = observer
                 .Buffer(TimeSpan.FromSeconds(0.1))
                 .Select(x => Observable.FromAsync(() => ProcessStreamEntries(x)))
                 .Concat() //Ensure that the results are serialized
                 .Subscribe(); //do what you will here with the results of the async method calls
 
             await observer.StartAsync();
+        }
 
-            return observer;
+        public async Task<bool> PollNowAsync()
+        {
+            if (observer is null)
+            {
+                throw new InvalidOperationException("CatchupProjector is currently not observing - did you call StartAsync?");
+            }
+
+            return await observer.PollNowAsync();
         }
 
         private async Task ProcessStreamEntries(IList<IRawStreamEntry> streamEntries)
@@ -105,9 +115,22 @@ namespace SimpleEventSourcing.ReadModel
             if (requiredMessages.Count > 0)
             {
                 await checkpointPersister.SaveCurrentCheckpointAsync(
-                    checkpointPersister.GetProjectorIdentifier(typeof(TState)),
+                    projectorIdentifier,
                     requiredMessages[requiredMessages.Count - 1].CheckpointNumber);
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                subscription?.Dispose();
+                subscription = null;
+                observer?.Dispose();
+                observer = null;
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

@@ -355,6 +355,11 @@ insert into hibernate_unique_key values ( 1 );";
                     return meta.IsTable(name);
                 }
             }
+
+            public override IPoller GetPoller(TimeSpan interval)
+            {
+                return new Poller(parent.WriteModel.GetPersistenceEngine(), interval);
+            }
         }
 
         public class StorageNHConfig : StorageConfig

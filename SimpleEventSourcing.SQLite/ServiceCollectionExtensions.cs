@@ -14,7 +14,7 @@ namespace SimpleEventSourcing.SQLite
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSimpleEventSourcing(this IServiceCollection services, 
+        public static IServiceCollection AddSimpleEventSourcing(this IServiceCollection services,
             Func<SQLiteConnectionWithLock> connectionFactory,
             Func<SQLiteConnectionWithLock> readConnectionFactory)
         {
@@ -33,15 +33,15 @@ namespace SimpleEventSourcing.SQLite
             });
             services.AddScoped<IEventRepository, EventRepository>();
 
-            services.AddScoped<ICheckpointPersister>(sp=>
+            services.AddScoped<ICheckpointPersister>(sp =>
             {
                 return new CheckpointPersister<CheckpointInfo>(readConnectionFactory());
             });
-            services.AddScoped<IReadModelStorageResetter>(sp=>
+            services.AddScoped<IReadModelStorageResetter>(sp =>
             {
                 return new StorageResetter(readConnectionFactory());
             });
-            services.AddScoped<IReadRepository>(sp=>
+            services.AddScoped<IReadRepository>(sp =>
             {
                 return new ReadRepository(readConnectionFactory);
             });
@@ -49,14 +49,14 @@ namespace SimpleEventSourcing.SQLite
             services.AddScoped<IPoller>(sp =>
             {
                 var engine = sp.GetRequiredService<IPersistenceEngine>();
-                return new Poller(engine, 100);
+                return new Poller(engine, TimeSpan.FromMilliseconds(100));
             });
 
             return services;
         }
 
         public static IServiceCollection AddCatchupProjector<TState>(
-            this IServiceCollection services, TState state, int interval = 100)
+            this IServiceCollection services, TState state)
             where TState : class, IEventSourcedState<TState>, new()
         {
             services.AddScoped<IProjector<TState>>(
@@ -64,9 +64,10 @@ namespace SimpleEventSourcing.SQLite
                 {
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
                     var engine = sp.GetRequiredService<IPersistenceEngine>();
-                    // TODO: which storage?!
                     var storageResetter = sp.GetRequiredService<IReadModelStorageResetter>();
-                    return new CatchUpProjector<TState>(state, checkpointPersister, engine, storageResetter, interval);
+                    var poller = sp.GetRequiredService<IPoller>();
+
+                    return new CatchUpProjector<TState>(state, checkpointPersister, engine, storageResetter, poller);
 
                 });
             services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
@@ -75,7 +76,7 @@ namespace SimpleEventSourcing.SQLite
         }
 
         public static IServiceCollection AddCatchupProjector<TState>(
-            this IServiceCollection services, Func<IServiceProvider, TState> stateFactory, int interval = 100)
+            this IServiceCollection services, Func<IServiceProvider, TState> stateFactory)
             where TState : class, IEventSourcedState<TState>, new()
         {
             services.AddScoped<IProjector<TState>>(
@@ -83,10 +84,10 @@ namespace SimpleEventSourcing.SQLite
                 {
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
                     var engine = sp.GetRequiredService<IPersistenceEngine>();
-
-                    // TODO: which storage?!
                     var storageResetter = sp.GetRequiredService<IReadModelStorageResetter>();
-                    return new CatchUpProjector<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, interval);
+                    var poller = sp.GetRequiredService<IPoller>();
+
+                    return new CatchUpProjector<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, poller);
 
                 });
             services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());

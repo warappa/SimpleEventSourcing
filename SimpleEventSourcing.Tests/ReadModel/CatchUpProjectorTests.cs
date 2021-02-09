@@ -18,6 +18,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         private ICheckpointPersister checkpointPersister;
         private IPersistenceEngine engine;
         private IStorageResetter storageResetter;
+        private IPoller poller;
 
         protected CatchUpProjectorTests(TestsBaseConfig config)
         {
@@ -36,6 +37,8 @@ namespace SimpleEventSourcing.ReadModel.Tests
         [TearDown]
         public async Task TearDown()
         {
+            target?.Dispose();
+
             await config.ReadModel.CleanupReadDatabaseAsync();
             await config.WriteModel.CleanupWriteDatabaseAsync();
         }
@@ -44,12 +47,12 @@ namespace SimpleEventSourcing.ReadModel.Tests
         public async Task Initialize()
         {
             checkpointPersister = config.ReadModel.GetCheckpointPersister();
-
             storageResetter = config.WriteModel.GetStorageResetter();
+            poller = config.ReadModel.GetPoller(TimeSpan.FromMinutes(1));
 
             await engine.InitializeAsync().ConfigureAwait(false);
 
-            target = new CatchUpProjector<CatchUpState>(null, checkpointPersister, engine, storageResetter, 100000);
+            target = new CatchUpProjector<CatchUpState>(null, checkpointPersister, engine, storageResetter, poller);
 
             var readResetter = config.ReadModel.GetStorageResetter();
             await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetCheckpointInfoType() });
@@ -58,30 +61,29 @@ namespace SimpleEventSourcing.ReadModel.Tests
         [Test]
         public async Task Can_poll()
         {
-            using (var catchUp = (await target.StartAsync() as IObserveRawStreamEntries))
-            {
-                var hasResults = await catchUp.PollNowAsync();
-                hasResults.Should().Be(false);
-                target.StateModel.Count.Should().Be(0);
+            await target.StartAsync();
 
-                await SaveRawStreamEntryAsync();
+            var hasResults = await target.PollNowAsync();
+            hasResults.Should().Be(false);
+            target.StateModel.Count.Should().Be(0);
 
-                hasResults = await catchUp.PollNowAsync();
+            await SaveRawStreamEntryAsync();
 
-                hasResults.Should().Be(true);
+            hasResults = await target.PollNowAsync();
 
-                await Task.Delay(2000).ConfigureAwait(false);
+            hasResults.Should().Be(true);
 
-                target.StateModel.Count.Should().Be(1);
+            await Task.Delay(2000).ConfigureAwait(false);
 
-                await SaveRawStreamEntryAsync();
+            target.StateModel.Count.Should().Be(1);
 
-                hasResults = await catchUp.PollNowAsync();
-                hasResults.Should().Be(true);
+            await SaveRawStreamEntryAsync();
 
-                await Task.Delay(2000).ConfigureAwait(false);
-                target.StateModel.Count.Should().Be(2);
-            }
+            hasResults = await target.PollNowAsync();
+            hasResults.Should().Be(true);
+
+            await Task.Delay(2000).ConfigureAwait(false);
+            target.StateModel.Count.Should().Be(2);
         }
 
         private async Task SaveRawStreamEntryAsync()

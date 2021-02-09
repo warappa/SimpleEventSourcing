@@ -88,8 +88,8 @@ namespace Shop
 
         public static void AnalyseAlmostOrdered()
         {
-            var polling = new Poller(engine, 500);
-            observer = polling.ObserveFrom(0);
+            var poller = new Poller(engine, TimeSpan.FromMilliseconds(500));
+            observer = poller.ObserveFrom(0);
 
             var removedObservable = observer
                 .Where(x => x.PayloadType.StartsWith(nameof(ShoppingCartArticleRemoved)))

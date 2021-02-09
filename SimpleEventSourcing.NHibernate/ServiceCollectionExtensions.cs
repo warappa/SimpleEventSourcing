@@ -63,7 +63,8 @@ namespace SimpleEventSourcing.NHibernate
             services.AddScoped<IPoller>(sp =>
             {
                 var engine = sp.GetRequiredService<IPersistenceEngine>();
-                return new Poller(engine, 100);
+
+                return new Poller(engine, TimeSpan.FromMilliseconds(100));
             });
 
             return services;
@@ -78,9 +79,10 @@ namespace SimpleEventSourcing.NHibernate
                 {
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
                     var engine = sp.GetRequiredService<IPersistenceEngine>();
-                    // TODO: which storage?!
                     var storageResetter = sp.GetRequiredService<IReadModelStorageResetter>();
-                    return new CatchUpProjector<TState>(state, checkpointPersister, engine, storageResetter, interval);
+                    var poller = sp.GetRequiredService<IPoller>();
+
+                    return new CatchUpProjector<TState>(state, checkpointPersister, engine, storageResetter, poller);
                 });
             services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
 
@@ -96,10 +98,10 @@ namespace SimpleEventSourcing.NHibernate
                 {
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
                     var engine = sp.GetRequiredService<IPersistenceEngine>();
-
-                    // TODO: which storage?!
                     var storageResetter = sp.GetRequiredService<IReadModelStorageResetter>();
-                    return new CatchUpProjector<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, interval);
+                    var poller = sp.GetRequiredService<IPoller>();
+
+                    return new CatchUpProjector<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, poller);
                 });
             services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
 

@@ -41,6 +41,8 @@ namespace SimpleEventSourcing.Tests
             public abstract ICheckpointPersister GetCheckpointPersister();
 
             public abstract Type GetCheckpointInfoType();
+
+            public abstract IPoller GetPoller(TimeSpan interval);
         }
 
         public abstract class WriteModelConfig

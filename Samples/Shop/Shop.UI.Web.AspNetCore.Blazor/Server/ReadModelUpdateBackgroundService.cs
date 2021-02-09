@@ -11,7 +11,6 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
     public class ReadModelUpdateBackgroundService : BackgroundService
     {
         private readonly IServiceProvider serviceProvider;
-        private List<IDisposable> subscriptions = new List<IDisposable>();
 
         public ReadModelUpdateBackgroundService(IServiceProvider serviceProvider)
         {
@@ -25,8 +24,7 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
                 var projectors = scope.ServiceProvider.GetRequiredService<IEnumerable<IProjector>>();
                 foreach (var projector in projectors)
                 {
-                    var subscription = await projector.StartAsync();
-                    subscriptions.Add(subscription);
+                    await projector.StartAsync();
                 }
 
                 while (true)
@@ -45,18 +43,6 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
                     }
                 }
             }
-        }
-
-        public override Task StopAsync(CancellationToken cancellationToken)
-        {
-            foreach (var disposable in subscriptions)
-            {
-                disposable.Dispose();
-            }
-
-            subscriptions.Clear();
-
-            return base.StopAsync(cancellationToken);
         }
     }
 }

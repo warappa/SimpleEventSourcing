@@ -8,15 +8,20 @@ namespace SimpleEventSourcing.WriteModel
     public sealed class Poller : IPoller
     {
         private IPersistenceEngine persistenceEngine { get; }
-        private readonly int interval;
+        private readonly TimeSpan interval;
 
-        public Poller(IPersistenceEngine persistenceEngine, int interval = 5000)
+        public Poller(IPersistenceEngine persistenceEngine)
+            : this(persistenceEngine, TimeSpan.FromSeconds(5))
+        {
+
+        }
+        public Poller(IPersistenceEngine persistenceEngine, TimeSpan interval)
         {
             if (persistenceEngine == null)
             {
                 throw new ArgumentNullException(nameof(persistenceEngine));
             }
-            if (interval <= 0)
+            if (interval.TotalMilliseconds <= 0)
             {
                 throw new ArgumentException("MustBeGreaterThanZero");
             }
@@ -34,7 +39,7 @@ namespace SimpleEventSourcing.WriteModel
         {
             private readonly IPersistenceEngine persistenceEngine;
             private readonly Type[] payloadTypes;
-            private readonly int interval;
+            private readonly int intervalInMilliseconds;
             private readonly Subject<IRawStreamEntry> subject = new();
             private readonly Random random = new();
             private int lastKnownCheckpointNumber;
@@ -43,11 +48,11 @@ namespace SimpleEventSourcing.WriteModel
             private Task pollLoopTask;
             private bool disposed;
 
-            public PollingObserveRawStreamEntries(IPersistenceEngine persistenceEngine, int interval, int lastKnownCheckpointNumber = 0, Type[] payloadTypes = null)
+            public PollingObserveRawStreamEntries(IPersistenceEngine persistenceEngine, TimeSpan interval, int lastKnownCheckpointNumber = 0, Type[] payloadTypes = null)
             {
                 this.persistenceEngine = persistenceEngine;
                 this.lastKnownCheckpointNumber = lastKnownCheckpointNumber;
-                this.interval = interval;
+                this.intervalInMilliseconds = (int)Math.Ceiling(interval.TotalMilliseconds);
                 this.payloadTypes = payloadTypes;
             }
 
@@ -86,7 +91,8 @@ namespace SimpleEventSourcing.WriteModel
 
                     if (!instant)
                     {
-                        await Task.Delay(random.Next(interval / 2 + 1, interval)).ConfigureAwait(false);
+                        
+                        await Task.Delay(random.Next(intervalInMilliseconds / 2 + 1, intervalInMilliseconds)).ConfigureAwait(false);
                     }
 
                     instant = await DoPoll();

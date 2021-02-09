@@ -35,7 +35,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             var repo = serviceProvider.GetRequiredService<IEventRepository>();
             var repository = serviceProvider.GetRequiredService<IEventRepository>();
             var checkpointPersister = serviceProvider.GetRequiredService<ICheckpointPersister>();
-            var polling = serviceProvider.GetRequiredService<IPoller>();
+            var poller = serviceProvider.GetRequiredService<IPoller>();
             var readRepository = serviceProvider.GetRequiredService<IReadRepository>();
             var persistentState = serviceProvider.GetRequiredService<IProjector<PersistentState>>();
             var viewModelResetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
@@ -144,7 +144,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             var engine = persistenceEngine;
 
-            var observer = polling.ObserveFrom(0);
+            var observer = poller.ObserveFrom(0);
             observer.Subscribe((s) =>
             {
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);

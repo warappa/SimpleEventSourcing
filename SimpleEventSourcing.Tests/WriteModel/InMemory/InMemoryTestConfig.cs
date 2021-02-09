@@ -163,6 +163,11 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
             {
 
             }
+
+            public override IPoller GetPoller(TimeSpan interval)
+            {
+                return new Poller(parent.WriteModel.GetPersistenceEngine(), interval);
+            }
         }
     }
 }

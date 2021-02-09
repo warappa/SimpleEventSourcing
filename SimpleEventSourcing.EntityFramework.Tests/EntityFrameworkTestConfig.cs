@@ -258,6 +258,11 @@ namespace SimpleEventSourcing.EntityFramework.Tests
                     return false;
                 }
             }
+
+            public override IPoller GetPoller(TimeSpan interval)
+            {
+                return new Poller(parent.WriteModel.GetPersistenceEngine(), interval);
+            }
         }
 
         public class StorageEntityFrameworkConfig : StorageConfig

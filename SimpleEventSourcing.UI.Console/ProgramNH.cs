@@ -233,8 +233,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             //var engine = new PersistenceEngine(sessionFactory, configuration, serializer);
 
-            var polling = new Poller(persistenceEngine, 500);
-            var observer = polling.ObserveFrom(0);
+            var poller = new Poller(persistenceEngine, TimeSpan.FromMilliseconds(500));
+            var observer = poller.ObserveFrom(0);
             observer.Subscribe((s) =>
             {
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);
@@ -284,7 +284,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             Console.WriteLine("Rename count: " + await persistenceEngine.LoadStreamEntriesAsync(
                     minCheckpointNumber: await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync() - 5,
                     payloadTypes: new[] { typeof(Renamed) })
-                
+
                 //.Result
                 .CountAsync());
             Console.WriteLine("Current CheckpointNumber: " + await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync()
@@ -329,7 +329,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 checkpointPersister,
                 persistenceEngine,
                 viewModelResetter,
-                500);
+                poller);
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();

@@ -192,13 +192,15 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
 
             engine.InitializeAsync().Wait();
 
-            var polling = new Poller(engine, 500);
-            var observer = polling.ObserveFrom(0);
-            observer.Subscribe((s) =>
+            var poller = new Poller(engine, TimeSpan.FromMilliseconds(500));
+            var observer = poller.ObserveFrom(0);
+            var subscription = observer.Subscribe((s) =>
             {
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);
             });
+            disposables.Add(subscription);
             disposables.Add(observer);
+
             await observer.StartAsync();
 
             var repository = new EventRepository(
@@ -302,10 +304,11 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                 new PersistentState(readRepository),
                 checkpointPersister,
                 engine,
-                viewModelResetter);
+                viewModelResetter,
+                poller);
             stopwatch.Start();
 
-            disposables.Add(await persistentState.StartAsync());
+            await persistentState.StartAsync();
 
             _ = Task.Run(async () =>
             {
