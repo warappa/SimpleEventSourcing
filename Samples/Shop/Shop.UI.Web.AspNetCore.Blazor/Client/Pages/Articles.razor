@@ -1,48 +1,74 @@
 ﻿@page "/articles"
 @using Shop.UI.Web.AspNetCore.Blazor.Shared
 @inject HttpClient Http
+@inject IDialogService DialogService
 
 <h1>Articles</h1>
-
-@if (articles == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Article</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var article in articles)
-            {
+<div style="position:relative;">
+    @if (articles == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <div>
+            <MudButton Variant="Variant.Text" OnClick="e => createArticleVisible = true"><MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon></MudButton>
+        </div>
+        <MudSimpleTable>
+            <thead>
                 <tr>
-                    <td style="background: @(article.Active ? "green" : "red")">@article.Articlenumber</td>
-                    <td></td>
+                    <th>Article</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var article in articles)
+                {
+                    <tr>
+                        <td>
+                            <div style="background: @(article.Active ? "green" : "red");display:inline-block; border-radius: 10px;width: 10px; height: 10px;"></div>
+                            @article.Articlenumber
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Link="@($"/articles/{article.ArticleId}")"></MudIconButton>
+                        </td>
+                        <td></td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
 
-    <EditForm Model="CreateArticle" OnValidSubmit="@CreateArticleAsync">
-        <div>Article number</div>
-        <InputText @bind-Value="CreateArticle.Articlenumber"></InputText>
-        <div>Description</div>
-        <InputText @bind-Value="CreateArticle.Description"></InputText>
-        <div>Price</div>
-        <InputNumber @bind-Value="CreateArticle.PriceValue"></InputNumber>
-        <div>Currency (EUR,...)</div>
-        <InputText @bind-Value="CreateArticle.PriceIsoCode"></InputText>
-        <button type="submit">Create Article</button>
-    </EditForm>
-}
+        <MudDialog @bind-IsVisible="createArticleVisible">
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3" /> Create Article
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <EditForm Model="CreateArticle" OnValidSubmit="@CreateArticleAsync">
 
+                    <MudTextField @bind-Value="CreateArticle.Articlenumber" Label="Article number"></MudTextField>
+
+                    <MudTextField @bind-Value="CreateArticle.Description" Label="Description"></MudTextField>
+
+                    <MudTextField @bind-Value="CreateArticle.PriceValue" Label="Price"></MudTextField>
+
+                    <MudSelect T="string"
+                               @bind-Value="CreateArticle.PriceIsoCode"
+                               Label="Currency (EUR,...)">
+                        <MudSelectItem T="string" Value="@("EUR")"></MudSelectItem>
+                        <MudSelectItem T="string" Value="@("USD")"></MudSelectItem>
+                    </MudSelect>
+                </EditForm>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateArticleAsync" Class="px-10">Create</MudButton>
+            </DialogActions>
+        </MudDialog>
+    }
+</div>
 @code {
     private ArticleViewModel[] articles;
+
+    private bool createArticleVisible = false;
     private CreateArticle CreateArticle = new CreateArticle
     {
         Id = Guid.NewGuid().ToString()
@@ -66,6 +92,8 @@ else
         {
             Id = Guid.NewGuid().ToString()
         };
+
+        createArticleVisible = false;
 
         await LoadAsync();
     }

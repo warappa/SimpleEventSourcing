@@ -1,0 +1,114 @@
+﻿@page "/articles/{Id}"
+@using Shop.UI.Web.AspNetCore.Blazor.Shared
+@inject HttpClient Http
+@inject IDialogService DialogService
+
+<h1>Article @(article?.Articlenumber)</h1>
+<div style="position:relative;">
+    @if (article == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+
+
+        <div>
+            @if (article.Active)
+            {
+                <MudButton Variant="Variant.Text" OnClick="e => deactivateArticleVisible = true"><MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon> Deactivate</MudButton>
+            }
+            else
+            {
+                <MudButton Variant="Variant.Text" OnClick="e => activateArticleVisible = true"><MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon> Activate</MudButton>
+            }
+        </div>
+
+        <MudDialog @bind-IsVisible="deactivateArticleVisible">
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3" /> Deactivate @article.Articlenumber
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <EditForm Model="DeactivateArticle" OnValidSubmit="@DeactivateArticleAsync">
+                    <MudTextField @bind-Value="DeactivateArticle.Reason" Label="Reason"></MudTextField>
+                </EditForm>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DeactivateArticleAsync" Class="px-10">Deactivate</MudButton>
+            </DialogActions>
+        </MudDialog>
+
+        <MudDialog @bind-IsVisible="activateArticleVisible">
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3" /> Activate @article.Articlenumber
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <EditForm Model="ActivateArticle" OnValidSubmit="@ActivateArticleAsync">
+                    <MudTextField @bind-Value="ActivateArticle.Reason" Label="Reason"></MudTextField>
+                </EditForm>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ActivateArticleAsync" Class="px-10">Activate</MudButton>
+            </DialogActions>
+        </MudDialog>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private ArticleViewModel article;
+
+    private bool deactivateArticleVisible = false;
+    private DeactivateArticle DeactivateArticle = new DeactivateArticle();
+
+    private bool activateArticleVisible = false;
+    private ActivateArticle ActivateArticle = new ActivateArticle();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        article = await Http.GetFromJsonAsync<ArticleViewModel>($"api/articles/{Id}");
+
+        DeactivateArticle.Id = Id;
+        ActivateArticle.Id = Id;
+    }
+
+    protected async Task DeactivateArticleAsync()
+    {
+        await Http.PostAsJsonAsync("api/articles/DeactivateArticle", DeactivateArticle);
+
+        DeactivateArticle = new DeactivateArticle
+        {
+            Id = Id
+        };
+
+        deactivateArticleVisible = false;
+
+        await LoadAsync();
+    }
+
+    protected async Task ActivateArticleAsync()
+    {
+        await Http.PostAsJsonAsync("api/articles/ActivateArticle", ActivateArticle);
+
+        ActivateArticle = new ActivateArticle
+        {
+            Id = Id
+        };
+
+        activateArticleVisible = false;
+
+        await LoadAsync();
+    }
+
+}
