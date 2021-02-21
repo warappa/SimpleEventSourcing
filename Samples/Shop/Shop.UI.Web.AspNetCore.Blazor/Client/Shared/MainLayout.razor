@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 <MudThemeProvider />
-<MudDialogProvider />
+<MudDialogProvider  />
 <MudSnackbarProvider />
 
 
@@ -8,16 +8,16 @@
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudText Typo="Typo.h6">Shop Blazor</MudText>
         <MudAppBarSpacer />
         @*<MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/Garderoben/MudBlazor" Target="_blank" />*@
     </MudAppBar>
     <MudDrawer @bind-Open="@open" Elevation="1" Variant="DrawerVariant.Persistent" ClipMode="DrawerClipMode.Always">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">Shop Blazor</MudText>
-        </MudDrawerHeader>
         <MudNavMenu>
+            <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
             <MudNavLink Href="/articles" Match="NavLinkMatch.All">Articles</MudNavLink>
-            <MudNavLink Match="NavLinkMatch.All">Shopping Carts</MudNavLink>
+            <MudNavLink Href="/customers" Match="NavLinkMatch.All">Customers</MudNavLink>
+            <MudNavLink Href="/shoppingcarts" Match="NavLinkMatch.All">Shopping Carts</MudNavLink>
         </MudNavMenu>
     </MudDrawer>
     <MudMainContent Class="">

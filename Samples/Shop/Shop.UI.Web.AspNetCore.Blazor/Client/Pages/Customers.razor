@@ -1,0 +1,91 @@
+﻿@page "/customers"
+@using Shop.UI.Web.AspNetCore.Blazor.Shared
+@inject HttpClient Http
+@inject IDialogService DialogService
+
+<h1>Customers</h1>
+<div class="mb-6">
+    @if (customers == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <div>
+            <MudButton Variant="Variant.Text" OnClick="e => createCustomerVisible = true"><MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon></MudButton>
+        </div>
+        <MudSimpleTable>
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var customer in customers)
+                {
+                    <tr>
+                        <td>
+                            <div style="background: @(customer.Active ? "green" : "red");display:inline-block; border-radius: 10px;width: 10px; height: 10px;"></div>
+                            @customer.Name
+                        </td>
+                        <td style="width: 50px;">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Link="@($"/customers/{customer.CustomerId}")"></MudIconButton>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+
+        <MudDialog @bind-IsVisible="createCustomerVisible">
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3" /> Create Customer
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <EditForm Model="CreateCustomer" OnValidSubmit="@CreateCustomerAsync">
+                    <MudTextField @bind-Value="CreateCustomer.Name" Label="Customer Name"></MudTextField>
+                </EditForm>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateCustomerAsync" Class="px-10">Create</MudButton>
+            </DialogActions>
+        </MudDialog>
+    }
+</div>
+@code {
+    private CustomerViewModel[] customers;
+
+    private bool createCustomerVisible = false;
+    private CreateCustomer CreateCustomer = new CreateCustomer
+    {
+        
+        CustomerId = Guid.NewGuid().ToString()
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        customers = await Http.GetFromJsonAsync<CustomerViewModel[]>("api/customers");
+    }
+
+    protected async Task CreateCustomerAsync()
+    {
+        await Http.PostAsJsonAsync("api/customers/CreateCustomer", CreateCustomer);
+
+        CreateCustomer = new CreateCustomer
+        {
+            CustomerId = Guid.NewGuid().ToString()
+        };
+
+        createCustomerVisible = false;
+
+        await LoadAsync();
+    }
+
+}

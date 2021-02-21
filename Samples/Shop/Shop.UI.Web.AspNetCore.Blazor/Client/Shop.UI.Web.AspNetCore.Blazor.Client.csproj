@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shop.UI.Web.Shared\Shop.UI.Web.Shared.csproj" />
+    <ProjectReference Include="..\..\Shop\Shop.csproj" />
     <ProjectReference Include="..\Shared\Shop.UI.Web.AspNetCore.Blazor.Shared.csproj" />
   </ItemGroup>
 

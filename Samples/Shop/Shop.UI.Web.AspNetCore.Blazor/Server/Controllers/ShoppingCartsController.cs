@@ -4,6 +4,7 @@ using Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles;
 using Shop.Core.Reports.ShoppingCarts.Transient;
 using Shop.ReadModel.ShoppingCarts;
 using Shop.UI.Web.Shared.Commands.ShoppingCarts;
+using Shop.UI.Web.Shared.ReadModels.ShoppingCarts;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.WriteModel;
 using System;
@@ -20,13 +21,16 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
         private IReadRepository readRepository;
         private IEventRepository repository;
         private ICheckpointPersister checkpointPersister;
+        private readonly IPersistenceEngine engine;
 
         public ShoppingCartsController(IReadRepository readRepository, IEventRepository repository,
-            ICheckpointPersister checkpointPersister)
+            ICheckpointPersister checkpointPersister,
+            IPersistenceEngine engine)
         {
             this.readRepository = readRepository ?? throw new ArgumentNullException(nameof(readRepository));
             this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
             this.checkpointPersister = checkpointPersister ?? throw new ArgumentNullException(nameof(checkpointPersister));
+            this.engine = engine;
         }
 
         [HttpGet]
@@ -63,7 +67,7 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
         [Route("GetAlmostOrderedArticles")]
         public async Task<IEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo>> GetAlmostOrderedArticles(string customerId)
         {
-            return await Shop.Program.AnalyseAlmostOrderedWithState()
+            return await Shop.Program.AnalyseAlmostOrderedWithState(engine)
                 .Where(x => x.CustomerId == customerId)
                 .ToListAsync();
         }

@@ -39,7 +39,7 @@ namespace Shop
 
             await OrderAsync().ConfigureAwait(false);
 
-            await AnalyseAlmostOrderedWithState().ToListAsync();
+            await AnalyseAlmostOrderedWithState(engine).ToListAsync();
 
             CustomersRenameHistory();
             await CustomersRenameHistoryOfGreatCustomerEventStreamAsync().ConfigureAwait(false);
@@ -146,7 +146,7 @@ namespace Shop
             await observer.StartAsync();
         }
 
-        public static async IAsyncEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo> AnalyseAlmostOrderedWithState()
+        public static async IAsyncEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo> AnalyseAlmostOrderedWithState(IPersistenceEngine engine)
         {
             var loadedMessages = await engine.LoadStreamEntriesAsync(
                 0,
@@ -157,7 +157,7 @@ namespace Shop
                     typeof(ShoppingCartOrdered),
                     typeof(ShoppingCartCancelled)
                 })
-                .Select(x => serializer.Deserialize(x.Payload))
+                .Select(x => engine.Serializer.Deserialize(x.Payload))
                 .ToListAsync();
 
             Console.WriteLine("Removed Articles: ");

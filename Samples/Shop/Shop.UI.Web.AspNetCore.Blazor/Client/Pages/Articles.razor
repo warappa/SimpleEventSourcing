@@ -4,7 +4,7 @@
 @inject IDialogService DialogService
 
 <h1>Articles</h1>
-<div style="position:relative;">
+<div class="mb-6">
     @if (articles == null)
     {
         <p><em>Loading...</em></p>
@@ -14,10 +14,12 @@
         <div>
             <MudButton Variant="Variant.Text" OnClick="e => createArticleVisible = true"><MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon></MudButton>
         </div>
+        
         <MudSimpleTable>
             <thead>
                 <tr>
                     <th>Article</th>
+                    <th>Price</th>
                     <th></th>
                 </tr>
             </thead>
@@ -27,15 +29,18 @@
                     <tr>
                         <td>
                             <div style="background: @(article.Active ? "green" : "red");display:inline-block; border-radius: 10px;width: 10px; height: 10px;"></div>
-                            @article.Articlenumber
+                            @article.Description (@article.Articlenumber)
+                        </td>
+                        <td>
+                            @article.PriceValue @article.PriceIsoCode
+                        </td>
+                        <td style="width:50px;">
                             <MudIconButton Icon="@Icons.Material.Filled.Edit" Link="@($"/articles/{article.ArticleId}")"></MudIconButton>
                         </td>
-                        <td></td>
                     </tr>
                 }
             </tbody>
         </MudSimpleTable>
-
         <MudDialog @bind-IsVisible="createArticleVisible">
             <TitleContent>
                 <MudText Typo="Typo.h6">

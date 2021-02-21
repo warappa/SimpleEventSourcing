@@ -115,8 +115,8 @@
                 return deferred;
             }
 
-            export function getAlmostOrderedArticles(customerId, page, pageSize): JQueryDeferred<IShoppingCartArticleEntferntInfo[]> {
-                var deferred = $.Deferred<IShoppingCartArticleEntferntInfo[]>();
+            export function getAlmostOrderedArticles(customerId, page, pageSize): JQueryDeferred<IShoppingCartArticleRemovedInfo[]> {
+                var deferred = $.Deferred<IShoppingCartArticleRemovedInfo[]>();
                 api.getJSON("api/shoppingcarts/getAlmostOrderedArticles", { customerId: customerId }, data => deferred.resolve(data));
                 return deferred;
             }

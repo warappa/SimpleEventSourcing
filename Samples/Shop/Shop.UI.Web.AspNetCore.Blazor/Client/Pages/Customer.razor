@@ -1,0 +1,58 @@
+﻿@page "/customers/{Id}"
+
+@using Shop.Core.Reports.ShoppingCarts.Transient
+
+@inject HttpClient Http
+@inject IDialogService DialogService
+
+
+<h1>Customer @(customer?.Name)</h1>
+<div style="position:relative;">
+    @if (customer == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <MudSimpleTable>
+            <thead>
+                <tr>
+                    <th>Article</th>
+                    <th>Removed at</th>
+                    <th>How long before ordering</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var article in almostOrderedArticles)
+                {
+                <tr>
+                    <td>@article.Articlenumber</td>
+                    <td>@article.RemovedAt</td>
+                    <td>@article.Timespan</td>
+                </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private CustomerViewModel customer;
+    private AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo[] almostOrderedArticles = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        customer = await Http.GetFromJsonAsync<CustomerViewModel>($"api/customers/{Id}");
+        almostOrderedArticles = await Http.GetFromJsonAsync<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo[]>(
+            $"api/shoppingcarts/getAlmostOrderedArticles/?customerId={Id}",
+            Program.DefaultJsonSerializerOptions);
+    }
+}

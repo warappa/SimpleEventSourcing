@@ -16,6 +16,7 @@
         <div>
             @if (article.Active)
             {
+                <MudButton Variant="Variant.Text" OnClick="e => orderArticleVisible = true"><MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon> Order</MudButton>
                 <MudButton Variant="Variant.Text" OnClick="e => deactivateArticleVisible = true"><MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon> Deactivate</MudButton>
             }
             else
@@ -23,6 +24,31 @@
                 <MudButton Variant="Variant.Text" OnClick="e => activateArticleVisible = true"><MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon> Activate</MudButton>
             }
         </div>
+
+        <MudDialog @bind-IsVisible="orderArticleVisible">
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3" /> Deactivate @article.Articlenumber
+                </MudText>
+            </TitleContent>
+            <DialogContent>
+                <EditForm Model="OrderArticle" OnValidSubmit="@OrderArticleAsync">
+                    <MudTextField @bind-Value="OrderArticle.Quantity" Label="Quantity"></MudTextField>
+
+                    <MudSelect T="string"
+                               @bind-Value="OrderArticle.CustomerId"
+                               Label="Customer">
+                        @foreach (var customer in customers)
+                        {
+                        <MudSelectItem T="string" Value="customer.CustomerId">@customer.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </EditForm>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OrderArticleAsync" Class="px-10">Order</MudButton>
+            </DialogActions>
+        </MudDialog>
 
         <MudDialog @bind-IsVisible="deactivateArticleVisible">
             <TitleContent>
@@ -63,6 +89,10 @@
     public string Id { get; set; }
 
     private ArticleViewModel article;
+    private CustomerViewModel[] customers;
+
+    private bool orderArticleVisible = false;
+    private OrderArticle OrderArticle = new OrderArticle();
 
     private bool deactivateArticleVisible = false;
     private DeactivateArticle DeactivateArticle = new DeactivateArticle();
@@ -78,9 +108,25 @@
     private async Task LoadAsync()
     {
         article = await Http.GetFromJsonAsync<ArticleViewModel>($"api/articles/{Id}");
+        customers = await Http.GetFromJsonAsync<CustomerViewModel[]>($"api/customers");
 
         DeactivateArticle.Id = Id;
         ActivateArticle.Id = Id;
+        OrderArticle.ArticleId = Id;
+    }
+
+    protected async Task OrderArticleAsync()
+    {
+        await Http.PostAsJsonAsync("api/customers/OrderArticle", OrderArticle);
+
+        OrderArticle = new OrderArticle
+        {
+            ArticleId = Id
+        };
+
+        orderArticleVisible = false;
+
+        await LoadAsync();
     }
 
     protected async Task DeactivateArticleAsync()

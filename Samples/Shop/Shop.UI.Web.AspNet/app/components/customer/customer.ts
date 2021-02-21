@@ -1,5 +1,5 @@
 ﻿module shop {
-    export interface IShoppingCartArticleEntferntInfo {
+    export interface IShoppingCartArticleRemovedInfo {
         articlenumber: string;
         customerName: string;
         shoppingCartId: string;
@@ -13,7 +13,7 @@
         name: KnockoutObservable<string>;
         title = ko.observable("Customer");
 
-        almostOrderedArticles = ko.observableArray<IShoppingCartArticleEntferntInfo>();
+        almostOrderedArticles = ko.observableArray<IShoppingCartArticleRemovedInfo>();
 
         constructor(id) {
             this.id = id;
