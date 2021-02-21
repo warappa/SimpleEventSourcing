@@ -7,14 +7,14 @@
 <div class="mb-6">
     @if (articles == null)
     {
-        <p><em>Loading...</em></p>
+        <MudProgressCircular Indeterminate="true"></MudProgressCircular>
     }
     else
     {
         <div>
             <MudButton Variant="Variant.Text" OnClick="e => createArticleVisible = true"><MudIcon Icon="@Icons.Material.Filled.Add"></MudIcon></MudButton>
         </div>
-        
+
         <MudSimpleTable>
             <thead>
                 <tr>

@@ -3,18 +3,18 @@
 @inject HttpClient Http
 @inject IDialogService DialogService
 
-<h1>Shopping-Carts</h1>
+<h1>Shopping Carts</h1>
 <div class="mb-6">
     @if (shoppingCarts == null)
     {
-        <p><em>Loading...</em></p>
+        <MudProgressCircular Indeterminate="true"></MudProgressCircular>
     }
     else
     {
         <MudSimpleTable>
             <thead>
                 <tr>
-                    <th>Shopping-Cart</th>
+                    <th>Shopping Cart</th>
                     <th></th>
                 </tr>
             </thead>

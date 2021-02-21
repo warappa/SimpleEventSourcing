@@ -10,7 +10,7 @@
 <div style="position:relative;">
     @if (customer == null)
     {
-        <p><em>Loading...</em></p>
+        <MudProgressCircular Indeterminate="true"></MudProgressCircular>
     }
     else
     {
@@ -23,13 +23,13 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach(var article in almostOrderedArticles)
+                @foreach (var article in almostOrderedArticles)
                 {
-                <tr>
-                    <td>@article.Articlenumber</td>
-                    <td>@article.RemovedAt</td>
-                    <td>@article.Timespan</td>
-                </tr>
+                    <tr>
+                        <td>@article.Articlenumber</td>
+                        <td>@article.RemovedAt</td>
+                        <td>@article.Timespan</td>
+                    </tr>
                 }
             </tbody>
         </MudSimpleTable>

@@ -7,18 +7,18 @@
 @inject IDialogService DialogService
 
 
-<h1>Shopping-Cart @(shoppingCart?.CustomerName)</h1>
+<h1>Shopping Cart for @(shoppingCart?.CustomerName)</h1>
 <div style="position:relative;">
     @if (shoppingCart == null)
     {
-        <p><em>Loading...</em></p>
+        <MudProgressCircular Indeterminate="true"></MudProgressCircular>
     }
     else
     {
         <div>
             @if (shoppingCart.Status == (int)ShoppingCartStatus.Open)
             {
-            <MudButton Variant="Variant.Text" OnClick="OrderAsync"><MudIcon Icon="@Icons.Material.Filled.Money"></MudIcon> Order</MudButton>
+                <MudButton Variant="Variant.Text" OnClick="OrderAsync"><MudIcon Icon="@Icons.Material.Filled.Money"></MudIcon> Order</MudButton>
             }
         </div>
 
@@ -34,21 +34,21 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach(var article in shoppingCart.ShoppingCartArticles.Where(x => x.RemovedAt == null))
+                @foreach (var article in shoppingCart.ShoppingCartArticles.Where(x => x.RemovedAt == null))
                 {
-                <tr>
-                    <td>@article.Articlenumber</td>
-                    <td>@article.Description</td>
-                    <td>@article.Quantity</td>
-                    <td>@article.PriceValue @article.PriceIsoCode</td>
-                    <td>@article.TotalValue @article.TotalIsoCode</td>
-                    <td>
-                        @if (shoppingCart.Status == (int)ShoppingCartStatus.Open)
-                        {
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="e => RemoveArticleFromShoppingCartAsync(article.ShoppingCartArticleId)"></MudIconButton>
-                        }
-                    </td>
-                </tr>
+                    <tr>
+                        <td>@article.Articlenumber</td>
+                        <td>@article.Description</td>
+                        <td>@article.Quantity</td>
+                        <td>@article.PriceValue @article.PriceIsoCode</td>
+                        <td>@article.TotalValue @article.TotalIsoCode</td>
+                        <td>
+                            @if (shoppingCart.Status == (int)ShoppingCartStatus.Open)
+                            {
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="e => RemoveArticleFromShoppingCartAsync(article.ShoppingCartArticleId)"></MudIconButton>
+                            }
+                        </td>
+                    </tr>
                 }
             </tbody>
         </MudSimpleTable>

@@ -7,7 +7,7 @@
 <div style="position:relative;">
     @if (article == null)
     {
-        <p><em>Loading...</em></p>
+        <MudProgressCircular Indeterminate="true"></MudProgressCircular>
     }
     else
     {
@@ -25,6 +25,24 @@
             }
         </div>
 
+        <MudSimpleTable>
+            <thead>
+                <tr>
+                    <th>Article Activation History</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in articleActivationHistory)
+                {
+                    <tr>
+                        <td>
+                            @a.Date - @(a.Active ? "Activated" : "Deactivated") - @a.Reason
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+
         <MudDialog @bind-IsVisible="orderArticleVisible">
             <TitleContent>
                 <MudText Typo="Typo.h6">
@@ -40,7 +58,7 @@
                                Label="Customer">
                         @foreach (var customer in customers)
                         {
-                        <MudSelectItem T="string" Value="customer.CustomerId">@customer.Name</MudSelectItem>
+                            <MudSelectItem T="string" Value="customer.CustomerId">@customer.Name</MudSelectItem>
                         }
                     </MudSelect>
                 </EditForm>
@@ -89,6 +107,7 @@
     public string Id { get; set; }
 
     private ArticleViewModel article;
+    private ArticleActivationHistoryViewModel[] articleActivationHistory;
     private CustomerViewModel[] customers;
 
     private bool orderArticleVisible = false;
@@ -108,6 +127,7 @@
     private async Task LoadAsync()
     {
         article = await Http.GetFromJsonAsync<ArticleViewModel>($"api/articles/{Id}");
+        articleActivationHistory = await Http.GetFromJsonAsync<ArticleActivationHistoryViewModel[]>($"api/articles/GetArticleActivationHistory?id={Id}");
         customers = await Http.GetFromJsonAsync<CustomerViewModel[]>($"api/customers");
 
         DeactivateArticle.Id = Id;
