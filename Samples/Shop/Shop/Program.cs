@@ -146,8 +146,10 @@ namespace Shop
             await observer.StartAsync();
         }
 
-        public static async IAsyncEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo> AnalyseAlmostOrderedWithState(IPersistenceEngine engine)
+        public static async IAsyncEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo> AnalyseAlmostOrderedWithState(IPersistenceEngine engine = null)
         {
+            engine = engine ?? Program.engine;
+
             var loadedMessages = await engine.LoadStreamEntriesAsync(
                 0,
                 int.MaxValue, new[]

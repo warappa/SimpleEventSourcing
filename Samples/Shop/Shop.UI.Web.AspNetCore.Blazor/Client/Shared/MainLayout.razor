@@ -10,6 +10,20 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
         <MudText Typo="Typo.h6">Shop Blazor</MudText>
         <MudAppBarSpacer />
+        <MudPaper Class="search-container" Elevation="0">
+            <MudGrid>
+                <MudItem Class="d-flex align-center ml-5 pa-0">
+                    <MudIcon Icon="@Icons.Material.Filled.Search"></MudIcon>
+                </MudItem>
+                <MudItem Class="pr-0 pl-0">
+                    <MudTextField Class="search-text-field d-flex align-center pl-0 pr-0" Style="border:0;" T="string" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+                </MudItem>
+                <MudItem Class="d-flex align-center mr-5 pa-0">
+                    <MudIcon Icon="@Icons.Material.Filled.Search"></MudIcon>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+        <MudAppBarSpacer />
         <MudIconButton Icon="@(Icons.Material.Filled.Brightness4)" Color="Color.Inherit" Variant="Variant.Text" OnClick="@((e) => DarkMode())">Toggle Dark/Light Mode</MudIconButton>
         @*<MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/Garderoben/MudBlazor" Target="_blank" />*@
     </MudAppBar>
@@ -22,7 +36,7 @@
         </MudNavMenu>
     </MudDrawer>
     <MudMainContent Class="">
-        <MudContainer Class="mt-6">
+        <MudContainer Class="mt-3">
             @Body
         </MudContainer>
     </MudMainContent>
@@ -86,3 +100,20 @@
     };
 }
 
+<style>
+    .search-container {
+        background: #fff3;
+        color: #fffa !important;
+        transition: all ease-out 0.1s;
+    }
+        .search-container:focus-within {
+            background: #fffc;
+            color: initial;
+        }
+    .search-text-field > .mud-input-outlined > .mud-input-outlined-border {
+        border: 0;
+    }
+    .search-text-field > .mud-input-outlined:focus-within > .mud-input-outlined-border {
+        border: 0;
+    }
+</style>
