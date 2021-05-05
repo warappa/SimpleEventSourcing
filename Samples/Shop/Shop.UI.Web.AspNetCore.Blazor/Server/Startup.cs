@@ -1,9 +1,15 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Shop.Core.BusinessRules;
+using Shop.ReadModel.Shared;
+using System.Linq;
+using System.Reflection;
 
 namespace Shop.UI.Web.AspNetCore.Blazor.Server
 {
@@ -23,8 +29,9 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
             services.AddControllersWithViews()
                 .AddJsonOptions(configure =>
                 {
-                    configure.JsonSerializerOptions.Converters.Add(new Shop.UI.Web.AspNetCore.Blazor.Client.TimeSpanConverter());
-                });
+                    configure.JsonSerializerOptions.Converters.Add(new Client.TimeSpanConverter());
+                })
+                ;
             services.AddRazorPages();
 
             services.AddSwaggerGen(c =>
@@ -40,6 +47,7 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
         {
             if (env.IsDevelopment())
             {
+                
                 app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
             }
@@ -49,6 +57,24 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseExceptionHandler(a => a.Run(async context =>
+            {
+                var error = context.Features.Get<IExceptionHandlerFeature>().Error;
+
+                if (error is BusinessRuleException b)
+                {
+                    await context.Response.WriteAsJsonAsync(new ExceptionDto
+                    {
+                        Name = b.Name,
+                        Message = b.Message,
+                        Errors = b.Errors
+                            .Select(x => new ExceptionDto.ErrorDto { Key = x.Key, Message = x.Message })
+                            .ToArray()
+                    });
+                }
+
+            }));
 
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();

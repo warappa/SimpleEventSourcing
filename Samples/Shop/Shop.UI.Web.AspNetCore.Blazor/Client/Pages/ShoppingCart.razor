@@ -5,94 +5,105 @@
 
 @inject HttpClient Http
 @inject IDialogService DialogService
+@inject MudBlazor.ISnackbar snackBar
 
 
 <h1>Shopping Cart for @(shoppingCart?.CustomerName)</h1>
 <div style="position:relative;">
-    @if (shoppingCart == null)
-    {
-        <MudProgressCircular Indeterminate="true"></MudProgressCircular>
-    }
-    else
-    {
-        <div>
-            @if (shoppingCart.Status == (int)ShoppingCartStatus.Open)
-            {
-                <MudButton Variant="Variant.Text" OnClick="OrderAsync"><MudIcon Icon="@Icons.Material.Filled.Money"></MudIcon> Order</MudButton>
-            }
-        </div>
+	@if (shoppingCart == null)
+	{
+	 <MudProgressCircular Indeterminate="true"></MudProgressCircular>
+	}
+	else
+	{
+	 <div>
+			@if (shoppingCart.Status == (int)ShoppingCartStatus.Open)
+			{
+		  <MudButton Variant="Variant.Text" OnClick="OrderAsync"><MudIcon Icon="@Icons.Material.Filled.Folder"></MudIcon> Order</MudButton>
+			}
+	 </div>
 
-        <MudSimpleTable>
-            <thead>
-                <tr>
-                    <th>Article</th>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var article in shoppingCart.ShoppingCartArticles.Where(x => x.RemovedAt == null))
-                {
-                    <tr>
-                        <td>@article.Articlenumber</td>
-                        <td>@article.Description</td>
-                        <td>@article.Quantity</td>
-                        <td>@article.PriceValue @article.PriceIsoCode</td>
-                        <td>@article.TotalValue @article.TotalIsoCode</td>
-                        <td>
-                            @if (shoppingCart.Status == (int)ShoppingCartStatus.Open)
-                            {
-                                <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="e => RemoveArticleFromShoppingCartAsync(article.ShoppingCartArticleId)"></MudIconButton>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </MudSimpleTable>
-    }
+	 <MudSimpleTable>
+	  <thead>
+	   <tr>
+		<th>Article</th>
+		<th>Description</th>
+		<th>Quantity</th>
+		<th>Price</th>
+		<th>Total</th>
+		<th></th>
+	   </tr>
+	  </thead>
+	  <tbody>
+				@foreach (var article in shoppingCart.ShoppingCartArticles.Where(x => x.RemovedAt == null))
+				{
+		   <tr>
+			<td>@article.Articlenumber</td>
+			<td>@article.Description</td>
+			<td>@article.Quantity</td>
+			<td>@article.PriceValue @article.PriceIsoCode</td>
+			<td>@article.TotalValue @article.TotalIsoCode</td>
+			<td>
+							@if (shoppingCart.Status == (int)ShoppingCartStatus.Open)
+							{
+				 <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="e => RemoveArticleFromShoppingCartAsync(article.ShoppingCartArticleId)"></MudIconButton>
+							}
+			</td>
+		   </tr>
+				}
+	  </tbody>
+	 </MudSimpleTable>
+	}
 </div>
 
 @code {
-    [Parameter]
-    public string Id { get; set; }
+	[Parameter]
+	public string Id { get; set; }
 
-    private ShoppingCartViewModelExt shoppingCart;
+	private ShoppingCartViewModelExt shoppingCart;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadAsync();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadAsync();
+	}
 
-    private async Task LoadAsync()
-    {
-        shoppingCart = await Http.GetFromJsonAsync<ShoppingCartViewModelExt>($"api/shoppingCarts/{Id}");
-    }
+	private async Task LoadAsync()
+	{
+		shoppingCart = await Http.GetFromJsonAsync<ShoppingCartViewModelExt>($"api/shoppingCarts/{Id}");
+	}
 
-    protected async Task RemoveArticleFromShoppingCartAsync(string shoppingCartArticleId)
-    {
-        var command = new RemoveArticleFromShoppingCart
-        {
-            ShoppingCartId = Id,
-            ShoppingCartArticleId = shoppingCartArticleId
-        };
+	protected async Task RemoveArticleFromShoppingCartAsync(string shoppingCartArticleId)
+	{
+		var command = new RemoveArticleFromShoppingCart
+		{
+			ShoppingCartId = Id,
+			ShoppingCartArticleId = shoppingCartArticleId
+		};
 
-        await Http.PostAsJsonAsync("api/shoppingcarts/RemoveArticleFromShoppingCart", command);
+		await Http.PostAsJsonAsync("api/shoppingcarts/RemoveArticleFromShoppingCart", command);
 
-        await LoadAsync();
-    }
+		await LoadAsync();
+	}
 
-    protected async Task OrderAsync()
-    {
-        var command = new OrderShoppingCart
-        {
-            ShoppingCartId = Id
-        };
+	protected async Task OrderAsync()
+	{
+		var command = new OrderShoppingCart
+		{
+			ShoppingCartId = Id
+		};
 
-        await Http.PostAsJsonAsync("api/shoppingcarts/Order", command);
+		
+		var response = await Http.PostAsJsonAsync("api/shoppingcarts/Order", command);
 
-        await LoadAsync();
-    }
+		try
+		{
+			await response.CheckForBusinessRuleExceptionAsync();
+		}
+		catch (BusinessRuleException exc)
+		{
+			snackBar.Add(exc.Message.Replace("\n", "<br/>"), Severity.Error);
+		}
+
+		await LoadAsync();
+	}
 }
