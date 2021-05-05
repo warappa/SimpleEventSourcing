@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LiveSharp" Version="1.6.52" />
+    <PackageReference Include="LiveSharp" Version="2.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
   </ItemGroup>
@@ -16,6 +16,12 @@
     <ProjectReference Include="..\..\Shop\Shop.csproj" />
     <ProjectReference Include="..\Client\Shop.UI.Web.AspNetCore.Blazor.Client.csproj" />
     <ProjectReference Include="..\Shared\Shop.UI.Web.AspNetCore.Blazor.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LiveSharp.Support.BlazorWASM">
+      <HintPath>C:\Users\spoil\.nuget\packages\livesharp\2.0.9\build\LiveSharp.Support.BlazorWASM.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 
