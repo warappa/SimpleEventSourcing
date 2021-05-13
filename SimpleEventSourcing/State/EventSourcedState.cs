@@ -33,7 +33,8 @@ namespace SimpleEventSourcing.State
 
             var methodInfos = type
                 .GetRuntimeMethods()
-                .Where(x => x.Name == "Apply")
+                .Where(x => x.Name == "Apply" ||
+                    x.Name == "ApplyAsync")
                 .ToList();
 
             foreach (var methodInfo in methodInfos)
@@ -98,26 +99,52 @@ namespace SimpleEventSourcing.State
             {
                 if (methodForMessageType.TryGetValue(message.Body.GetType(), out var mi))
                 {
-                    if (mi.ReturnType != typeof(void))
-                    {
-                        state = await StateExtensions.ExtractStateAsync<TState>(((dynamic)state).Apply((dynamic)message)) ?? state;
-                    }
-                    else
-                    {
-                        ((dynamic)state).Apply((dynamic)message);
-                    }
+                    object result;
+                    //if (mi.Name == "Apply")
+                    //{
+                    //    result = ((dynamic)state).Apply((dynamic)message);
+                    //}
+                    //else
+                    //{
+                    //    result = ((dynamic)state).ApplyAsync((dynamic)message);
+                    //}
+
+                    result = mi.Invoke(state, new[] { message });
+                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
+
+                    //if (mi.ReturnType != typeof(void))
+                    //{
+                    //    state = await StateExtensions.ExtractStateAsync<TState>(((dynamic)state).Apply((dynamic)message)) ?? state;
+                    //}
+                    //else
+                    //{
+                    //    mi.invoke
+                    //    //((dynamic)state).Apply((dynamic)message);
+                    //}
                 }
 
                 if (methodForEventType.TryGetValue(message.Body.GetType(), out mi))
                 {
-                    if (mi.ReturnType != typeof(void))
-                    {
-                        state = await StateExtensions.ExtractStateAsync<TState>(((dynamic)state).Apply((dynamic)message.Body)) ?? state;
-                    }
-                    else
-                    {
-                        ((dynamic)state).Apply((dynamic)message.Body);
-                    }
+                    object result;
+                    //if (mi.Name == "Apply")
+                    //{
+                    //    result = ((dynamic)state).Apply((dynamic)message.Body);
+                    //}
+                    //else
+                    //{
+                    //    result = ((dynamic)state).ApplyAsync((dynamic)message.Body);
+                    //}
+
+                    result = mi.Invoke(state, new[] { message.Body });
+                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
+                    //if (mi.ReturnType != typeof(void))
+                    //{
+                    //    state = await StateExtensions.ExtractStateAsync<TState>(((dynamic)state).Apply((dynamic)message.Body)) ?? state;
+                    //}
+                    //else
+                    //{
+                    //    ((dynamic)state).Apply((dynamic)message.Body);
+                    //}
                 }
             }
             else
@@ -126,14 +153,26 @@ namespace SimpleEventSourcing.State
 
                 if (methodForEventType.TryGetValue(@event.GetType(), out var mi))
                 {
-                    if (mi.ReturnType != typeof(void))
-                    {
-                        state = await StateExtensions.ExtractStateAsync<TState>(((dynamic)state).Apply((dynamic)@event)) ?? state;
-                    }
-                    else
-                    {
-                        ((dynamic)state).Apply((dynamic)@event);
-                    }
+                    object result;
+                    //if (mi.Name == "Apply")
+                    //{
+                    //    result = ((dynamic)state).Apply((dynamic)@event);
+                    //}
+                    //else
+                    //{
+                    //    result = ((dynamic)state).ApplyAsync((dynamic)@event);
+                    //}
+                    
+                    result = mi.Invoke(state, new[] { @event });
+                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
+                    //if (mi.ReturnType != typeof(void))
+                    //{
+                    //    state = await StateExtensions.ExtractStateAsync<TState>(((dynamic)state).Apply((dynamic)@event)) ?? state;
+                    //}
+                    //else
+                    //{
+                    //    ((dynamic)state).Apply((dynamic)@event);
+                    //}
                 }
             }
 
