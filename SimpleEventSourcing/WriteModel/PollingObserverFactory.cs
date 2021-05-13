@@ -7,7 +7,7 @@ namespace SimpleEventSourcing.WriteModel
 {
     public sealed class PollingObserverFactory : IPollingObserverFactory
     {
-        private IPersistenceEngine persistenceEngine { get; }
+        private readonly IPersistenceEngine persistenceEngine;
 
         private TimeSpan defaultInterval;
 

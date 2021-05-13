@@ -78,17 +78,17 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             return Task.CompletedTask;
         }
 
-        public Task<T> GetAsync<T>(object id)
+        public async Task<T> GetAsync<T>(object id)
             where T : class, IReadModelBase, new()
         {
             var conn = connectionFactory();
             T res = null;
             conn.RunInLock(() => res = conn.GetWithChildren<T>(id));
 
-            return Task.FromResult(res);
+            return res;
         }
 
-        public Task<object> GetAsync(Type entityType, object id)
+        public async Task<object> GetAsync(Type entityType, object id)
         {
             var conn = connectionFactory();
             object res = null;
@@ -98,10 +98,10 @@ namespace SimpleEventSourcing.SQLite.ReadModel
                 res = getMethodInfo.Invoke(null, new[] { conn, id, true });
             });
 
-            return Task.FromResult(res);
+            return res;
         }
 
-        public Task<T> GetByStreamnameAsync<T>(object streamname)
+        public async Task<T> GetByStreamnameAsync<T>(object streamname)
             where T : class, IStreamReadModel, new()
         {
             var conn = connectionFactory();
@@ -115,7 +115,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
                     .FirstOrDefault();
             });
 
-            return Task.FromResult(res);
+            return res;
         }
 
         public async Task<object> GetByStreamnameAsync(Type entityType, object streamname)
@@ -129,7 +129,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             return ((dynamic)task).Result;
         }
 
-        public Task<IQueryable<T>> QueryAsync<T>(Expression<Func<T, bool>> predicate)
+        public async Task<IQueryable<T>> QueryAsync<T>(Expression<Func<T, bool>> predicate)
             where T : class, IReadModelBase, new()
         {
             var conn = connectionFactory();
@@ -137,10 +137,10 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             //var res = conn.Table<T>().Where(predicate).AsQueryable();
             var res = conn.GetAllWithChildren<T>(predicate, true).AsQueryable();
 
-            return Task.FromResult(res);
+            return res;
         }
 
-        public Task<IQueryable> QueryAsync(Type type, Expression<Func<object, bool>> predicate)
+        public async Task<IQueryable> QueryAsync(Type type, Expression<Func<object, bool>> predicate)
         {
             var conn = connectionFactory();
             IQueryable res = null;
@@ -162,7 +162,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
 
             //res = results.AsQueryable();
 
-            return Task.FromResult(res);
+            return res;
         }
 
         public IDisposable OpenScope()

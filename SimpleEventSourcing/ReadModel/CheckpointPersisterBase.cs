@@ -60,7 +60,7 @@ namespace SimpleEventSourcing.ReadModel
                 }
 
                 var delay = Math.Min(delayInMs * (pow - 1) / 2, maxDelayMs);
-                await Task.Delay(delay).ConfigureAwait(false);
+                await Task.Delay(delay, token).ConfigureAwait(false);
             }
         }
     }

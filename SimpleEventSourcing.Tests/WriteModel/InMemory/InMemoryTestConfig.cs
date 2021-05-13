@@ -90,7 +90,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
 
             public override IPersistenceEngine GetPersistenceEngine()
             {
-                return persistenceEngine ?? (persistenceEngine = new PersistenceEngine(GetSerializer()));
+                return persistenceEngine ??= new PersistenceEngine(GetSerializer());
             }
 
             public override bool IsTableInDatabase(Type type)

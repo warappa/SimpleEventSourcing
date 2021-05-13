@@ -47,7 +47,7 @@ namespace SimpleEventSourcing.Domain
                 otherState = state;
             }
 
-            if (ReferenceEquals(otherState, null))
+            if (otherState is null)
             {
                 return false;
             }

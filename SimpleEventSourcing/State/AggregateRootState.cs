@@ -15,7 +15,7 @@ namespace SimpleEventSourcing.State
         {
             get
             {
-                if (EqualityComparer<TKey>.Default.Equals(id, default(TKey)))
+                if (EqualityComparer<TKey>.Default.Equals(id, default))
                 {
                     id = (TKey)ConvertFromStreamName(typeof(TKey), StreamName);
                 }
@@ -29,7 +29,7 @@ namespace SimpleEventSourcing.State
                     return;
                 }
 
-                if (!EqualityComparer<TKey>.Default.Equals(id, default(TKey)))
+                if (!EqualityComparer<TKey>.Default.Equals(id, default))
                 {
                     throw new InvalidOperationException("Id may not be changed!");
                 }
