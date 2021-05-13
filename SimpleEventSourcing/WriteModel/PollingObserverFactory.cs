@@ -75,7 +75,7 @@ namespace SimpleEventSourcing.WriteModel
 
             public async Task<bool> PollNowAsync()
             {
-                return await DoPoll();
+                return await DoPoll(true);
             }
 
             private async Task PollLoop()
@@ -95,44 +95,56 @@ namespace SimpleEventSourcing.WriteModel
                         await Task.Delay(random.Next(intervalInMilliseconds / 2 + 1, intervalInMilliseconds)).ConfigureAwait(false);
                     }
 
-                    instant = await DoPoll();
+                    instant = await DoPoll(false);
                 }
             }
 
-            private async Task<bool> DoPoll()
+            private async Task<bool> DoPoll(bool waitIfNecessary)
             {
                 var hasResults = false;
-                if (Interlocked.CompareExchange(ref isPolling, 1, 0) == 0)
+                while (true)
                 {
-                    try
+                    if (Interlocked.CompareExchange(ref isPolling, 1, 0) == 0)
                     {
-                        //var stopwatch = new Stopwatch();
-                        //stopwatch.Start();
-
-                        var entries = persistenceEngine.LoadStreamEntriesAsync(lastKnownCheckpointNumber + 1, payloadTypes: payloadTypes, take: 10000);
-
-                        await foreach (var entry in entries)
+                        try
                         {
-                            if (tokenSource.IsCancellationRequested)
+                            //var stopwatch = new Stopwatch();
+                            //stopwatch.Start();
+
+                            var entries = persistenceEngine.LoadStreamEntriesAsync(lastKnownCheckpointNumber + 1, payloadTypes: payloadTypes, take: 10000).ConfigureAwait(false);
+
+                            await foreach (var entry in entries)
                             {
-                                Interlocked.Exchange(ref isPolling, 0);
+                                if (tokenSource.IsCancellationRequested)
+                                {
+                                    Interlocked.Exchange(ref isPolling, 0);
 
-                                return false;
+                                    return false;
+                                }
+
+                                hasResults = true;
+
+                                subject.OnNext(entry);
+
+                                lastKnownCheckpointNumber = entry.CheckpointNumber;
                             }
-
-                            hasResults = true;
-
-                            subject.OnNext(entry);
-
-                            lastKnownCheckpointNumber = entry.CheckpointNumber;
                         }
-                    }
-                    catch
-                    {
-                        // These exceptions are expected to be transient
+                        catch
+                        {
+                            // These exceptions are expected to be transient
+                        }
+
+                        Interlocked.Exchange(ref isPolling, 0);
+
+                        break;
                     }
 
-                    Interlocked.Exchange(ref isPolling, 0);
+                    if (!waitIfNecessary)
+                    {
+                        break;
+                    }
+
+                    await Task.Delay(10).ConfigureAwait(false);
                 }
 
                 return hasResults;
