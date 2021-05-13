@@ -305,52 +305,6 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
             return result;
         }
 
-        public static async Task RetryHelper(Action action)
-        {
-            await RetryHelper(() =>
-            {
-                action();
-                return 0;
-            }).ConfigureAwait(false);
-        }
-
-        public static async Task<T> RetryHelper<T>(Func<T> action)
-        {
-            var retryCount = 10;
-
-            T ret;
-            do
-            {
-                try
-                {
-                    ret = action();
-                    break;
-                }
-                catch (AggregateException)
-                {
-                    retryCount--;
-                    if (retryCount == 0)
-                    {
-                        throw;
-                    }
-
-                    await Task.Delay(100).ConfigureAwait(false);
-                }
-                catch (Exception)
-                {
-                    retryCount--;
-                    if (retryCount == 0)
-                    {
-                        throw;
-                    }
-
-                    await Task.Delay(100).ConfigureAwait(false);
-                }
-            } while (true);
-
-            return ret;
-        }
-
         protected async Task<int> GetCurrentEventStoreCheckpointNumberInternalAsync(DbContext dbContext)
         {
             var list = dbContext.Set<RawStreamEntry>()
