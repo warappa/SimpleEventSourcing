@@ -2,6 +2,7 @@
 using Shop.Core.Domain.Shared;
 using Shop.ReadModel.Articles;
 using Shop.Web.UI.Commands.Articles;
+using SimpleEventSourcing.State;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -66,6 +67,7 @@ namespace Shop.Web.UI.Controllers
         }
 
         private async Task WaitForReadModelUpdate<TReadModelState>()
+            where TReadModelState : IState
         {
             var cp = await Program.repository.GetCurrentCheckpointNumberAsync();
             await Program.checkpointPersister.WaitForCheckpointNumberAsync<TReadModelState>(cp);

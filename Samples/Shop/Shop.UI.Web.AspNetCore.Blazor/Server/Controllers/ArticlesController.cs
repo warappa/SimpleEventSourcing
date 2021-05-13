@@ -4,6 +4,7 @@ using Shop.Core.Domain.Shared;
 using Shop.ReadModel.Articles;
 using Shop.UI.Web.Shared.Commands.Articles;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.State;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
@@ -84,6 +85,7 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
         }
 
         private async Task WaitForReadModelUpdate<TReadModelState>()
+            where TReadModelState : IState
         {
             var cp = await repository.GetCurrentCheckpointNumberAsync();
             await checkpointPersister.WaitForCheckpointNumberAsync<TReadModelState>(cp);
