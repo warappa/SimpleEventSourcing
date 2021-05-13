@@ -53,7 +53,7 @@ namespace Shop.ReadModel.ShoppingCarts
         public Task Apply(ShoppingCartArticlePlaced @event)
         {
             return UpdateByStreamnameAsync<ShoppingCartViewModel>((string)@event.AggregateRootId,
-                shoppingCart =>
+                async shoppingCart =>
                 {
                     var shoppingCartArticle = new ShoppingCartArticleViewModel
                     {
@@ -72,7 +72,7 @@ namespace Shop.ReadModel.ShoppingCarts
                         Quantity = @event.Quantity
                     };
 
-                    readRepository.InsertAsync(shoppingCartArticle).Wait();
+                    await readRepository.InsertAsync(shoppingCartArticle);
                 });
         }
 

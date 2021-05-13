@@ -48,12 +48,32 @@ namespace SimpleEventSourcing.ReadModel
             await readRepository.UpdateAsync(readModel).ConfigureAwait(false);
         }
 
+        public async Task UpdateByIdAsync<TReadModel, TKey>(TKey id, Func<TReadModel, Task> action)
+            where TReadModel : class, IReadModel<TKey>, new()
+        {
+            var readModel = await readRepository.GetAsync<TReadModel>(id).ConfigureAwait(false);
+
+            await action(readModel);
+
+            await readRepository.UpdateAsync(readModel).ConfigureAwait(false);
+        }
+
         public async Task UpdateByStreamnameAsync<TReadModel>(string streamName, Action<TReadModel> action)
             where TReadModel : class, IStreamReadModel, new()
         {
             var readModel = await readRepository.GetByStreamnameAsync<TReadModel>(streamName).ConfigureAwait(false);
 
             action(readModel);
+
+            await readRepository.UpdateAsync(readModel).ConfigureAwait(false);
+        }
+
+        public async Task UpdateByStreamnameAsync<TReadModel>(string streamName, Func<TReadModel, Task> action)
+            where TReadModel : class, IStreamReadModel, new()
+        {
+            var readModel = await readRepository.GetByStreamnameAsync<TReadModel>(streamName).ConfigureAwait(false);
+
+            await action(readModel);
 
             await readRepository.UpdateAsync(readModel).ConfigureAwait(false);
         }
@@ -67,6 +87,20 @@ namespace SimpleEventSourcing.ReadModel
             foreach (var readModel in readModels)
             {
                 action(readModel);
+
+                await readRepository.UpdateAsync(readModel).ConfigureAwait(false);
+            }
+        }
+
+        public async Task QueryAndUpdateAsync<TReadModel>(Expression<Func<TReadModel, bool>> predicate, Func<TReadModel, Task> action)
+            where TReadModel : class, IReadModelBase, new()
+        {
+            var readModels = (await readRepository.QueryAsync(predicate).ConfigureAwait(false))
+                .ToList();
+
+            foreach (var readModel in readModels)
+            {
+                await action(readModel);
 
                 await readRepository.UpdateAsync(readModel).ConfigureAwait(false);
             }

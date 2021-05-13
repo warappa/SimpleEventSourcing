@@ -17,7 +17,7 @@ namespace SimpleEventSourcing.Utils
                 return null;
             }
 
-            if(result is TState res)
+            if (result is TState res)
             {
                 return res;
             }

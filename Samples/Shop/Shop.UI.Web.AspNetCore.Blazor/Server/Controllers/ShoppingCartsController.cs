@@ -56,8 +56,8 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
                 CustomerName = wk.CustomerName,
                 Status = wk.Status,
                 ShoppingCartArticles = (await readRepository
-                .QueryAsync<ShoppingCartArticleViewModel>(x => x.Streamname == wkId))
-                .ToList()
+                    .QueryAsync<ShoppingCartArticleViewModel>(x => x.Streamname == wkId))
+                    .ToList()
             };
 
             return wkExt;
