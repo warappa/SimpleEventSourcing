@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel
@@ -9,6 +10,7 @@ namespace SimpleEventSourcing.ReadModel
         Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint);
         string GetProjectorIdentifier<T>();
         string GetProjectorIdentifier(Type projectorType);
-        Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber);
+        Task WaitForCheckpointNumberAsync(Type readModelStateType, int checkpointNumber, CancellationToken token = default);
+        Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber, CancellationToken token = default);
     }
 }

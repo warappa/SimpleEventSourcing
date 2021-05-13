@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel
@@ -26,7 +27,12 @@ namespace SimpleEventSourcing.ReadModel
             return Task.CompletedTask;
         }
 
-        public Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber)
+        public Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber, CancellationToken token = default)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task WaitForCheckpointNumberAsync(Type readModelStateType, int checkpointNumber, CancellationToken token = default)
         {
             return Task.CompletedTask;
         }

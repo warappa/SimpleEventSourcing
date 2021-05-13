@@ -1,11 +1,10 @@
 ﻿using SimpleEventSourcing.ReadModel;
 using SQLite;
-using System;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.SQLite.ReadModel
 {
-    public class CheckpointPersister<TCheckpointInfo> : ICheckpointPersister
+    public class CheckpointPersister<TCheckpointInfo> : CheckpointPersisterBase
         where TCheckpointInfo : class, ICheckpointInfo, new()
     {
         private readonly SQLiteConnectionWithLock connection;
@@ -15,17 +14,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             this.connection = connection;
         }
 
-        public string GetProjectorIdentifier<T>()
-        {
-            return GetProjectorIdentifier(typeof(T));
-        }
-
-        public string GetProjectorIdentifier(Type projectorType)
-        {
-            return projectorType.Name;
-        }
-
-        public async Task<int> LoadLastCheckpointAsync(string projectorIdentifier)
+        public override async Task<int> LoadLastCheckpointAsync(string projectorIdentifier)
         {
             TCheckpointInfo checkpointInfo = null;
             try
@@ -57,7 +46,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             return checkpointInfo.CheckpointNumber;
         }
 
-        public async Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint)
+        public override async Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint)
         {
             void Run()
             {
@@ -90,21 +79,6 @@ namespace SimpleEventSourcing.SQLite.ReadModel
                     connection.CreateTable(typeof(CheckpointInfo));
                     Run();
                 }
-            }
-        }
-
-        public async Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber)
-        {
-            var timeout = DateTime.Now.AddSeconds(60);
-
-            var projectorIdentifier = GetProjectorIdentifier<TReadModelState>();
-            var lastLoadedCheckpoint = await LoadLastCheckpointAsync(projectorIdentifier);
-
-            while (DateTime.Now < timeout &&
-                lastLoadedCheckpoint < checkpointNumber)
-            {
-                await Task.Delay(100).ConfigureAwait(false);
-                lastLoadedCheckpoint = await LoadLastCheckpointAsync(projectorIdentifier);
             }
         }
     }
