@@ -12,6 +12,7 @@ using SimpleEventSourcing.Storage;
 using SimpleEventSourcing.Tests;
 using SimpleEventSourcing.WriteModel;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.Tests
@@ -40,9 +41,9 @@ namespace SimpleEventSourcing.NHibernate.Tests
 
         public class WriteModelNHConfig : WriteModelConfig
         {
-            private ISessionFactory sessionFactory;
-
             private NHibernateTestConfig parent;
+
+            private Dictionary<int, ISessionFactory> sessionFactoryMap = new Dictionary<int, ISessionFactory>();
 
             public WriteModelNHConfig(NHibernateTestConfig parent)
             {
@@ -194,14 +195,20 @@ insert into hibernate_unique_key values ( 1 );";
                 }
             }
 
-            public ISessionFactory GetSessionFactory(Configuration config = null)
+            public ISessionFactory GetSessionFactory(Configuration configuration = null)
             {
-                if (config != null)
+                configuration ??= GetConfiguration();
+
+                if (sessionFactoryMap.TryGetValue(configuration.GetHashCode(), out var sessionFactory))
                 {
-                    return config.BuildSessionFactory();
+                    return sessionFactory;
                 }
-                return sessionFactory ?? (sessionFactory = GetConfiguration().BuildSessionFactory());
+
+                sessionFactory = configuration.BuildSessionFactory();
+                sessionFactoryMap[configuration.GetHashCode()] = sessionFactory;
+                return sessionFactory;
             }
+
 
             public override IRawStreamEntryFactory GetRawStreamEntryFactory()
             {
@@ -212,7 +219,8 @@ insert into hibernate_unique_key values ( 1 );";
         public class ReadModelNHConfig : ReadModelConfig
         {
             private NHibernateTestConfig parent;
-            private ISessionFactory sessionFactory;
+
+            private Dictionary<int, ISessionFactory> sessionFactoryMap = new Dictionary<int, ISessionFactory>();
 
             public ReadModelNHConfig(NHibernateTestConfig parent)
             {
@@ -309,7 +317,7 @@ insert into hibernate_unique_key values ( 1 );";
 
             public override IReadRepository GetReadRepository()
             {
-                return new ReadRepository(sessionFactory ?? GetSessionFactory());
+                return new ReadRepository(GetSessionFactory());
             }
 
             public override IStorageResetter GetStorageResetter()
@@ -336,12 +344,16 @@ insert into hibernate_unique_key values ( 1 );";
 
             public ISessionFactory GetSessionFactory(Configuration configuration = null)
             {
-                if (configuration != null)
+                configuration ??= GetConfiguration();
+
+                if (sessionFactoryMap.TryGetValue(configuration.GetHashCode(), out var sessionFactory))
                 {
-                    return configuration.BuildSessionFactory();
+                    return sessionFactory;
                 }
 
-                return sessionFactory ?? (sessionFactory = GetConfiguration().BuildSessionFactory());
+                sessionFactory = configuration.BuildSessionFactory();
+                sessionFactoryMap[configuration.GetHashCode()] = sessionFactory;
+                return sessionFactory;
             }
 
             public override bool IsTableInDatabase(Type type)
