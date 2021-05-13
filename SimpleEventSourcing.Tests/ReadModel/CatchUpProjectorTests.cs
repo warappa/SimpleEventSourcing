@@ -73,7 +73,8 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             hasResults.Should().Be(true);
 
-            await Task.Delay(2000).ConfigureAwait(false);
+            var cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
+            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpState>(cp);
 
             target.StateModel.Count.Should().Be(1);
 
@@ -82,7 +83,9 @@ namespace SimpleEventSourcing.ReadModel.Tests
             hasResults = await target.PollNowAsync();
             hasResults.Should().Be(true);
 
-            await Task.Delay(2000).ConfigureAwait(false);
+            cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
+            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpState>(cp);
+
             target.StateModel.Count.Should().Be(2);
         }
 

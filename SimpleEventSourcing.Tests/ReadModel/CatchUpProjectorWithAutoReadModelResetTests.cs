@@ -17,6 +17,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         protected TestsBaseConfig config;
         private IPersistenceEngine engine;
         private IReadRepository readRepository;
+        private ICheckpointPersister checkpointPersister;
 
         protected CatchUpProjectorWithAutoReadModelResetTests(TestsBaseConfig config)
         {
@@ -40,7 +41,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         [SetUp]
         public async Task Initialize()
         {
-            var checkpointPersister = config.ReadModel.GetCheckpointPersister();
+            checkpointPersister = config.ReadModel.GetCheckpointPersister();
             var readStorageResetter = config.ReadModel.GetStorageResetter();
             var observerFactory = config.ReadModel.GetPollingObserverFactory(TimeSpan.FromMilliseconds(100000));
 
@@ -78,8 +79,9 @@ namespace SimpleEventSourcing.ReadModel.Tests
             hasResults = await target.PollNowAsync();
             hasResults.Should().Be(true);
 
-            await Task.Delay(2000).ConfigureAwait(false);
-
+            var cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
+            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpStateWithReadModel>(cp);
+            
             model = await Load().ConfigureAwait(false);
             model.Count.Should().Be(1);
 
@@ -88,7 +90,9 @@ namespace SimpleEventSourcing.ReadModel.Tests
             hasResults = await target.PollNowAsync();
             hasResults.Should().Be(true);
 
-            await Task.Delay(1000).ConfigureAwait(false);
+            cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
+            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpStateWithReadModel>(cp);
+
             model = await Load().ConfigureAwait(false);
             model.Count.Should().Be(2);
         }
