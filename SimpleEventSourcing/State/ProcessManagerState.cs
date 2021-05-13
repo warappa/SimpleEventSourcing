@@ -1,4 +1,5 @@
 ﻿using SimpleEventSourcing.Domain;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.State
 {
@@ -7,9 +8,9 @@ namespace SimpleEventSourcing.State
     {
         public bool ProcessEnded { get; protected set; }
 
-        public TState Apply(ProcessManagerHandledEvent processManagerEvent)
+        public async Task<TState> Apply(ProcessManagerHandledEvent processManagerEvent)
         {
-            var newState = InvokeAssociatedApply(processManagerEvent.HandledEvent) ?? this as TState;
+            var newState = await InvokeAssociatedApplyAsync(processManagerEvent.HandledEvent) ?? this as TState;
             (newState as ProcessManagerState<TState>).StreamName = processManagerEvent.Id;
             return newState;
         }

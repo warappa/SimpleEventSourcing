@@ -9,7 +9,7 @@ namespace SimpleEventSourcing.Domain
         where TState : class, IStreamState<TState>, IEventSourcedState<TState>, new()
     {
         public TKey Id => (TKey)StateModel.ConvertFromStreamName(typeof(TKey), stateModel.StreamName);
-        public TState StateModel => EventSourcedState<TState>.LoadState(stateModel);
+        public TState StateModel => EventSourcedState<TState>.LoadStateAsync(stateModel).Result;
 
         protected int committedVersion;
         protected int version;
@@ -29,7 +29,7 @@ namespace SimpleEventSourcing.Domain
 
         public EventSourcedEntity(IEvent @event, TState initialState = null)
         {
-            stateModel = EventSourcedState<TState>.LoadState(initialState, new[] { @event });
+            stateModel = EventSourcedState<TState>.LoadStateAsync(initialState, new[] { @event }).Result;
             uncommittedEvents.Add(@event);
             version = 1;
         }
@@ -62,7 +62,7 @@ namespace SimpleEventSourcing.Domain
 
         protected void RaiseEvent(IEvent @event)
         {
-            stateModel = EventSourcedState<TState>.LoadState(stateModel, new[] { @event });
+            stateModel = EventSourcedState<TState>.LoadStateAsync(stateModel, new[] { @event }).Result;
 
             if (@event is IChildEntityEvent &&
                 this is IAggregateRoot)
@@ -74,7 +74,7 @@ namespace SimpleEventSourcing.Domain
 
                 var childState = originalChildState ?? aggregateRootState.ChildStateCreationMap[@event.GetType()](@event);
 
-                var newState = childState.UntypedApply(@event);
+                var newState = childState.UntypedApplyAsync(@event).Result;
 
                 if (newState != originalChildState)
                 {
@@ -100,7 +100,7 @@ namespace SimpleEventSourcing.Domain
         {
             committedVersion = version = events.Count();
 
-            stateModel = EventSourcedState<TState>.LoadState(initialState, events);
+            stateModel = EventSourcedState<TState>.LoadStateAsync(initialState, events).Result;
         }
 
         void IEventSourcedEntity.ClearUncommittedEvents()

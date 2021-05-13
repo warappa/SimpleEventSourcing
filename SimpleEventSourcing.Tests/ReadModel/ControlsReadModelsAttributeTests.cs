@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SimpleEventSourcing.State;
 using System;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel.Tests
 {
@@ -49,7 +50,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             public Type[] PayloadTypes => throw new NotImplementedException();
 
-            public object UntypedApply(object eventOrMessage) => throw new NotImplementedException();
+            public async Task<object> UntypedApplyAsync(object eventOrMessage) => throw new NotImplementedException();
         }
 
         public class StateReadModel : IReadModel<int>
@@ -63,7 +64,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             public Type[] PayloadTypes => throw new NotImplementedException();
 
-            public object UntypedApply(object eventOrMessage) => throw new NotImplementedException();
+            public async Task<object> UntypedApplyAsync(object eventOrMessage) => throw new NotImplementedException();
         }
 
         [ControlsReadModels(new[] { typeof(StateReadModelClaimedByMultiple) })]
@@ -71,7 +72,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             public Type[] PayloadTypes => throw new NotImplementedException();
 
-            public object UntypedApply(object eventOrMessage) => throw new NotImplementedException();
+            public async Task<object> UntypedApplyAsync(object eventOrMessage) => throw new NotImplementedException();
         }
 
         public class StateReadModelClaimedByMultiple : IReadModel<int>

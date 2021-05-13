@@ -1,6 +1,6 @@
 ﻿namespace SimpleEventSourcing.State
 {
-    public interface IEventSourcedState<out TState> : IStateInternal<TState>
+    public interface IEventSourcedState<TState> : IStateInternal<TState>
     {
     }
 }

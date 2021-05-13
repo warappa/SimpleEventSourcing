@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.State;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.Tests.States
 {
@@ -26,7 +27,7 @@ namespace SimpleEventSourcing.Tests.States
 
             public TestState Invoke(object eventOrMessage)
             {
-                return InvokeAssociatedApply(eventOrMessage);
+                return InvokeAssociatedApplyAsync(eventOrMessage).Result;
             }
 
             public void Apply(IMessage<TestEvent> e)

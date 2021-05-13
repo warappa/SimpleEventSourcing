@@ -9,7 +9,7 @@ namespace SimpleEventSourcing.Utils
     {
         private static readonly Dictionary<Type, PropertyInfo> cachedResultProperties = new();
 
-        public static TState ExtractState<TState>(this object result)
+        public static async Task<TState> ExtractStateAsync<TState>(this object result)
             where TState : class
         {
             if (result == null)
@@ -26,13 +26,12 @@ namespace SimpleEventSourcing.Utils
 
             if (result is Task task)
             {
-                task.Wait();
+                await task;
                 wasTask = true;
             }
             else if (result is ValueTask valueTask)
             {
-                valueTask.GetAwaiter().GetResult();
-
+                await valueTask;
                 wasTask = true;
             }
 

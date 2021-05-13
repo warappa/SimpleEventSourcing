@@ -109,7 +109,7 @@ namespace SimpleEventSourcing.ReadModel
         {
             foreach (var message in requiredMessages)
             {
-                StateModel = StateModel.Apply(message) ?? StateModel;
+                StateModel = await StateModel.Apply(message) ?? StateModel;
             }
 
             if (requiredMessages.Count > 0)

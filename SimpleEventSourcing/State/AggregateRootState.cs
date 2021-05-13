@@ -3,6 +3,7 @@ using SimpleEventSourcing.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.State
 {
@@ -59,39 +60,39 @@ namespace SimpleEventSourcing.State
             return ChildStates.OfType<TChildState>().FirstOrDefault(x => x.Id?.Equals(id) == true);
         }
 
-        protected override TState InvokeAssociatedApply(object eventOrMessage)
+        protected override async Task<TState> InvokeAssociatedApplyAsync(object eventOrMessage)
         {
-            var state = base.InvokeAssociatedApply(eventOrMessage);
+            var state = await base.InvokeAssociatedApplyAsync(eventOrMessage);
 
             if (eventOrMessage is IMessage)
             {
                 if ((eventOrMessage as IMessage).Body is IChildEntityEvent)
                 {
-                    ApplyChildEvent((eventOrMessage as IMessage).Body as IChildEntityEvent);
+                    await ApplyChildEventAsync((eventOrMessage as IMessage).Body as IChildEntityEvent);
                 }
             }
             else if (eventOrMessage is IChildEntityEvent)
             {
-                ApplyChildEvent(eventOrMessage as IChildEntityEvent);
+                await ApplyChildEventAsync(eventOrMessage as IChildEntityEvent);
             }
 
             return state;
         }
 
-        protected void ApplyChildEvent(IChildEntityEvent @event)
+        protected async Task ApplyChildEventAsync(IChildEntityEvent @event)
         {
             IChildEventSourcedState childState = null;
 
             if (ChildStateCreationMap.TryGetValue(@event.GetType(), out var creator))
             {
-                childState = creator(@event).ExtractState<IChildEventSourcedState>();
+                childState = await creator(@event).ExtractStateAsync<IChildEventSourcedState>();
                 childStates.Add(childState);
             }
             else
             {
                 childState = ChildStates.FirstOrDefault(x => x.Id.Equals(@event.Id));
 
-                var newState = childState.UntypedApply(@event).ExtractState<IChildEventSourcedState>();
+                var newState = await childState.UntypedApplyAsync(@event).ExtractStateAsync<IChildEventSourcedState>();
 
                 if (newState != childState)
                 {

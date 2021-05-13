@@ -1,7 +1,9 @@
-﻿namespace SimpleEventSourcing.State
+﻿using System.Threading.Tasks;
+
+namespace SimpleEventSourcing.State
 {
-    public interface IStateInternal<out TState> : IState
+    public interface IStateInternal<TState> : IState
     {
-        TState Apply(object eventOrMessage);
+        Task<TState> Apply(object eventOrMessage);
     }
 }

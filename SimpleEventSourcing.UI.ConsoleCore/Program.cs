@@ -123,7 +123,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             agg = await repo.GetAsync<TestAggregate>(agg.Id);
 
-            var projection = TestState.LoadState(agg.StateModel);
+            var projection = await TestState.LoadStateAsync(agg.StateModel);
             var projection2 = agg.StateModel;
             Console.WriteLine("Name: " + projection.Name + ", " + projection.SomethingDone);
             Console.WriteLine("Name: " + projection2.Name + ", " + projection2.SomethingDone);

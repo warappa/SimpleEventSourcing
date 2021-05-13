@@ -2,7 +2,7 @@
 
 namespace SimpleEventSourcing.State
 {
-    public interface IStreamState<out TState> : IStreamState, IEventSourcedState<TState>
+    public interface IStreamState<TState> : IStreamState, IEventSourcedState<TState>
         where TState : IStreamState, IStreamState<TState>, new()
     {
         object ConvertFromStreamName(Type tkey, string streamName);
