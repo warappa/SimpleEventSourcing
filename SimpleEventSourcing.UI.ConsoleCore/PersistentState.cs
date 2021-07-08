@@ -16,7 +16,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         {
         }
 
-        public async Task Apply(TestAggregateCreated @event)
+        public async ValueTask Apply(TestAggregateCreated @event)
         {
             Count++;
             var s = new PersistentEntity
@@ -28,7 +28,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             await readRepository.InsertAsync(s).ConfigureAwait(false);
         }
 
-        public async Task Apply(SomethingDone @event)
+        public async ValueTask Apply(SomethingDone @event)
         {
             Count++;
             await UpdateByIdAsync<PersistentEntity, string>(@event.Id,
@@ -38,7 +38,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 }).ConfigureAwait(false);
         }
 
-        public async Task Apply(Renamed @event)
+        public async ValueTask Apply(Renamed @event)
         {
             Count++;
             await UpdateByIdAsync<PersistentEntity, string>(@event.Id,

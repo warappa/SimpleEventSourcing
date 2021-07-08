@@ -17,7 +17,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             SomethingDone = state.SomethingDone;
         }
 
-        public Task<TestState> ApplyAsync(TestAggregateCreated @event)
+        public async ValueTask<TestState> ApplyAsync(TestAggregateCreated @event)
         {
             Console.Write("C");
             // Console.Write(Environment.CurrentManagedThreadId);
@@ -29,7 +29,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 Name = @event.Name
             };
 
-            return Task.FromResult(s);
+            return s;
         }
 
         public TestState ApplyAsync(SomethingDone @event)
@@ -46,7 +46,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             return s;
         }
-        public Task<TestState> ApplyAsync(Renamed @event)
+        public async ValueTask<TestState> ApplyAsync(Renamed @event)
         {
             Console.Write("R");
             // Console.Write(Environment.CurrentManagedThreadId);
@@ -57,7 +57,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 Name = @event.Name
             };
 
-            return Task.FromResult(s);
+            return s;
         }
     }
 }

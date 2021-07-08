@@ -157,7 +157,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             Console.WriteLine("Generate 1000 entities");
 
             var list = new List<IEventSourcedEntity>();
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 10000; i++)
             {
                 Console.Write(".");
 

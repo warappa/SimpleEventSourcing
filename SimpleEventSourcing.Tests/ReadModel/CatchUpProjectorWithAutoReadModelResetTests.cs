@@ -136,7 +136,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
         }
 
-        public async Task<CatchUpStateWithReadModel> Apply(TestCatchUpEvent @event)
+        public async ValueTask<CatchUpStateWithReadModel> Apply(TestCatchUpEvent @event)
         {
             var found = false;
             await QueryAndUpdateAsync<CatchUpReadModel>(x => true, model =>

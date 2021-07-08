@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using SimpleEventSourcing.State;
+using System;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.Utils
 {
     public static class StateExtensions
     {
-        private static readonly Dictionary<Type, PropertyInfo> cachedResultProperties = new();
-
         public static async Task<TState> ExtractStateAsync<TState>(this object result)
-            where TState : class
+            where TState : class, IState
         {
             if (result == null)
             {
@@ -21,38 +18,34 @@ namespace SimpleEventSourcing.Utils
             {
                 return res;
             }
-
-            var wasTask = false;
-
-            if (result is Task task)
+            else if (result is Task<object> taskWithObjectResult)
+            {
+                return (TState)await taskWithObjectResult;
+            }
+            else if (result is Task<TState> taskWithResult)
+            {
+                return await taskWithResult;
+            }
+            else if (result is Task task)
             {
                 await task;
-                wasTask = true;
+                return null;
+            }
+            else if (result is ValueTask<object> valueTaskWithObjectResult)
+            {
+                return (TState)await valueTaskWithObjectResult;
+            }
+            else if (result is ValueTask<TState> valueTaskWithResult)
+            {
+                return await valueTaskWithResult;
             }
             else if (result is ValueTask valueTask)
             {
                 await valueTask;
-                wasTask = true;
+                return null;
             }
 
-            if (wasTask)
-            {
-                var type = result.GetType();
-
-                if (!cachedResultProperties.TryGetValue(type, out var property))
-                {
-                    property = type.GetRuntimeProperty("Result");
-                    if (property.PropertyType.Name == "VoidTaskResult")
-                    {
-                        property = null;
-                    }
-                    cachedResultProperties[type] = property;
-                }
-
-                result = property?.GetValue(result);
-            }
-
-            return (TState)result;
+            throw new InvalidOperationException("Method must return Task, Task<TState, ValueTask or ValueTask<TState>");
         }
     }
 }
