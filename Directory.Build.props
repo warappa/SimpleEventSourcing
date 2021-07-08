@@ -2,5 +2,6 @@
   <PropertyGroup>
     <NoWarn>$(NoWarn);CS1998;CS0168;CS0169</NoWarn>
     <LangVersion>latest</LangVersion>
+    <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
   </PropertyGroup>
 </Project>
