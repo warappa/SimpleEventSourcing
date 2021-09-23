@@ -295,6 +295,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 observerFactory);
             var stopwatch = new Stopwatch();
             stopwatch.Start();
+
+            await persistentState.ResetAsync();
             await persistentState.StartAsync();
 
             _ = Task.Run(async () =>

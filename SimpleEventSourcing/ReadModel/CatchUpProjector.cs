@@ -39,6 +39,12 @@ namespace SimpleEventSourcing.ReadModel
             projectorIdentifier = checkpointPersister.GetProjectorIdentifier(typeof(TState));
         }
 
+        public override async Task ResetAsync()
+        {
+            await storageResetter.ResetAsync(ControlsReadModelsAttribute.GetControlledReadModels(typeof(TState)));
+            await checkpointPersister.ResetCheckpointAsync(projectorIdentifier);
+        }
+
         public override async Task StartAsync()
         {
             var lastKnownCheckpointNumber = await checkpointPersister.LoadLastCheckpointAsync(projectorIdentifier);

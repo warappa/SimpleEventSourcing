@@ -17,6 +17,11 @@ namespace SimpleEventSourcing.ReadModel
             return projectorType.Name;
         }
 
+        public async Task ResetCheckpointAsync(string projectorIdentifier)
+        {
+            await SaveCurrentCheckpointAsync(projectorIdentifier, CheckpointDefaults.NoCheckpoint);
+        }
+
         public abstract Task<int> LoadLastCheckpointAsync(string projectorIdentifier);
 
         public abstract Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint);

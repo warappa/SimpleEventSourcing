@@ -302,6 +302,7 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                 observerFactory);
             stopwatch.Start();
 
+            await persistentState.ResetAsync();
             await persistentState.StartAsync();
 
             _ = Task.Run(async () =>

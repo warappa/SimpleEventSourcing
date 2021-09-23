@@ -5,6 +5,7 @@ namespace SimpleEventSourcing.ReadModel
 {
     public interface IProjector
     {
+        Task ResetAsync();
         Task StartAsync();
     }
 

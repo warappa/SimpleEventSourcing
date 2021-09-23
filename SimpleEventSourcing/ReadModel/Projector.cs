@@ -21,6 +21,7 @@ namespace SimpleEventSourcing.ReadModel
             StateModel = stateModel ?? new TState();
         }
 
+        public abstract Task ResetAsync();
         public abstract Task StartAsync();
 
         protected virtual void Dispose(bool disposing)
