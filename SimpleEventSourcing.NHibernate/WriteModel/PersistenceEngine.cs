@@ -301,7 +301,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
             if (list.Count == 0)
             {
-                return -1;
+                return CheckpointDefaults.NoCheckpoint;
             }
 
             return list[0];
@@ -309,7 +309,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
         public async Task<int> GetCurrentEventStoreCheckpointNumberAsync()
         {
-            var result = -1;
+            var result = CheckpointDefaults.NoCheckpoint;
 
             using (var statelessSession = sessionFactory.OpenStatelessSession())
             using (var transaction = statelessSession.BeginTransaction())

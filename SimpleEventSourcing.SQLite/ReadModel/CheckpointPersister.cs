@@ -40,7 +40,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
 
             if (checkpointInfo == null)
             {
-                return -1;
+                return CheckpointDefaults.NoCheckpoint;
             }
 
             return checkpointInfo.CheckpointNumber;

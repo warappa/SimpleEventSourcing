@@ -41,13 +41,13 @@ namespace SimpleEventSourcing.Tests
         public async Task Can_save_stream_entry()
         {
             var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
-            number.Should().Be(-1) ;
+            number.Should().Be(CheckpointDefaults.NoCheckpoint);
 
             var rawStreamEntry = config.WriteModel.GenerateRawStreamEntry();
             await persistenceEngine.SaveStreamEntriesAsync(new[] { rawStreamEntry });
 
             number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
-            number.Should().BeGreaterThan(-1);
+            number.Should().BeGreaterThan(CheckpointDefaults.NoCheckpoint);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace SimpleEventSourcing.Tests
             var expected = config.WriteModel.GenerateRawStreamEntry();
 
             var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
-            number.Should().Be(-1) ;
+            number.Should().Be(CheckpointDefaults.NoCheckpoint) ;
 
             await persistenceEngine.SaveStreamEntriesAsync(new[] { expected }); 
             var streamEntry = await persistenceEngine.LoadStreamEntriesAsync()
@@ -70,7 +70,7 @@ namespace SimpleEventSourcing.Tests
             var expected = config.WriteModel.GenerateRawStreamEntry();
 
             var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
-            number.Should().Be(-1);
+            number.Should().Be(CheckpointDefaults.NoCheckpoint);
 
             await persistenceEngine.SaveStreamEntriesAsync(new[] { expected }); 
 

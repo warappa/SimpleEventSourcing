@@ -265,7 +265,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             var res = cmd.ExecuteScalar<int>();
             if (res == 0)
             {
-                return -1;
+                return CheckpointDefaults.NoCheckpoint;
             }
 
             return res;

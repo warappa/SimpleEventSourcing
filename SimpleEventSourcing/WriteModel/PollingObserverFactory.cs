@@ -17,11 +17,11 @@ namespace SimpleEventSourcing.WriteModel
             this.defaultInterval = defaultInterval == default ? TimeSpan.FromMilliseconds(100) : defaultInterval;
         }
 
-        public async Task<IObserveRawStreamEntries> CreateObserverAsync(int lastKnownCheckpointNumber = -1, Type[] payloadTypes = null)
+        public async Task<IObserveRawStreamEntries> CreateObserverAsync(int lastKnownCheckpointNumber = CheckpointDefaults.NoCheckpoint, Type[] payloadTypes = null)
         {
             return await CreateObserverAsync(default, lastKnownCheckpointNumber, payloadTypes);
         }
-        public async Task<IObserveRawStreamEntries> CreateObserverAsync(TimeSpan interval, int lastKnownCheckpointNumber = -1, Type[] payloadTypes = null)
+        public async Task<IObserveRawStreamEntries> CreateObserverAsync(TimeSpan interval, int lastKnownCheckpointNumber = CheckpointDefaults.NoCheckpoint, Type[] payloadTypes = null)
         {
             if (interval.TotalMilliseconds == 0)
             {

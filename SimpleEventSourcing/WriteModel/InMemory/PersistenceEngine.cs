@@ -37,7 +37,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 
             if (list.Count == 0)
             {
-                return -1;
+                return CheckpointDefaults.NoCheckpoint;
             }
 
             return list[0];

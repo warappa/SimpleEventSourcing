@@ -34,7 +34,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
                 if (checkpointInfo == null)
                 {
-                    return -1;
+                    return CheckpointDefaults.NoCheckpoint;
                 }
 
                 return checkpointInfo.CheckpointNumber;

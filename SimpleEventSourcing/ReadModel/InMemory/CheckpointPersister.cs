@@ -14,7 +14,7 @@ namespace SimpleEventSourcing.ReadModel.InMemory
                 return checkpoint;
             }
 
-            return -1;
+            return CheckpointDefaults.NoCheckpoint;
         }
 
         public override async Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint)

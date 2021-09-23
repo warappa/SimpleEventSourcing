@@ -43,7 +43,7 @@ namespace SimpleEventSourcing.ReadModel
         {
             var lastKnownCheckpointNumber = await checkpointPersister.LoadLastCheckpointAsync(projectorIdentifier);
 
-            if (lastKnownCheckpointNumber == -1)
+            if (lastKnownCheckpointNumber == CheckpointDefaults.NoCheckpoint)
             {
                 await storageResetter.ResetAsync(ControlsReadModelsAttribute.GetControlledReadModels(typeof(TState)));
             }
