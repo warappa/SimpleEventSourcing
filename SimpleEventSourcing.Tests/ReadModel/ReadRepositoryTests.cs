@@ -46,18 +46,18 @@ namespace SimpleEventSourcing.ReadModel.Tests
         }
 
         [Test]
-        public void Can_save_entity_by_id_twice()
+        public async Task Can_save_entity_by_id_twice()
         {
             var expected = config.ReadModel.GetTestEntityA();
             readRepository.InsertAsync(expected).Wait();
-            var loaded = (ITestEntityA)readRepository.GetAsync(expected.GetType(), expected.Id).Result;
+            var loaded = (ITestEntityA)await readRepository.GetAsync(expected.GetType(), expected.Id);
 
             loaded.Value.Should().Be(expected.Value);
 
             loaded.Value = "test2";
             readRepository.UpdateAsync(loaded).Wait();
 
-            loaded = (ITestEntityA)readRepository.GetAsync(expected.GetType(), expected.Id).Result;
+            loaded = (ITestEntityA)await readRepository.GetAsync(expected.GetType(), expected.Id);
             loaded.Value.Should().Be("test2");
         }
 
@@ -76,20 +76,20 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             var getAsync = getAsyncGeneric.MakeGenericMethod(loaded.GetType());
 
-            var loaded2 = ((dynamic)((Task)getAsync.Invoke(readRepository, new object[] { expected.Id }))).Result;
+            var loaded2 = ((dynamic)(Task)getAsync.Invoke(readRepository, new object[] { expected.Id })).Result;
             loaded.Id.Should().Be(loaded2.Id);
             loaded.Value.Should().Be(loaded2.Value);
         }
 
         [Test]
-        public void Can_save_and_load_entity_by_streamname()
+        public async Task Can_save_and_load_entity_by_streamname()
         {
             var expected = config.ReadModel.GetTestEntityA();
             expected.Streamname = Guid.NewGuid().ToString();
 
             readRepository.InsertAsync(expected).Wait();
 
-            var loaded = (ITestEntityA)readRepository.GetByStreamnameAsync(expected.GetType(), expected.Streamname).Result;
+            var loaded = (ITestEntityA)await readRepository.GetByStreamnameAsync(expected.GetType(), expected.Streamname);
 
             loaded.Id.Should().Be(expected.Id);
 
@@ -97,7 +97,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             var getAsync = getAsyncGeneric.MakeGenericMethod(loaded.GetType());
 
-            var loaded2 = ((dynamic)((Task)getAsync.Invoke(readRepository, new object[] { expected.Streamname }))).Result;
+            var loaded2 = ((dynamic)(Task)getAsync.Invoke(readRepository, new object[] { expected.Streamname })).Result;
             loaded.Streamname.Should().Be(loaded2.Streamname);
             loaded.Value.Should().Be(loaded2.Value);
         }

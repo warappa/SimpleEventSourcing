@@ -9,7 +9,7 @@ namespace SimpleEventSourcing.Domain
         where TState : class, IStreamState<TState>, IEventSourcedState<TState>, new()
     {
         public TKey Id => (TKey)StateModel.ConvertFromStreamName(typeof(TKey), stateModel.StreamName);
-        public TState StateModel => EventSourcedState<TState>.LoadStateAsync(stateModel).Result;
+        public TState StateModel => EventSourcedState<TState>.LoadStateAsync(stateModel).Result; // should be safe as no async method *should* be contained
 
         protected int committedVersion;
         protected int version;
@@ -29,7 +29,7 @@ namespace SimpleEventSourcing.Domain
 
         public EventSourcedEntity(IEvent @event, TState initialState = null)
         {
-            stateModel = EventSourcedState<TState>.LoadStateAsync(initialState, new[] { @event }).Result;
+            stateModel = EventSourcedState<TState>.LoadStateAsync(initialState, new[] { @event }).Result; // should be safe as no async method *should* be contained
             uncommittedEvents.Add(@event);
             version = 1;
         }
@@ -62,7 +62,7 @@ namespace SimpleEventSourcing.Domain
 
         protected void RaiseEvent(IEvent @event)
         {
-            stateModel = EventSourcedState<TState>.LoadStateAsync(stateModel, new[] { @event }).Result;
+            stateModel = EventSourcedState<TState>.LoadStateAsync(stateModel, new[] { @event }).Result; // should be safe as no async method *should* be contained
 
             if (@event is IChildEntityEvent &&
                 this is IAggregateRoot)
@@ -74,7 +74,7 @@ namespace SimpleEventSourcing.Domain
 
                 var childState = originalChildState ?? aggregateRootState.ChildStateCreationMap[@event.GetType()](@event);
 
-                var newState = childState.UntypedApplyAsync(@event).Result;
+                var newState = childState.UntypedApplyAsync(@event).Result; // should be safe as no async method *should* be contained
 
                 if (newState != originalChildState)
                 {
@@ -100,7 +100,7 @@ namespace SimpleEventSourcing.Domain
         {
             committedVersion = version = events.Count();
 
-            stateModel = EventSourcedState<TState>.LoadStateAsync(initialState, events).Result;
+            stateModel = EventSourcedState<TState>.LoadStateAsync(initialState, events).Result; // should be safe as no async method *should* be contained
         }
 
         void IEventSourcedEntity.ClearUncommittedEvents()

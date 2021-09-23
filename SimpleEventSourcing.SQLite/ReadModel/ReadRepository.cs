@@ -123,7 +123,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             var getByStreamnameAsyncMethodGeneric = GetType().GetRuntimeMethod(nameof(IReadRepository.GetByStreamnameAsync), new[] { typeof(object) });
             var getByStreamnameAsyncMethod = getByStreamnameAsyncMethodGeneric.MakeGenericMethod(entityType);
 
-            var task = (Task)(getByStreamnameAsyncMethod.Invoke(this, new object[] { streamname }));
+            var task = (Task)getByStreamnameAsyncMethod.Invoke(this, new object[] { streamname });
             await task;
             
             return ((dynamic)task).Result;

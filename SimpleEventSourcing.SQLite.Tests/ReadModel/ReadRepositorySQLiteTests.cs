@@ -33,7 +33,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel.Tests
 
             var getAsync = getAsyncGeneric.MakeGenericMethod(loaded.GetType());
 
-            var loaded2 = (TestEntityA)((dynamic)((Task)getAsync.Invoke(readRepository, new object[] { expected.Id }))).Result;
+            var loaded2 = (TestEntityA)((dynamic)getAsync.Invoke(readRepository, new object[] { expected.Id })).Result;
             loaded2.Id.Should().Be(loaded.Id);
             loaded2.Value.Should().Be(loaded.Value);
             loaded2.SubData.Should().NotBeNull();
@@ -42,7 +42,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel.Tests
 
             var loaded3 = (await readRepository.QueryAsync(typeof(TestEntityA), x => true).ConfigureAwait(false))
                 .Cast<TestEntityA>()
-                .FirstOrDefault(); // ((dynamic)((Task)getAsync.Invoke(readRepository, new object[] { expected.Id }))).Result;
+                .FirstOrDefault();
 
             loaded3.SubData.Should().NotBeNull();
             loaded3.SubData.PropA.Should().Be(expected.SubData.PropA);

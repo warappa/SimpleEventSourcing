@@ -44,7 +44,7 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ShoppingCartViewModelExt> Get(string id)
         {
-            var wk = readRepository.GetByStreamnameAsync<ShoppingCartViewModel>(id).Result;
+            var wk = await readRepository.GetByStreamnameAsync<ShoppingCartViewModel>(id);
 
             var wkId = wk.ShoppingCartId;
 

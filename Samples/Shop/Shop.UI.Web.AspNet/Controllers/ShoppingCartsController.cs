@@ -24,7 +24,7 @@ namespace Shop.Web.UI.Controllers
 
         public async Task<ShoppingCartViewModelExt> Get(string id)
         {
-            var wk = Program.readRepository.GetByStreamnameAsync<ShoppingCartViewModel>(id).Result;
+            var wk = await Program.readRepository.GetByStreamnameAsync<ShoppingCartViewModel>(id);
 
             var wkId = wk.ShoppingCartId;
 

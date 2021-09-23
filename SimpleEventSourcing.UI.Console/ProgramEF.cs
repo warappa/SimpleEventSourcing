@@ -242,23 +242,17 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             var loadedEntity = await repository.GetAsync<TestAggregate>(entityId);
 
             Console.WriteLine("Commits: " + await engine.LoadStreamEntriesAsync()
-                //.Result
                 .CountAsync());
             Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(payloadTypes: new[] { typeof(Renamed) })
-                //.Result
                 .CountAsync());
 
             Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", await engine
                 .LoadStreamEntriesAsync(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
-                //.Result
                 .Select(x => "" + x.CheckpointNumber).ToArrayAsync()));
             Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(minCheckpointNumber: await engine.GetCurrentEventStoreCheckpointNumberAsync()
-                //.Result
                 - 5, payloadTypes: new[] { typeof(Renamed) })
-                //.Result
                 .CountAsync());
             Console.WriteLine("Current CheckpointNumber: " + await engine.GetCurrentEventStoreCheckpointNumberAsync()
-                //.Result
                 );
 
             var viewModelResetter = new StorageResetter<ReadModelDbContext>(dbContextScopeFactory);
