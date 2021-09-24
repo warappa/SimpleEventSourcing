@@ -25,9 +25,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
 
         [Test]
-        public async Task Entities_are_in_the_same_order_as_they_were_inserted()
+        public async Task Entities_are_in_the_same_order_as_they_were_inserted_checked_by_StreamRevision()
         {
-            const int sampleSize = 1000;
+            const int sampleSize = 50000;
 
             var entries = new List<IRawStreamEntry>();
             for (var i = 0; i < sampleSize; i++)
@@ -51,7 +51,37 @@ namespace SimpleEventSourcing.WriteModel.Tests
             var actual = loaded.Select(x => x.StreamRevision).ToArray();
             var expected = entries.Select(x => x.StreamRevision).ToArray();
 
-            actual.Should().BeEquivalentTo(expected/*, x=> x.ComparingByValue<int>()*/, "aaa");
+            actual.Should().BeEquivalentTo(expected, "StreamRevision order not preserved");
+        }
+        
+        [Test]
+        public async Task Entities_are_in_the_same_order_as_they_were_inserted_checked_by_checkpointnumber()
+        {
+            const int sampleSize = 50000;
+
+            var entries = new List<IRawStreamEntry>();
+            for (var i = 0; i < sampleSize; i++)
+            {
+                var entry = config.WriteModel.GenerateRawStreamEntry();
+                entry.StreamRevision = i + 1;
+                entries.Add(entry);
+            }
+
+            await persistenceEngine.SaveStreamEntriesAsync(entries);
+
+            // patch for comparison
+            for (var i = 0; i < sampleSize; i++)
+            {
+                entries[i].CheckpointNumber = i + 1;
+            }
+
+            var loaded = await persistenceEngine.LoadStreamEntriesAsync()
+                .ToListAsync();
+
+            var actual = loaded.Select(x => x.CheckpointNumber).ToArray();
+            var expected = entries.Select(x => x.CheckpointNumber).ToArray();
+
+            actual.Should().BeEquivalentTo(expected, "Checkpoint order not preserved");
         }
 
     }

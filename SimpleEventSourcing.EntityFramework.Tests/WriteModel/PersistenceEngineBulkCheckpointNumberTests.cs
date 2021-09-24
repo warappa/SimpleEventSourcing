@@ -1,15 +1,15 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.EntityFrameworkCore.Tests;
+using SimpleEventSourcing.EntityFramework.Tests;
 using SimpleEventSourcing.WriteModel.Tests;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
+namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
 {
     [TestFixture]
     public class PersistenceEngineBulkCheckpointNumberTests : PersistenceEngineBulkCheckpointNumberTestsBase
     {
         public PersistenceEngineBulkCheckpointNumberTests()
-            : base(new EntityFrameworkCoreTestConfig())
+            : base(new EntityFrameworkTestConfig())
         {
         }
 

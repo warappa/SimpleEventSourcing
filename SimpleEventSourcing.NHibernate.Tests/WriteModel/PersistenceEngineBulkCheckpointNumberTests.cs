@@ -1,20 +1,20 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.EntityFrameworkCore.Tests;
+using SimpleEventSourcing.NHibernate.Tests;
 using SimpleEventSourcing.WriteModel.Tests;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
+namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
 {
     [TestFixture]
     public class PersistenceEngineBulkCheckpointNumberTests : PersistenceEngineBulkCheckpointNumberTestsBase
     {
         public PersistenceEngineBulkCheckpointNumberTests()
-            : base(new EntityFrameworkCoreTestConfig())
+            : base(new NHibernateTestConfig())
         {
         }
 
         [TearDown]
-        public async Task TearDownEF()
+        public async Task TearDownNH()
         {
             await config.ReadModel.CleanupReadDatabaseAsync();
             await config.WriteModel.CleanupWriteDatabaseAsync();
