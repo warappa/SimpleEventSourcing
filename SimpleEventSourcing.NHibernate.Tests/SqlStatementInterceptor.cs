@@ -2,12 +2,15 @@
 using System;
 using System.Diagnostics;
 
-[Serializable]
-public class SqlStatementInterceptor : EmptyInterceptor
+namespace SimpleEventSourcing.NHibernate.Tests
 {
-    public override NHibernate.SqlCommand.SqlString OnPrepareStatement(NHibernate.SqlCommand.SqlString sql)
+    [Serializable]
+    public class SqlStatementInterceptor : EmptyInterceptor
     {
-        Debug.WriteLine(sql.ToString());
-        return sql;
+        public override global::NHibernate.SqlCommand.SqlString OnPrepareStatement(global::NHibernate.SqlCommand.SqlString sql)
+        {
+            Debug.WriteLine(sql.ToString());
+            return sql;
+        }
     }
 }

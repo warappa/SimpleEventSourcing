@@ -1,6 +1,7 @@
 ﻿using NHibernate;
 using NHibernate.Mapping.ByCode.Conformist;
 using NHibernate.Type;
+using System.Collections.Generic;
 
 namespace SimpleEventSourcing.NHibernate.WriteModel
 {
@@ -23,15 +24,32 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                 config.NotNullable(true);
                 config.Index("LoadStreamMessages");
             });
-            Property(x => x.CommitId);
-            Property(x => x.MessageId);
-            Property(x => x.StreamRevision);
+            Property(x => x.CommitId, config =>
+            {
+                config.Column(x =>
+                {
+                    x.SqlType("varchar(100)");
+                    x.Length(100);
+                });
+            });
+            Property(x => x.MessageId, config =>
+            {
+                config.Column(x =>
+                {
+                    x.SqlType("varchar(100)");
+                    x.Length(100);
+                });
+            });
+            Property(x => x.StreamRevision, config =>
+            {
+                config.NotNullable(true);
+            });
             Property(x => x.PayloadType, config =>
             {
                 config.Column(x =>
                 {
-                    x.SqlType("varchar(200)");
-                    x.Length(200);
+                    x.SqlType("varchar(100)");
+                    x.Length(100);
                 });
 
                 config.Length(200);
@@ -46,17 +64,32 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             });
             Property(x => x.Group, config =>
             {
-                config.Column("`Group`");
                 config.Index("LoadStreamMessages");
+                config.Column(x =>
+                {
+                    x.Name("`Group`");
+                    x.SqlType("varchar(100)");
+                    x.Length(100);
+                });
             });
             Property(x => x.Category, config =>
             {
-                config.Index("LoadStreamMessages");
+                //config.Index("LoadStreamMessages");
+                config.Column(x =>
+                {
+                    x.SqlType("varchar(MAX)");
+                    x.Length(8000);
+                });
             });
             Property(x => x.Headers, config =>
             {
                 config.Type(NHibernateUtil.StringClob);
                 config.NotNullable(true);
+                config.Column(x =>
+                {
+                    x.SqlType("varchar(100)");
+                    x.Length(100);
+                });
             });
             Property(x => x.DateTime, config =>
             {
@@ -68,7 +101,19 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             });
             Id(x => x.CheckpointNumber, config =>
             {
-                config.Generator(global::NHibernate.Mapping.ByCode.Generators.HighLow);
+                //config.Generator(global::NHibernate.Mapping.ByCode.Generators.HighLow);
+                //config.Generator(global::NHibernate.Mapping.ByCode.Generators.Identity);
+                //config
+                //    .Generator(global::NHibernate.Mapping.ByCode.Generators.SequenceHiLo, x =>
+                //    {
+                //        x.Params(new
+                //        {
+                //            //next_hi = 1000,
+                //            max_lo = 1000,
+                //            table = "commits_hilo"
+                //        });
+                //    });
+                config.Generator(global::NHibernate.Mapping.ByCode.Generators.SequenceIdentity);
             });
         }
     }

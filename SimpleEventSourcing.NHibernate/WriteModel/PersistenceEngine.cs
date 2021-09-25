@@ -280,7 +280,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
                 foreach (var rawStreamEntry in entries)
                 {
-                    statelessSession.Insert((RawStreamEntry)rawStreamEntry);
+                    //await statelessSession.InsertAsync(rawStreamEntry); // Async variant has some serious performance penalties (20% slower!)
+                    statelessSession.Insert(rawStreamEntry);
                 }
 
                 result = await GetCurrentEventStoreCheckpointNumberInternalAsync(statelessSession);

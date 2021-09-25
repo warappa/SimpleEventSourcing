@@ -8,7 +8,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
     [Table("Commits")]
     public class RawStreamEntry : IRawStreamEntry
     {
-        [Column("StreamName", TypeName = "varchar")]
+        [Column("StreamName", TypeName = "nvarchar")]
         [StringLength(100)]
         [Index("LoadStreamMessages", Order = 2)]
         public string StreamName { get; set; }

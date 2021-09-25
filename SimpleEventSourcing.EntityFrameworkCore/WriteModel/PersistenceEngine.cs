@@ -309,7 +309,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                 dbContext.BulkInsert(rawStreamEntries.Cast<RawStreamEntry>().ToList(),
                     new BulkConfig
                     {
-                        PreserveInsertOrder = true,
+                        PreserveInsertOrder = true
                     });
 
                 result = await GetCurrentEventStoreCheckpointNumberInternalAsync(dbContext);

@@ -19,13 +19,19 @@ namespace SimpleEventSourcing.NHibernate.Tests
 {
     public class NHibernateTestConfig : TestsBaseConfig
     {
+        private const bool IsLoggingEnabled = false;
+
         public new WriteModelNHConfig WriteModel => (WriteModelNHConfig)base.WriteModel;
         public new ReadModelNHConfig ReadModel => (ReadModelNHConfig)base.ReadModel;
         public new StorageNHConfig Storage => (StorageNHConfig)base.Storage;
 
         public NHibernateTestConfig()
         {
-            Logger.Setup();
+            if (IsLoggingEnabled)
+            {
+                Logger.Setup();
+            }
+
             base.ReadModel = new ReadModelNHConfig(this);
             base.WriteModel = new WriteModelNHConfig(this);
             base.Storage = new StorageNHConfig(this);
@@ -55,15 +61,20 @@ namespace SimpleEventSourcing.NHibernate.Tests
                 var cfg = new Configuration()
                     .DataBaseIntegration(db =>
                     {
-                        //db.LogFormattedSql = true;
-                        //db.LogSqlInConsole = true;
+                        db.LogFormattedSql = IsLoggingEnabled;
+                        db.LogSqlInConsole = IsLoggingEnabled;
+
+                        db.BatchSize = 1000;
 
                         db.ConnectionString = @"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;";
                         db.Dialect<global::NHibernate.Dialect.MsSql2012Dialect>();
                     })
                     .SetProperty(global::NHibernate.Cfg.Environment.CurrentSessionContextClass, typeof(ScopedLogicalCallSessionContext).AssemblyQualifiedName);
 
-                //cfg.SetInterceptor(new SqlStatementInterceptor());
+                if (IsLoggingEnabled)
+                {
+                    cfg.SetInterceptor(new SqlStatementInterceptor());
+                }
 
                 return cfg;
             }
@@ -110,15 +121,26 @@ insert into hibernate_unique_key values ( 1 );";
                 var cfg = new Configuration()
                     .DataBaseIntegration(db =>
                     {
-                        db.LogFormattedSql = true;
-                        db.LogSqlInConsole = true;
+                        db.LogFormattedSql = IsLoggingEnabled;
+                        db.LogSqlInConsole = IsLoggingEnabled;
+
+                        db.BatchSize = 1000;
+                        //db.Batcher<global::NHibernate.AdoNet.HanaBatchingBatcherFactory>();
+                        db.Batcher<global::NHibernate.AdoNet.GenericBatchingBatcherFactory>();
+                        db.OrderInserts = false;
 
                         db.ConnectionString = @"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;Initial Catalog=integrationDatabaseNHWriteModel;";
                         db.Dialect<global::NHibernate.Dialect.MsSql2012Dialect>();
                     })
-                    .SetProperty(global::NHibernate.Cfg.Environment.CurrentSessionContextClass, typeof(ScopedLogicalCallSessionContext).AssemblyQualifiedName);
+                    .SetProperty(global::NHibernate.Cfg.Environment.CurrentSessionContextClass, typeof(ScopedLogicalCallSessionContext).AssemblyQualifiedName)
+                    .SetProperty(global::NHibernate.Cfg.Environment.GenerateStatistics, IsLoggingEnabled.ToString().ToLower())
+                    .SetProperty(global::NHibernate.Cfg.Environment.TrackSessionId, "false");
+                ;
 
-                cfg.SetInterceptor(new SqlStatementInterceptor());
+                if (IsLoggingEnabled)
+                {
+                    cfg.SetInterceptor(new SqlStatementInterceptor());
+                }
 
                 return cfg;
             }
@@ -133,7 +155,11 @@ insert into hibernate_unique_key values ( 1 );";
                 var p = GetNHibernateResetConfigurationProvider();
 
                 var cfg = p.GetConfigurationForTypes(typeof(RawStreamEntry));
-                cfg.SetInterceptor(new SqlStatementInterceptor());
+
+                if (IsLoggingEnabled)
+                {
+                    cfg.SetInterceptor(new SqlStatementInterceptor());
+                }
                 return cfg;
             }
 
@@ -242,14 +268,20 @@ insert into hibernate_unique_key values ( 1 );";
                 var cfg = new Configuration()
                     .DataBaseIntegration(db =>
                     {
-                        db.LogFormattedSql = true;
-                        db.LogSqlInConsole = true;
+                        db.LogFormattedSql = IsLoggingEnabled;
+                        db.LogSqlInConsole = IsLoggingEnabled;
+
+                        db.BatchSize = 1000;
+
                         db.ConnectionString = @"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;Initial Catalog=integrationDatabaseNHReadModel;";
                         db.Dialect<global::NHibernate.Dialect.MsSql2012Dialect>();
                     })
                     .SetProperty(global::NHibernate.Cfg.Environment.CurrentSessionContextClass, typeof(ScopedLogicalCallSessionContext).AssemblyQualifiedName);
 
-                cfg.SetInterceptor(new SqlStatementInterceptor());
+                if (IsLoggingEnabled)
+                {
+                    cfg.SetInterceptor(new SqlStatementInterceptor());
+                }
 
                 return cfg;
             }
@@ -259,7 +291,10 @@ insert into hibernate_unique_key values ( 1 );";
                 var p = GetNHibernateResetConfigurationProvider(baseConfiguration);
 
                 var cfg = p.GetConfigurationForTypes(typeof(TestEntityA), typeof(TestEntityB), typeof(CheckpointInfo), typeof(CatchUpReadModel));
-                cfg.SetInterceptor(new SqlStatementInterceptor());
+                if (IsLoggingEnabled)
+                {
+                    cfg.SetInterceptor(new SqlStatementInterceptor());
+                }
                 return cfg;
             }
 
@@ -278,15 +313,20 @@ insert into hibernate_unique_key values ( 1 );";
                 var cfg = new Configuration()
                     .DataBaseIntegration(db =>
                     {
-                        db.LogFormattedSql = true;
-                        db.LogSqlInConsole = true;
+                        db.LogFormattedSql = IsLoggingEnabled;
+                        db.LogSqlInConsole = IsLoggingEnabled;
+
+                        db.BatchSize = 1000;
 
                         db.ConnectionString = @"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;";
                         db.Dialect<global::NHibernate.Dialect.MsSql2012Dialect>();
                     })
                     .SetProperty(global::NHibernate.Cfg.Environment.CurrentSessionContextClass, typeof(ScopedLogicalCallSessionContext).AssemblyQualifiedName);
 
-                cfg.SetInterceptor(new SqlStatementInterceptor());
+                if (IsLoggingEnabled)
+                {
+                    cfg.SetInterceptor(new SqlStatementInterceptor());
+                }
 
                 using (var sessionFactory = GetSessionFactory(cfg))
                 using (var session = sessionFactory.OpenSession())

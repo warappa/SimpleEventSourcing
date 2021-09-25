@@ -1,8 +1,11 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SimpleEventSourcing.Tests;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel.Tests
@@ -55,7 +58,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
         }
         
         [Test]
-        public async Task Entities_are_in_the_same_order_as_they_were_inserted_checked_by_checkpointnumber()
+        public virtual async Task Entities_are_in_the_same_order_as_they_were_inserted_checked_by_checkpointnumber()
         {
             const int sampleSize = 50000;
 
@@ -66,9 +69,15 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 entry.StreamRevision = i + 1;
                 entries.Add(entry);
             }
-
+            
+            Console.WriteLine("start");
+            var stopwatch =new Stopwatch();
+            
+            stopwatch.Start();
             await persistenceEngine.SaveStreamEntriesAsync(entries);
-
+            stopwatch.Stop();
+            Console.WriteLine($"\nInsert Duration: {stopwatch.ElapsedMilliseconds}ms\n");
+            
             // patch for comparison
             for (var i = 0; i < sampleSize; i++)
             {
