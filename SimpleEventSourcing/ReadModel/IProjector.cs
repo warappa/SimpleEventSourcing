@@ -14,4 +14,10 @@ namespace SimpleEventSourcing.ReadModel
     {
         TState StateModel { get; }
     }
+
+    public interface IAsyncProjector<TState> : IProjector
+        where TState : class, IAsyncEventSourcedState<TState>, new()
+    {
+        TState StateModel { get; }
+    }
 }

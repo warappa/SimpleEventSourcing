@@ -1,6 +1,5 @@
 ﻿using SimpleEventSourcing.State;
 using System;
-using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.UI.ConsoleCore
 {
@@ -17,7 +16,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             SomethingDone = state.SomethingDone;
         }
 
-        public async ValueTask<TestState> ApplyAsync(TestAggregateCreated @event)
+        public TestState Apply(TestAggregateCreated @event)
         {
             Console.Write("C");
             // Console.Write(Environment.CurrentManagedThreadId);
@@ -32,7 +31,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             return s;
         }
 
-        public TestState ApplyAsync(SomethingDone @event)
+        public TestState Apply(SomethingDone @event)
         {
             Console.Write("S");
             // Console.Write(Environment.CurrentManagedThreadId);
@@ -46,7 +45,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             return s;
         }
-        public async ValueTask<TestState> ApplyAsync(Renamed @event)
+        public TestState Apply(Renamed @event)
         {
             Console.Write("R");
             // Console.Write(Environment.CurrentManagedThreadId);

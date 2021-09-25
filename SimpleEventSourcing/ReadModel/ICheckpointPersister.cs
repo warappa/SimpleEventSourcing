@@ -14,6 +14,6 @@ namespace SimpleEventSourcing.ReadModel
         string GetProjectorIdentifier(Type projectorType);
         Task WaitForCheckpointNumberAsync(Type readModelStateType, int checkpointNumber, CancellationToken token = default);
         Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber, CancellationToken token = default)
-            where TReadModelState : IState;
+            where TReadModelState : IAsyncState;
     }
 }

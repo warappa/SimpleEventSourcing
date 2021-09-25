@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel
 {
-    public class ReadRepositoryState<TState> : EventSourcedState<TState>, 
+    public class ReadRepositoryState<TState> : AsyncEventSourcedState<TState>, 
         IDbScopeAware, IReadRepositoryState<TState>
         where TState : ReadRepositoryState<TState>, new()
     {

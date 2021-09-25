@@ -74,7 +74,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                     typeof(PersistentEntity)
                 });
             services.AddCatchupProjector(new TestState());
-            services.AddCatchupProjector(
+            services.AddAsyncCatchupProjector(
                 sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
             services.AddNewtonsoftJson();
             services.AddBus();

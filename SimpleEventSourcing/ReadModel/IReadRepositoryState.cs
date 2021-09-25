@@ -2,8 +2,8 @@
 
 namespace SimpleEventSourcing.ReadModel
 {
-    public interface IReadRepositoryState<TState> : IEventSourcedState<TState>
-        where TState : class, IEventSourcedState<TState>, new()
+    public interface IReadRepositoryState<TState> : IAsyncEventSourcedState<TState>
+        where TState : class, IAsyncEventSourcedState<TState>, new()
     {
 
     }

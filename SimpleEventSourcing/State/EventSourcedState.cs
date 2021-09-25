@@ -91,7 +91,7 @@ namespace SimpleEventSourcing.State
             return this as TState;
         }
 
-        protected virtual async Task<TState> InvokeAssociatedApplyAsync(object eventOrMessage)
+        protected virtual TState InvokeAssociatedApply(object eventOrMessage)
         {
             var state = this as TState;
 
@@ -100,51 +100,17 @@ namespace SimpleEventSourcing.State
                 if (methodForMessageType.TryGetValue(message.Body.GetType(), out var mi))
                 {
                     object result;
-                    //if (mi.Name == "Apply")
-                    //{
-                    //    result = ((dynamic)state).Apply((dynamic)message);
-                    //}
-                    //else
-                    //{
-                    //    result = ((dynamic)state).ApplyAsync((dynamic)message);
-                    //}
-
+                    
                     result = mi.Invoke(state, new[] { message });
-                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
-
-                    //if (mi.ReturnType != typeof(void))
-                    //{
-                    //    state = await StateExtensions.ExtractStateAsync<TState>(((dynamic)state).Apply((dynamic)message)) ?? state;
-                    //}
-                    //else
-                    //{
-                    //    mi.invoke
-                    //    //((dynamic)state).Apply((dynamic)message);
-                    //}
+                    state = StateExtensions.ExtractState<TState>(result) ?? state;
                 }
 
                 if (methodForEventType.TryGetValue(message.Body.GetType(), out mi))
                 {
                     object result;
-                    //if (mi.Name == "Apply")
-                    //{
-                    //    result = ((dynamic)state).Apply((dynamic)message.Body);
-                    //}
-                    //else
-                    //{
-                    //    result = ((dynamic)state).ApplyAsync((dynamic)message.Body);
-                    //}
-
+                    
                     result = mi.Invoke(state, new[] { message.Body });
-                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
-                    //if (mi.ReturnType != typeof(void))
-                    //{
-                    //    state = await StateExtensions.ExtractStateAsync<TState>(((dynamic)state).Apply((dynamic)message.Body)) ?? state;
-                    //}
-                    //else
-                    //{
-                    //    ((dynamic)state).Apply((dynamic)message.Body);
-                    //}
+                    state = StateExtensions.ExtractState<TState>(result) ?? state;
                 }
             }
             else
@@ -154,32 +120,16 @@ namespace SimpleEventSourcing.State
                 if (methodForEventType.TryGetValue(@event.GetType(), out var mi))
                 {
                     object result;
-                    //if (mi.Name == "Apply")
-                    //{
-                    //    result = ((dynamic)state).Apply((dynamic)@event);
-                    //}
-                    //else
-                    //{
-                    //    result = ((dynamic)state).ApplyAsync((dynamic)@event);
-                    //}
                     
                     result = mi.Invoke(state, new[] { @event });
-                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
-                    //if (mi.ReturnType != typeof(void))
-                    //{
-                    //    state = await StateExtensions.ExtractStateAsync<TState>(((dynamic)state).Apply((dynamic)@event)) ?? state;
-                    //}
-                    //else
-                    //{
-                    //    ((dynamic)state).Apply((dynamic)@event);
-                    //}
+                    state = StateExtensions.ExtractState<TState>(result) ?? state;
                 }
             }
 
             return state;
         }
 
-        public static async Task<TState> LoadStateAsync(TState state, IEnumerable<object> eventsOrMessages = null)
+        public static TState LoadState(TState state, IEnumerable<object> eventsOrMessages = null)
         {
             state = state ?? new TState();
 
@@ -187,13 +137,13 @@ namespace SimpleEventSourcing.State
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
-                state = await state.Apply(eventOrMessage).ExtractStateAsync<TState>() ?? state;
+                state = state.Apply(eventOrMessage).ExtractState<TState>() ?? state;
             }
 
             return state;
         }
 
-        public static async Task<TState> LoadStateAsync(IStateFactory stateFactory, IEnumerable<object> eventsOrMessages = null)
+        public static TState LoadState(IStateFactory stateFactory, IEnumerable<object> eventsOrMessages = null)
         {
             var state = stateFactory.CreateState<TState>();
 
@@ -201,20 +151,20 @@ namespace SimpleEventSourcing.State
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
-                state = await state.Apply(eventOrMessage).ExtractStateAsync<TState>() ?? state;
+                state = state.Apply(eventOrMessage).ExtractState<TState>() ?? state;
             }
 
             return state;
         }
 
-        async Task<object> IState.UntypedApplyAsync(object eventOrMessage)
+        object IState.UntypedApply(object eventOrMessage)
         {
-            return await InvokeAssociatedApplyAsync(eventOrMessage);
+            return InvokeAssociatedApply(eventOrMessage);
         }
 
-        async Task<TState> IStateInternal<TState>.Apply(object @event)
+        TState IStateInternal<TState>.Apply(object @event)
         {
-            return await InvokeAssociatedApplyAsync(@event);
+            return InvokeAssociatedApply(@event);
         }
 
         public override int GetHashCode()

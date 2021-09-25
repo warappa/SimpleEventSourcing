@@ -27,7 +27,7 @@ namespace SimpleEventSourcing.ReadModel
         public abstract Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint);
 
         public async Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber, CancellationToken token = default)
-            where TReadModelState : IState
+            where TReadModelState : IAsyncState
         {
             await WaitForCheckpointNumberAsync(typeof(TReadModelState), checkpointNumber, token);
         }

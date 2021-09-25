@@ -28,15 +28,15 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
             services.AddSimpleEventSourcing(() => writeConnection, () => readConnection);
             services.AddNewtonsoftJson();
 
-            services.AddCatchupProjector(sp => new ArticleOverviewState(sp.GetRequiredService<IReadRepository>()));
-            services.AddCatchupProjector(sp => new ArticleActivationHistoryReadModelState(sp.GetRequiredService<IReadRepository>()));
-            services.AddCatchupProjector(sp => new ArticleReadModelState(sp.GetRequiredService<IReadRepository>()));
+            services.AddAsyncCatchupProjector(sp => new ArticleOverviewState(sp.GetRequiredService<IReadRepository>()));
+            services.AddAsyncCatchupProjector(sp => new ArticleActivationHistoryReadModelState(sp.GetRequiredService<IReadRepository>()));
+            services.AddAsyncCatchupProjector(sp => new ArticleReadModelState(sp.GetRequiredService<IReadRepository>()));
 
-            services.AddCatchupProjector(sp => new CustomerOverviewState(sp.GetRequiredService<IReadRepository>()));
-            services.AddCatchupProjector(sp => new CustomerReadModelState(sp.GetRequiredService<IReadRepository>()));
+            services.AddAsyncCatchupProjector(sp => new CustomerOverviewState(sp.GetRequiredService<IReadRepository>()));
+            services.AddAsyncCatchupProjector(sp => new CustomerReadModelState(sp.GetRequiredService<IReadRepository>()));
 
-            services.AddCatchupProjector(sp => new ShoppingCartOverviewState(sp.GetRequiredService<IReadRepository>()));
-            services.AddCatchupProjector(sp => new ShoppingCartReadModelState(sp.GetRequiredService<IReadRepository>()));
+            services.AddAsyncCatchupProjector(sp => new ShoppingCartOverviewState(sp.GetRequiredService<IReadRepository>()));
+            services.AddAsyncCatchupProjector(sp => new ShoppingCartReadModelState(sp.GetRequiredService<IReadRepository>()));
 
             services.AddHostedService<ReadModelUpdateBackgroundService>();
         }

@@ -46,7 +46,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         }
 
         [ControlsReadModels(new[] { typeof(StateReadModel) })]
-        public class State : IState
+        public class State : IAsyncState
         {
             public Type[] PayloadTypes => throw new NotImplementedException();
 
@@ -60,7 +60,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         }
 
         [ControlsReadModels(new[] { typeof(StateReadModelClaimedByMultiple) })]
-        public class StateClaimingA : IState
+        public class StateClaimingA : IAsyncState
         {
             public Type[] PayloadTypes => throw new NotImplementedException();
 
@@ -68,7 +68,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         }
 
         [ControlsReadModels(new[] { typeof(StateReadModelClaimedByMultiple) })]
-        public class StateClaimingB : IState
+        public class StateClaimingB : IAsyncState
         {
             public Type[] PayloadTypes => throw new NotImplementedException();
 

@@ -7,7 +7,7 @@ namespace SimpleEventSourcing.Utils
     public static class StateExtensions
     {
         public static async Task<TState> ExtractStateAsync<TState>(this object result)
-            where TState : class, IState
+            where TState : class, IAsyncState
         {
             if (result == null)
             {
@@ -46,6 +46,22 @@ namespace SimpleEventSourcing.Utils
             }
 
             throw new InvalidOperationException("Method must return Task, Task<TState, ValueTask or ValueTask<TState>");
+        }
+
+        public static TState ExtractState<TState>(this object result)
+            where TState : class, IState
+        {
+            if (result == null)
+            {
+                return null;
+            }
+
+            if (result is TState res)
+            {
+                return res;
+            }
+
+            throw new InvalidOperationException($"Method must return {typeof(TState).FullName}");
         }
     }
 }

@@ -27,7 +27,7 @@ namespace SimpleEventSourcing.Tests.States
 
             public TestState Invoke(object eventOrMessage)
             {
-                return InvokeAssociatedApplyAsync(eventOrMessage).Result;
+                return InvokeAssociatedApply(eventOrMessage);
             }
 
             public void Apply(IMessage<TestEvent> e)

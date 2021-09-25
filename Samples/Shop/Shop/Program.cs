@@ -83,7 +83,7 @@ namespace Shop
 
             await repository.SaveAsync(shoppingCart);
 
-            var projection = await CustomerState.LoadStateAsync(greatCustomer.StateModel);
+            var projection = CustomerState.LoadState(greatCustomer.StateModel);
         }
 
         public static async Task AnalyseAlmostOrderedAsync()
@@ -163,7 +163,7 @@ namespace Shop
                 .ToListAsync();
 
             Console.WriteLine("Removed Articles: ");
-            var almostOrderedState = await AlmostOrderedArticlesState.LoadStateAsync((AlmostOrderedArticlesState)null,
+            var almostOrderedState = AlmostOrderedArticlesState.LoadState((AlmostOrderedArticlesState)null,
                     loadedMessages);
 
             var removedArticles = almostOrderedState
@@ -217,7 +217,7 @@ namespace Shop
                 .Select(x => serializer.Deserialize(x.Payload))
                 .ToListAsync();
 
-            var state = await CustomerRenameHistory.LoadStateAsync((CustomerRenameHistory)null, events);
+            var state = CustomerRenameHistory.LoadState((CustomerRenameHistory)null, events);
 
             Console.WriteLine("Customers rename history of Great Customer event stream:\n" + state.RenameHistory);
             Console.WriteLine();
@@ -238,7 +238,7 @@ namespace Shop
                 .Select(x => serializer.Deserialize(x.Payload))
                 .ToListAsync();
 
-            var state = await CustomerRenameHistory.LoadStateAsync((CustomerRenameHistory)null, events);
+            var state = CustomerRenameHistory.LoadState((CustomerRenameHistory)null, events);
 
             Console.WriteLine("Customers rename history of Great Customer event stream (with payload type constraints):\n" + state.RenameHistory);
             Console.WriteLine();
