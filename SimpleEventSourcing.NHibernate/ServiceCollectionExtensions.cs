@@ -111,9 +111,9 @@ namespace SimpleEventSourcing.NHibernate
 
         public static IServiceCollection AddCatchupProjector<TState>(
             this IServiceCollection services, TState state, int interval = 100)
-            where TState : class, IEventSourcedState<TState>, new()
+            where TState : class, ISynchronousEventSourcedState<TState>, new()
         {
-            services.AddScoped<IProjector<TState>>(
+            services.AddScoped<ISynchronousProjector<TState>>(
                 sp =>
                 {
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
@@ -123,16 +123,16 @@ namespace SimpleEventSourcing.NHibernate
 
                     return new CatchUpProjector<TState>(state, checkpointPersister, engine, storageResetter, observerFactory);
                 });
-            services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
+            services.AddScoped<IProjector>(sp => sp.GetRequiredService<ISynchronousProjector<TState>>());
 
             return services;
         }
 
         public static IServiceCollection AddCatchupProjector<TState>(
             this IServiceCollection services, Func<IServiceProvider, TState> stateFactory, int interval = 100)
-            where TState : class, IEventSourcedState<TState>, new()
+            where TState : class, ISynchronousEventSourcedState<TState>, new()
         {
-            services.AddScoped<IProjector<TState>>(
+            services.AddScoped<ISynchronousProjector<TState>>(
                 sp =>
                 {
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
@@ -142,7 +142,7 @@ namespace SimpleEventSourcing.NHibernate
 
                     return new CatchUpProjector<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, observerFactory);
                 });
-            services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
+            services.AddScoped<IProjector>(sp => sp.GetRequiredService<ISynchronousProjector<TState>>());
 
             return services;
         }

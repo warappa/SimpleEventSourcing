@@ -7,7 +7,7 @@ using System.Linq;
 namespace Shop.Reports.Customers.Transient
 {
     [Versioned("CustomerRenameHistory", 0)]
-    public class CustomerRenameHistory : EventSourcedState<CustomerRenameHistory>
+    public class CustomerRenameHistory : SynchronousEventSourcedState<CustomerRenameHistory>
     {
         public IEnumerable<string> Names { get { return names.ToList(); } }
         public string RenameHistory => string.Join(" -> ", names);

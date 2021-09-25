@@ -12,7 +12,7 @@ namespace Shop.Core.Reports.ShoppingCarts.Transient
     /// in-memory projection
     /// </summary>
     [Versioned("AlmostOrderedArticlesState", 0)]
-    public class AlmostOrderedArticlesState : EventSourcedState<AlmostOrderedArticlesState>
+    public class AlmostOrderedArticlesState : SynchronousEventSourcedState<AlmostOrderedArticlesState>
     {
         public List<ShoppingCartArticleRemovedInfo> AlmostOrderedShoppingCartArticles { get; private set; } = new List<ShoppingCartArticleRemovedInfo>();
 

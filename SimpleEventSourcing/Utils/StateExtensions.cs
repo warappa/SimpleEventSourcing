@@ -49,7 +49,7 @@ namespace SimpleEventSourcing.Utils
         }
 
         public static TState ExtractState<TState>(this object result)
-            where TState : class, IState
+            where TState : class, ISynchronousState
         {
             if (result == null)
             {

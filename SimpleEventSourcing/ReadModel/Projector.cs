@@ -46,19 +46,19 @@ namespace SimpleEventSourcing.ReadModel
             GC.SuppressFinalize(this);
         }
     }
-    public abstract class Projector<TState> : IProjector<TState>, IDisposable
-        where TState : class, IEventSourcedState<TState>, new()
+    public abstract class SynchronousProjector<TState> : ISynchronousProjector<TState>, IDisposable
+        where TState : class, ISynchronousEventSourcedState<TState>, new()
     {
         private bool disposedValue;
 
         public TState StateModel { get; protected set; }
 
-        protected Projector(IStateFactory stateFactory)
+        protected SynchronousProjector(IStateFactory stateFactory)
         {
             StateModel = stateFactory.CreateState<TState>();
         }
 
-        protected Projector(TState stateModel)
+        protected SynchronousProjector(TState stateModel)
         {
             StateModel = stateModel ?? new TState();
         }

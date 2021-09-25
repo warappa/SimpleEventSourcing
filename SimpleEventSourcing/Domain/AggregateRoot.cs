@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace SimpleEventSourcing.Domain
 {
     public abstract class AggregateRoot<TState, TKey> : EventSourcedEntity<TState, TKey>, IAggregateRoot
-        where TState : class, IAggregateRootState, IStreamState<TState>, IEventSourcedState<TState>, new()
+        where TState : class, IAggregateRootState, IStreamState<TState>, ISynchronousEventSourcedState<TState>, new()
     {
         protected AggregateRoot(IEnumerable<IEvent> events, TState initialState = null)
             : base(events, initialState)

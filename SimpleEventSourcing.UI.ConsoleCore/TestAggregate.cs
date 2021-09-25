@@ -1,34 +1,32 @@
 ﻿using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
-using SimpleEventSourcing.WriteModel;
 using System.Linq;
 
 namespace SimpleEventSourcing.UI.ConsoleCore
 {
-    [Versioned("TestAggregate", 0)]
-	public class TestAggregate : AggregateRoot<TestState, string>
-	{
-		public TestAggregate() : base(Enumerable.Empty<IEvent>()) { }
+    public class TestAggregate : AggregateRoot<TestState, string>
+    {
+        public TestAggregate() : base(Enumerable.Empty<IEvent>()) { }
 
-		public TestAggregate(string id, string name)
-			: base(new TestAggregateCreated(id, name))
-		{
+        public TestAggregate(string id, string name)
+            : base(new TestAggregateCreated(id, name))
+        {
 
-		}
+        }
 
-		public void DoSomething(string bla)
-		{
-			RaiseEvent(new SomethingDone(stateModel.StreamName, bla));
-		}
+        public void DoSomething(string bla)
+        {
+            RaiseEvent(new SomethingDone(stateModel.StreamName, bla));
+        }
 
-		public void DoSomethingSpecial(string bla)
-		{
-			RaiseEvent(new SomethingSpecialDone(stateModel.StreamName, bla));
-		}
+        public void DoSomethingSpecial(string bla)
+        {
+            RaiseEvent(new SomethingSpecialDone(stateModel.StreamName, bla));
+        }
 
-		internal void Rename(string name)
-		{
-			RaiseEvent(new Renamed(stateModel.StreamName, name));
-		}
-	}
+        internal void Rename(string name)
+        {
+            RaiseEvent(new Renamed(stateModel.StreamName, name));
+        }
+    }
 }

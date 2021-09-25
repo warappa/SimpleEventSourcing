@@ -2,12 +2,12 @@
 
 namespace SimpleEventSourcing.State
 {
-    public interface IStateInternal<TState> : IState
+    public interface ISynchronousStateInternal<TState> : ISynchronousState
     {
         TState Apply(object eventOrMessage);
     }
     public interface IAsyncStateInternal<TState> : IAsyncState
     {
-        Task<TState> Apply(object eventOrMessage);
+        Task<TState> ApplyAsync(object eventOrMessage);
     }
 }

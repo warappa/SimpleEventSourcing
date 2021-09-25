@@ -5,9 +5,9 @@
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>SimpleEventSourcing.UI.ConsoleUI</RootNamespace>
     <AssetTargetFallback>net45</AssetTargetFallback>
-    <!--<StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramSQLite</StartupObject>-->
+    <StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramSQLite</StartupObject>
     <!--<StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramNH</StartupObject>-->
-    <StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramEFCore</StartupObject>
+    <!--<StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramEFCore</StartupObject>-->
   </PropertyGroup>
 
   <ItemGroup>

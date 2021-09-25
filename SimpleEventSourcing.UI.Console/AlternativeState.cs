@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace SimpleEventSourcing.UI.ConsoleUI
 {
-    public class AlternativeState : EventSourcedState<AlternativeState>
+    public class AlternativeState : SynchronousEventSourcedState<AlternativeState>
 	{
 		public int ChangeCount { get; protected set; }
 

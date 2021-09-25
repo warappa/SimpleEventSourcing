@@ -21,7 +21,7 @@ namespace SimpleEventSourcing.Tests.States
                 .Should().Be("IMessage<TestEvent>, TestEvent, TestEvent2");
         }
 
-        public class TestState : EventSourcedState<TestState>
+        public class TestState : SynchronousEventSourcedState<TestState>
         {
             public List<string> CalledHandlers { get; set; } = new List<string>();
 

@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel
 {
-    public class CatchUpProjector<TState> : Projector<TState>
-        where TState : class, IEventSourcedState<TState>, new()
+    public class CatchUpProjector<TState> : SynchronousProjector<TState>
+        where TState : class, ISynchronousEventSourcedState<TState>, new()
     {
         protected readonly IPersistenceEngine engine;
         protected readonly IObserverFactory observerFactory;
@@ -243,7 +243,7 @@ namespace SimpleEventSourcing.ReadModel
         {
             foreach (var message in requiredMessages)
             {
-                StateModel = await StateModel.Apply(message) ?? StateModel;
+                StateModel = await StateModel.ApplyAsync(message) ?? StateModel;
             }
 
             if (requiredMessages.Count > 0)

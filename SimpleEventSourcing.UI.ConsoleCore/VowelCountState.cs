@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.UI.ConsoleCore
 {
-    public class VowelCountState : EventSourcedState<VowelCountState>
+    public class VowelCountState : SynchronousEventSourcedState<VowelCountState>
     {
         public int ACount { get; set; }
         public int ECount { get; set; }

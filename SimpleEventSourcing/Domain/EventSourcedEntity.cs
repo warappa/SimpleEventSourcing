@@ -6,10 +6,10 @@ using System.Linq;
 namespace SimpleEventSourcing.Domain
 {
     public class EventSourcedEntity<TState, TKey> : IEventSourcedEntity<TState, TKey>, IEventSourcedEntityInternal
-        where TState : class, IStreamState<TState>, IEventSourcedState<TState>, new()
+        where TState : class, IStreamState<TState>, ISynchronousEventSourcedState<TState>, new()
     {
         public TKey Id => (TKey)StateModel.ConvertFromStreamName(typeof(TKey), stateModel.StreamName);
-        public TState StateModel => EventSourcedState<TState>.LoadState(stateModel);
+        public TState StateModel => SynchronousEventSourcedState<TState>.LoadState(stateModel);
 
         protected int committedVersion;
         protected int version;
@@ -29,7 +29,7 @@ namespace SimpleEventSourcing.Domain
 
         public EventSourcedEntity(IEvent @event, TState initialState = null)
         {
-            stateModel = EventSourcedState<TState>.LoadState(initialState, new[] { @event });
+            stateModel = SynchronousEventSourcedState<TState>.LoadState(initialState, new[] { @event });
             uncommittedEvents.Add(@event);
             version = 1;
         }
@@ -62,7 +62,7 @@ namespace SimpleEventSourcing.Domain
 
         protected void RaiseEvent(IEvent @event)
         {
-            stateModel = EventSourcedState<TState>.LoadState(stateModel, new[] { @event });
+            stateModel = SynchronousEventSourcedState<TState>.LoadState(stateModel, new[] { @event });
 
             if (@event is IChildEntityEvent &&
                 this is IAggregateRoot)
@@ -100,7 +100,7 @@ namespace SimpleEventSourcing.Domain
         {
             committedVersion = version = events.Count();
 
-            stateModel = EventSourcedState<TState>.LoadState(initialState, events);
+            stateModel = SynchronousEventSourcedState<TState>.LoadState(initialState, events);
         }
 
         void IEventSourcedEntity.ClearUncommittedEvents()

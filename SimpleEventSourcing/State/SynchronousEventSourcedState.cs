@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.State
 {
-    public abstract class AsyncEventSourcedState<TState> : IAsyncEventSourcedState<TState>
-        where TState : class, IAsyncEventSourcedState<TState>, new()
+    public abstract class SynchronousEventSourcedState<TState> : ISynchronousEventSourcedState<TState>
+        where TState : class, ISynchronousEventSourcedState<TState>, new()
     {
 #pragma warning disable S2743 // Static fields should not be used in generic types
         public static Type[] HandledEventTypes { get; protected set; }
@@ -22,7 +22,7 @@ namespace SimpleEventSourcing.State
         private static readonly IDictionary<Type, MethodInfo> methodForMessageType = new Dictionary<Type, MethodInfo>();
 #pragma warning restore S2743 // Static fields should not be used in generic types
 
-        static AsyncEventSourcedState()
+        static SynchronousEventSourcedState()
         {
             var handledEventTypes = new List<Type>();
             var handledMessageTypes = new List<Type>();
@@ -33,8 +33,7 @@ namespace SimpleEventSourcing.State
 
             var methodInfos = type
                 .GetRuntimeMethods()
-                .Where(x => x.Name == "Apply" ||
-                    x.Name == "ApplyAsync")
+                .Where(x => x.Name == "Apply")
                 .ToList();
 
             foreach (var methodInfo in methodInfos)
@@ -91,7 +90,7 @@ namespace SimpleEventSourcing.State
             return this as TState;
         }
 
-        protected virtual async Task<TState> InvokeAssociatedApplyAsync(object eventOrMessage)
+        protected virtual TState InvokeAssociatedApply(object eventOrMessage)
         {
             var state = this as TState;
 
@@ -100,17 +99,17 @@ namespace SimpleEventSourcing.State
                 if (methodForMessageType.TryGetValue(message.Body.GetType(), out var mi))
                 {
                     object result;
-
+                    
                     result = mi.Invoke(state, new[] { message });
-                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
+                    state = StateExtensions.ExtractState<TState>(result) ?? state;
                 }
 
                 if (methodForEventType.TryGetValue(message.Body.GetType(), out mi))
                 {
                     object result;
-
+                    
                     result = mi.Invoke(state, new[] { message.Body });
-                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
+                    state = StateExtensions.ExtractState<TState>(result) ?? state;
                 }
             }
             else
@@ -120,16 +119,16 @@ namespace SimpleEventSourcing.State
                 if (methodForEventType.TryGetValue(@event.GetType(), out var mi))
                 {
                     object result;
-
+                    
                     result = mi.Invoke(state, new[] { @event });
-                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
+                    state = StateExtensions.ExtractState<TState>(result) ?? state;
                 }
             }
 
             return state;
         }
 
-        public static async Task<TState> LoadStateAsync(TState state, IEnumerable<object> eventsOrMessages = null)
+        public static TState LoadState(TState state, IEnumerable<object> eventsOrMessages = null)
         {
             state = state ?? new TState();
 
@@ -137,13 +136,13 @@ namespace SimpleEventSourcing.State
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
-                state = await state.ApplyAsync(eventOrMessage).ExtractStateAsync<TState>() ?? state;
+                state = state.Apply(eventOrMessage).ExtractState<TState>() ?? state;
             }
 
             return state;
         }
 
-        public static async Task<TState> LoadStateAsync(IStateFactory stateFactory, IEnumerable<object> eventsOrMessages = null)
+        public static TState LoadState(IStateFactory stateFactory, IEnumerable<object> eventsOrMessages = null)
         {
             var state = stateFactory.CreateState<TState>();
 
@@ -151,20 +150,20 @@ namespace SimpleEventSourcing.State
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
-                state = await state.ApplyAsync(eventOrMessage).ExtractStateAsync<TState>() ?? state;
+                state = state.Apply(eventOrMessage).ExtractState<TState>() ?? state;
             }
 
             return state;
         }
 
-        async Task<object> IAsyncState.UntypedApplyAsync(object eventOrMessage)
+        object ISynchronousState.UntypedApply(object eventOrMessage)
         {
-            return await InvokeAssociatedApplyAsync(eventOrMessage);
+            return InvokeAssociatedApply(eventOrMessage);
         }
 
-        async Task<TState> IAsyncStateInternal<TState>.ApplyAsync(object @event)
+        TState ISynchronousStateInternal<TState>.Apply(object @event)
         {
-            return await InvokeAssociatedApplyAsync(@event);
+            return InvokeAssociatedApply(@event);
         }
 
         public override int GetHashCode()

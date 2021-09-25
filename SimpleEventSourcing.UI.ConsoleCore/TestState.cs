@@ -1,8 +1,10 @@
 ﻿using SimpleEventSourcing.State;
+using SimpleEventSourcing.WriteModel;
 using System;
 
 namespace SimpleEventSourcing.UI.ConsoleCore
 {
+    [Versioned("TestState", 0)]
     public class TestState : AggregateRootState<TestState, string>
     {
         public string Name { get; protected set; }
