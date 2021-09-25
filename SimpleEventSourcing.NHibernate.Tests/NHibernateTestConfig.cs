@@ -64,7 +64,7 @@ namespace SimpleEventSourcing.NHibernate.Tests
                         db.LogFormattedSql = IsLoggingEnabled;
                         db.LogSqlInConsole = IsLoggingEnabled;
 
-                        db.BatchSize = 1000;
+                        db.BatchSize = 100;
 
                         db.ConnectionString = @"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;";
                         db.Dialect<global::NHibernate.Dialect.MsSql2012Dialect>();
@@ -124,7 +124,7 @@ insert into hibernate_unique_key values ( 1 );";
                         db.LogFormattedSql = IsLoggingEnabled;
                         db.LogSqlInConsole = IsLoggingEnabled;
 
-                        db.BatchSize = 1000;
+                        db.BatchSize = 100;
                         //db.Batcher<global::NHibernate.AdoNet.HanaBatchingBatcherFactory>();
                         db.Batcher<global::NHibernate.AdoNet.GenericBatchingBatcherFactory>();
                         db.OrderInserts = false;
@@ -271,7 +271,7 @@ insert into hibernate_unique_key values ( 1 );";
                         db.LogFormattedSql = IsLoggingEnabled;
                         db.LogSqlInConsole = IsLoggingEnabled;
 
-                        db.BatchSize = 1000;
+                        db.BatchSize = 100;
 
                         db.ConnectionString = @"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;Initial Catalog=integrationDatabaseNHReadModel;";
                         db.Dialect<global::NHibernate.Dialect.MsSql2012Dialect>();
@@ -316,7 +316,7 @@ insert into hibernate_unique_key values ( 1 );";
                         db.LogFormattedSql = IsLoggingEnabled;
                         db.LogSqlInConsole = IsLoggingEnabled;
 
-                        db.BatchSize = 1000;
+                        db.BatchSize = 100;
 
                         db.ConnectionString = @"Server=(localdb)\MSSQLLocalDB;Integrated Security=true;";
                         db.Dialect<global::NHibernate.Dialect.MsSql2012Dialect>();

@@ -52,7 +52,7 @@ namespace SimpleEventSourcing.ReadModel
             stateTypes ??= knownAssemblies
                     .Where(assembly => !assembly.IsDynamic)
                     .SelectMany(assembly => assembly.ExportedTypes)
-                    .Where(type => typeof(ISynchronousState).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                    .Where(type => typeof(IState).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                     .ToArray()
                 ;
 

@@ -3,14 +3,16 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.State
 {
-    public interface ISynchronousState
+    public interface IState
     {
         Type[] PayloadTypes { get; }
         object UntypedApply(object eventOrMessage);
     }
-    public interface IAsyncState
+    public interface ISynchronousState : IState
     {
-        Type[] PayloadTypes { get; }
+    }
+    public interface IAsyncState : IState
+    {
         Task<object> UntypedApplyAsync(object eventOrMessage);
     }
 }

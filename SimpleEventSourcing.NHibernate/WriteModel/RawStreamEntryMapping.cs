@@ -15,8 +15,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             {
                 config.Column(x =>
                 {
-                    x.SqlType("varchar(100)");
-                    x.Length(100);
+                    x.SqlType("nvarchar(255)");
+                    x.Length(255);
                 });
 
                 config.Length(100);
@@ -28,16 +28,16 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             {
                 config.Column(x =>
                 {
-                    x.SqlType("varchar(100)");
-                    x.Length(100);
+                    x.SqlType("nvarchar(255)");
+                    x.Length(255);
                 });
             });
             Property(x => x.MessageId, config =>
             {
                 config.Column(x =>
                 {
-                    x.SqlType("varchar(100)");
-                    x.Length(100);
+                    x.SqlType("nvarchar(255)");
+                    x.Length(255);
                 });
             });
             Property(x => x.StreamRevision, config =>
@@ -48,11 +48,11 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             {
                 config.Column(x =>
                 {
-                    x.SqlType("varchar(100)");
-                    x.Length(100);
+                    x.SqlType("nvarchar(255)");
+                    x.Length(255);
                 });
 
-                config.Length(200);
+                config.Length(255);
 
                 config.NotNullable(true);
                 config.Index("LoadStreamMessages");
@@ -68,8 +68,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                 config.Column(x =>
                 {
                     x.Name("`Group`");
-                    x.SqlType("varchar(100)");
-                    x.Length(100);
+                    x.SqlType("nvarchar(255)");
+                    x.Length(255);
                 });
             });
             Property(x => x.Category, config =>
@@ -77,7 +77,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                 //config.Index("LoadStreamMessages");
                 config.Column(x =>
                 {
-                    x.SqlType("varchar(MAX)");
+                    x.SqlType("nvarchar(MAX)");
                     x.Length(8000);
                 });
             });
@@ -87,8 +87,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                 config.NotNullable(true);
                 config.Column(x =>
                 {
-                    x.SqlType("varchar(100)");
-                    x.Length(100);
+                    x.SqlType("nvarchar(MAX)");
+                    x.Length(8000);
                 });
             });
             Property(x => x.DateTime, config =>

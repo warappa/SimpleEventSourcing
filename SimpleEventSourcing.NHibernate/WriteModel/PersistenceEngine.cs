@@ -25,7 +25,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
         public ISerializer Serializer { get; }
 
         public PersistenceEngine(ISessionFactory sessionFactory, Configuration configuration, ISerializer serializer)
-            : this(sessionFactory, configuration, serializer, 1000)
+            : this(sessionFactory, configuration, serializer, 100)
         {
         }
 

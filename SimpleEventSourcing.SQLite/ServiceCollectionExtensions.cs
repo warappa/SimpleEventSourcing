@@ -56,51 +56,11 @@ namespace SimpleEventSourcing.SQLite
             return services;
         }
 
-        public static IServiceCollection AddAsyncCatchupProjector<TState>(
-            this IServiceCollection services, TState state)
-            where TState : class, IAsyncEventSourcedState<TState>, new()
-        {
-            services.AddScoped<IAsyncProjector<TState>>(
-                sp =>
-                {
-                    var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
-                    var engine = sp.GetRequiredService<IPersistenceEngine>();
-                    var storageResetter = sp.GetRequiredService<IReadModelStorageResetter>();
-                    var observerFactory = sp.GetRequiredService<IObserverFactory>();
-
-                    return new AsyncCatchUpProjector<TState>(state, checkpointPersister, engine, storageResetter, observerFactory);
-
-                });
-            services.AddScoped<IProjector>(sp => sp.GetRequiredService<IAsyncProjector<TState>>());
-
-            return services;
-        }
-
-        public static IServiceCollection AddAsyncCatchupProjector<TState>(
-            this IServiceCollection services, Func<IServiceProvider, TState> stateFactory)
-            where TState : class, IAsyncEventSourcedState<TState>, new()
-        {
-            services.AddScoped<IAsyncProjector<TState>>(
-                sp =>
-                {
-                    var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
-                    var engine = sp.GetRequiredService<IPersistenceEngine>();
-                    var storageResetter = sp.GetRequiredService<IReadModelStorageResetter>();
-                    var observerFactory = sp.GetRequiredService<IObserverFactory>();
-
-                    return new AsyncCatchUpProjector<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, observerFactory);
-
-                });
-            services.AddScoped<IProjector>(sp => sp.GetRequiredService<IAsyncProjector<TState>>());
-
-            return services;
-        }
-
         public static IServiceCollection AddCatchupProjector<TState>(
             this IServiceCollection services, TState state)
-            where TState : class, ISynchronousEventSourcedState<TState>, new()
+            where TState : class, IState, new()
         {
-            services.AddScoped<ISynchronousProjector<TState>>(
+            services.AddScoped<IProjector<TState>>(
                 sp =>
                 {
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
@@ -111,16 +71,16 @@ namespace SimpleEventSourcing.SQLite
                     return new CatchUpProjector<TState>(state, checkpointPersister, engine, storageResetter, observerFactory);
 
                 });
-            services.AddScoped<IProjector>(sp => sp.GetRequiredService<ISynchronousProjector<TState>>());
+            services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
 
             return services;
         }
 
         public static IServiceCollection AddCatchupProjector<TState>(
             this IServiceCollection services, Func<IServiceProvider, TState> stateFactory)
-            where TState : class, ISynchronousEventSourcedState<TState>, new()
+            where TState : class, IState, new()
         {
-            services.AddScoped<ISynchronousProjector<TState>>(
+            services.AddScoped<IProjector<TState>>(
                 sp =>
                 {
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
@@ -131,7 +91,7 @@ namespace SimpleEventSourcing.SQLite
                     return new CatchUpProjector<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, observerFactory);
 
                 });
-            services.AddScoped<IProjector>(sp => sp.GetRequiredService<ISynchronousProjector<TState>>());
+            services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
 
             return services;
         }

@@ -182,7 +182,7 @@ namespace Shop
             IObserverFactory observerFactory)
             where TReadModelState : ReadRepositoryState<TReadModelState>, new()
         {
-            var projection = new AsyncCatchUpProjector<TReadModelState>(
+            var projection = new CatchUpProjector<TReadModelState>(
                 readModelState,
                 checkpointPersister,
                 engine,

@@ -294,7 +294,7 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
             //resetter.Reset(new[] { typeof(PersistentEntity) });
             */
 
-            var persistentState = new AsyncCatchUpProjector<PersistentState>(
+            var persistentState = new CatchUpProjector<PersistentState>(
                 new PersistentState(readRepository),
                 checkpointPersister,
                 engine,

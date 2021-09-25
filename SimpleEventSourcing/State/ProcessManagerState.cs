@@ -2,8 +2,8 @@
 
 namespace SimpleEventSourcing.State
 {
-    public abstract class ProcessManagerState<TState> : SynchronousStreamState<TState>, IProcessManagerState<TState>
-        where TState : SynchronousStreamState<TState>, IProcessManagerState<TState>, new()
+    public abstract class ProcessManagerState<TState> : StreamState<TState>, IProcessManagerState<TState>
+        where TState : StreamState<TState>, IProcessManagerState<TState>, new()
     {
         public bool ProcessEnded { get; protected set; }
 

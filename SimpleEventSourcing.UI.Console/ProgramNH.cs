@@ -319,7 +319,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             var resetter = new StorageResetter(nHibernateResetConfigurationProvider);
             //resetter.Reset(new[] { typeof(PersistentEntity) });
 
-            var persistentState = new AsyncCatchUpProjector<PersistentState>(
+            var persistentState = new CatchUpProjector<PersistentState>(
                 new PersistentState(readRepository),
                 checkpointPersister,
                 persistenceEngine,

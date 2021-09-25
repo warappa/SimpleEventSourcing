@@ -37,7 +37,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             var checkpointPersister = serviceProvider.GetRequiredService<ICheckpointPersister>();
             var observerFactory = serviceProvider.GetRequiredService<IObserverFactory>();
             var readRepository = serviceProvider.GetRequiredService<IReadRepository>();
-            var persistentState = serviceProvider.GetRequiredService<IAsyncProjector<PersistentState>>();
+            var persistentState = serviceProvider.GetRequiredService<IProjector<PersistentState>>();
             var viewModelResetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
             
             await persistenceEngine.InitializeAsync();

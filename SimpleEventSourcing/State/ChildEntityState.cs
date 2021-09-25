@@ -1,6 +1,6 @@
 ﻿namespace SimpleEventSourcing.State
 {
-    public abstract class ChildEntityState<TState, TAggregateRootKey, TChildKey> : SynchronousStreamState<TState>, IChildEventSourcedState<TState, TAggregateRootKey, TChildKey>
+    public abstract class ChildEntityState<TState, TAggregateRootKey, TChildKey> : StreamState<TState>, IChildEventSourcedState<TState, TAggregateRootKey, TChildKey>
         where TState : ChildEntityState<TState, TAggregateRootKey, TChildKey>, IChildEventSourcedState<TState, TAggregateRootKey, TChildKey>, new()
     {
         public TChildKey Id { get; protected set; }

@@ -50,6 +50,8 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             public Type[] PayloadTypes => throw new NotImplementedException();
 
+            public object UntypedApply(object eventOrMessage) => throw new NotImplementedException();
+
             public async Task<object> UntypedApplyAsync(object eventOrMessage) => throw new NotImplementedException();
         }
 
@@ -64,6 +66,8 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             public Type[] PayloadTypes => throw new NotImplementedException();
 
+            public object UntypedApply(object eventOrMessage) => throw new NotImplementedException();
+
             public async Task<object> UntypedApplyAsync(object eventOrMessage) => throw new NotImplementedException();
         }
 
@@ -71,6 +75,8 @@ namespace SimpleEventSourcing.ReadModel.Tests
         public class StateClaimingB : IAsyncState
         {
             public Type[] PayloadTypes => throw new NotImplementedException();
+
+            public object UntypedApply(object eventOrMessage) => throw new NotImplementedException();
 
             public async Task<object> UntypedApplyAsync(object eventOrMessage) => throw new NotImplementedException();
         }

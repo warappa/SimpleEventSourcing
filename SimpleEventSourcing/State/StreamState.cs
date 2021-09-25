@@ -2,8 +2,8 @@
 
 namespace SimpleEventSourcing.State
 {
-    public abstract class SynchronousStreamState<TStreamState> : SynchronousEventSourcedState<TStreamState>, IStreamState<TStreamState>
-        where TStreamState : SynchronousStreamState<TStreamState>, new()
+    public abstract class StreamState<TStreamState> : SynchronousEventSourcedState<TStreamState>, IStreamState<TStreamState>
+        where TStreamState : StreamState<TStreamState>, new()
     {
         public string StreamName { get; protected set; }
 

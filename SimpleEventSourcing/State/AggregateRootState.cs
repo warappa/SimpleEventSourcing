@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.State
 {
-    public abstract class AggregateRootState<TState, TKey> : SynchronousStreamState<TState>, IAggregateRootState<TKey>, IAggregateRootStateInternal
+    public abstract class AggregateRootState<TState, TKey> : StreamState<TState>, IAggregateRootState<TKey>, IAggregateRootStateInternal
         where TState : AggregateRootState<TState, TKey>, new()
     {
         public IEnumerable<IChildEventSourcedState> ChildStates { get => childStates; }

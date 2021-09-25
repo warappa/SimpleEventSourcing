@@ -36,7 +36,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                     db.Dialect<global::NHibernate.Dialect.MsSql2012Dialect>();
                 })
                 .SetProperty(global::NHibernate.Cfg.Environment.UseSecondLevelCache, "true")
-                .SetProperty(global::NHibernate.Cfg.Environment.GenerateStatistics, "true")
+                .SetProperty(global::NHibernate.Cfg.Environment.GenerateStatistics, "false")
                 .SetProperty(global::NHibernate.Cfg.Environment.CurrentSessionContextClass, typeof(ScopedLogicalCallSessionContext).AssemblyQualifiedName)
                 .SetProperty("adonet.batch_size", "100");
 
@@ -74,7 +74,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                     typeof(PersistentEntity)
                 });
             services.AddCatchupProjector(new TestState());
-            services.AddAsyncCatchupProjector(
+            services.AddCatchupProjector(
                 sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
             services.AddNewtonsoftJson();
             services.AddBus();

@@ -3,7 +3,7 @@
     public interface ISynchronousEventSourcedState<TState> : ISynchronousStateInternal<TState>
     {
     }
-    public interface IAsyncEventSourcedState<TState> : IAsyncStateInternal<TState>
+    public interface IEventSourcedState<TState> : IStateInternal<TState>
     {
     }
 }

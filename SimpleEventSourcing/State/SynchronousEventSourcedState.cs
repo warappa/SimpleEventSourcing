@@ -156,7 +156,7 @@ namespace SimpleEventSourcing.State
             return state;
         }
 
-        object ISynchronousState.UntypedApply(object eventOrMessage)
+        object IState.UntypedApply(object eventOrMessage)
         {
             return InvokeAssociatedApply(eventOrMessage);
         }

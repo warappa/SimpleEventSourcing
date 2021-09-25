@@ -57,7 +57,7 @@ namespace SimpleEventSourcing.Tests.Domain
             loadedByLoadEvents.Should().Be(loadedByConstructor);
         }
 
-        public class TestState : SynchronousStreamState<TestState>
+        public class TestState : StreamState<TestState>
         {
             public string Name { get; private set; }
 

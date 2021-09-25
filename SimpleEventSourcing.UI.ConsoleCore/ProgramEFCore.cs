@@ -28,7 +28,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             services.AddSimpleEventSourcing<WriteModelDbContext, ReadModelDbContext>();
             services.AddCatchupProjector<TestState, ReadModelDbContext>(new TestState());
-            services.AddAsyncCatchupProjector<PersistentState, ReadModelDbContext>(
+            services.AddCatchupProjector<PersistentState, ReadModelDbContext>(
                 sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
             services.AddNewtonsoftJson();
             services.AddBus();

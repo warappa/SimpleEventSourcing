@@ -7,7 +7,7 @@ namespace SimpleEventSourcing.Utils
     public static class StateExtensions
     {
         public static async Task<TState> ExtractStateAsync<TState>(this object result)
-            where TState : class, IAsyncState
+            where TState : class, IState
         {
             if (result == null)
             {

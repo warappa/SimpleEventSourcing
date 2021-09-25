@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.State
 {
-    public abstract class AsyncEventSourcedState<TState> : IAsyncEventSourcedState<TState>
-        where TState : class, IAsyncEventSourcedState<TState>, new()
+    public abstract class AsyncEventSourcedState<TState> : IEventSourcedState<TState>
+        where TState : class, IEventSourcedState<TState>, new()
     {
 #pragma warning disable S2743 // Static fields should not be used in generic types
         public static Type[] HandledEventTypes { get; protected set; }
@@ -162,9 +162,14 @@ namespace SimpleEventSourcing.State
             return await InvokeAssociatedApplyAsync(eventOrMessage);
         }
 
-        async Task<TState> IAsyncStateInternal<TState>.ApplyAsync(object @event)
+        async Task<TState> IStateInternal<TState>.ApplyAsync(object @event)
         {
             return await InvokeAssociatedApplyAsync(@event);
+        }
+
+        object IState.UntypedApply(object eventOrMessage)
+        {
+            return InvokeAssociatedApplyAsync(eventOrMessage); // may return a Task/ValueTask
         }
 
         public override int GetHashCode()

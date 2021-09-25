@@ -6,7 +6,7 @@ namespace SimpleEventSourcing.State
     {
         TState Apply(object eventOrMessage);
     }
-    public interface IAsyncStateInternal<TState> : IAsyncState
+    public interface IStateInternal<TState> : IAsyncState
     {
         Task<TState> ApplyAsync(object eventOrMessage);
     }
