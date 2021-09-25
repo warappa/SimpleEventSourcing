@@ -81,11 +81,9 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
 
             wka.RemoveFromShoppingCart();
 
-            await repository.SaveAsync(wk);
+            var checkpointNumber = await repository.SaveAsync(wk);
 
-            var cp = await repository.GetCurrentCheckpointNumberAsync();
-
-            await checkpointPersister.WaitForCheckpointNumberAsync<ShoppingCartReadModelState>(cp);
+            await checkpointPersister.WaitForCheckpointNumberAsync<ShoppingCartReadModelState>(checkpointNumber);
         }
 
         [HttpPost]
@@ -96,10 +94,9 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
 
             wk.Order(repository);
 
-            await repository.SaveAsync(wk);
+            var checkpointNumber = await repository.SaveAsync(wk);
 
-            var cp = await repository.GetCurrentCheckpointNumberAsync();
-            await checkpointPersister.WaitForCheckpointNumberAsync<ShoppingCartReadModelState>(cp);
+            await checkpointPersister.WaitForCheckpointNumberAsync<ShoppingCartReadModelState>(checkpointNumber);
         }
     }
 }

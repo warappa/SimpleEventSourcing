@@ -84,11 +84,11 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
             await WaitForReadModelUpdate<ArticleReadModelState>();
         }
 
-        private async Task WaitForReadModelUpdate<TReadModelState>()
+        private async Task WaitForReadModelUpdate<TReadModelState>(int? checkpointNumber = null)
             where TReadModelState : IAsyncState
         {
-            var cp = await repository.GetCurrentCheckpointNumberAsync();
-            await checkpointPersister.WaitForCheckpointNumberAsync<TReadModelState>(cp);
+            checkpointNumber ??= await repository.GetCurrentCheckpointNumberAsync();
+            await checkpointPersister.WaitForCheckpointNumberAsync<TReadModelState>(checkpointNumber.Value);
         }
     }
 }

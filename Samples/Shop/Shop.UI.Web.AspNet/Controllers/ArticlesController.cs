@@ -32,12 +32,12 @@ namespace Shop.Web.UI.Controllers
 
         [HttpPost]
         [Route("CreateArticle")]
-        public Task CreateArticle(CreateArticle command)
+        public async Task CreateArticle(CreateArticle command)
         {
             var article = new Article(command.Id, command.Articlenumber, command.Description, new Money(command.PriceValue, command.PriceIsoCode ?? "EUR"));
-            Program.repository.SaveAsync(article);
+            var checkpointNumber = await Program.repository.SaveAsync(article);
 
-            return WaitForReadModelUpdate<ArticleReadModelState>();
+            await WaitForReadModelUpdate<ArticleReadModelState>(checkpointNumber);
         }
 
         [HttpPost]
@@ -48,9 +48,9 @@ namespace Shop.Web.UI.Controllers
 
             article.Deactivate(command.Reason);
 
-            await Program.repository.SaveAsync(article);
+            var checkpointNumber = await Program.repository.SaveAsync(article);
 
-            await WaitForReadModelUpdate<ArticleReadModelState>();
+            await WaitForReadModelUpdate<ArticleReadModelState>(checkpointNumber);
         }
 
         [HttpPost]
@@ -61,16 +61,16 @@ namespace Shop.Web.UI.Controllers
 
             article.Activate(command.Reason);
 
-            await Program.repository.SaveAsync(article);
+            var checkpointNumber = await Program.repository.SaveAsync(article);
 
-            await WaitForReadModelUpdate<ArticleReadModelState>();
+            await WaitForReadModelUpdate<ArticleReadModelState>(checkpointNumber);
         }
 
-        private async Task WaitForReadModelUpdate<TReadModelState>()
+        private async Task WaitForReadModelUpdate<TReadModelState>(int? checkpointNumber = null)
             where TReadModelState : IAsyncState
         {
-            var cp = await Program.repository.GetCurrentCheckpointNumberAsync();
-            await Program.checkpointPersister.WaitForCheckpointNumberAsync<TReadModelState>(cp);
+            checkpointNumber ??= await Program.repository.GetCurrentCheckpointNumberAsync();
+            await Program.checkpointPersister.WaitForCheckpointNumberAsync<TReadModelState>(checkpointNumber.Value);
         }
     }
 }

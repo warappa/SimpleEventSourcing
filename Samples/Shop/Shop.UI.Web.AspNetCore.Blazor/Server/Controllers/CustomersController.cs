@@ -74,10 +74,9 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
         public async Task CreateCustomer(CreateCustomer command)
         {
             var customer = new Customer(command.CustomerId, command.Name);
-            await repository.SaveAsync(customer);
+            var checkpointNumber = await repository.SaveAsync(customer);
 
-            var cpn = await repository.GetCurrentCheckpointNumberAsync();
-            await checkpointPersister.WaitForCheckpointNumberAsync<CustomerReadModelState>(cpn);
+            await checkpointPersister.WaitForCheckpointNumberAsync<CustomerReadModelState>(checkpointNumber);
         }
     }
 }

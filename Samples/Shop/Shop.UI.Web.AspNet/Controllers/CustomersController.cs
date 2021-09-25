@@ -60,10 +60,9 @@ namespace Shop.Web.UI.Controllers
         public async Task CreateCustomer(CreateCustomer command)
         {
             var customer = new Customer(command.CustomerId, command.Name);
-            await Program.repository.SaveAsync(customer);
+            var checkpointNumber = await Program.repository.SaveAsync(customer);
 
-            var cpn = await Program.repository.GetCurrentCheckpointNumberAsync();
-            await Program.checkpointPersister.WaitForCheckpointNumberAsync<CustomerReadModelState>(cpn);
+            await Program.checkpointPersister.WaitForCheckpointNumberAsync<CustomerReadModelState>(checkpointNumber);
         }
     }
 }
