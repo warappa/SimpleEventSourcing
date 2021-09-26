@@ -5,6 +5,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />
+    <ProjectReference Include="..\SimpleEventSourcing.System.Text.Json\SimpleEventSourcing.System.Text.Json.csproj" />
     <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
   </ItemGroup>
   
@@ -14,6 +15,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="System.Linq.Async" Version="5.0.0" />
+    <PackageReference Include="System.Text.Json" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework) == 'net461'">

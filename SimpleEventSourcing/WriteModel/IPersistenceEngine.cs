@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleEventSourcing.State;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,5 +19,8 @@ namespace SimpleEventSourcing.WriteModel
         Task<int> SaveStreamEntriesAsync(IEnumerable<IRawStreamEntry> entries);
 
         ISerializer Serializer { get; }
+
+        Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier);
+        Task SaveSnapshot(IStreamState state, int streamRevision);
     }
 }

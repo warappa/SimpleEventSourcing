@@ -3,8 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.EntityFrameworkCore;
-using SimpleEventSourcing.Newtonsoft;
-using SimpleEventSourcing.NHibernate.Storage;
 using SimpleEventSourcing.ReadModel;
 using System;
 using System.Threading.Tasks;
@@ -26,11 +24,13 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 options.UseSqlServer(configuration.GetConnectionString("efRead"));
             }, ServiceLifetime.Transient);
 
-            services.AddSimpleEventSourcing<WriteModelDbContext, ReadModelDbContext>();
+            services.AddSimpleEventSourcing<WriteModelDbContext, ReadModelDbContext>()
+                .AddNewtonsoftJson();
+
             services.AddCatchupProjector<TestState, ReadModelDbContext>(new TestState());
             services.AddCatchupProjector<PersistentState, ReadModelDbContext>(
                 sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
-            services.AddNewtonsoftJson();
+            
             services.AddBus();
 
             var serviceProvider = services.BuildServiceProvider();

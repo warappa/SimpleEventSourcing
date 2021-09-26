@@ -1,7 +1,6 @@
 ﻿using NHibernate;
 using NHibernate.Mapping.ByCode.Conformist;
 using NHibernate.Type;
-using System.Collections.Generic;
 
 namespace SimpleEventSourcing.NHibernate.WriteModel
 {

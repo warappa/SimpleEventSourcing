@@ -19,7 +19,7 @@ namespace Shop.Core.Domain.ShoppingCarts
 
         public ShoppingCartState()
         {
-            ChildStateCreationMap.Add(typeof(ShoppingCartArticlePlaced), evt => new ShoppingCartArticleState((ShoppingCartArticlePlaced)evt));
+            childStateCreationMap.Add(typeof(ShoppingCartArticlePlaced), evt => new ShoppingCartArticleState((ShoppingCartArticlePlaced)evt));
         }
 
         public ShoppingCartState(ShoppingCartState state)

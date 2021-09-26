@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using SimpleEventSourcing.EntityFrameworkCore.WriteModel;
+using SimpleEventSourcing.WriteModel;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 {
@@ -16,5 +17,6 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
         }
 
         public DbSet<RawStreamEntry> Commits { get; set; }
+        public DbSet<RawSnapshot> Snapshots { get; set; }
     }
 }

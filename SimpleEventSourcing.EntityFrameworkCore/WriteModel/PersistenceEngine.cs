@@ -3,6 +3,7 @@ using EntityFrameworkCore.DbContextScope;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using SimpleEventSourcing.State;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
@@ -378,6 +379,62 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
             }
 
             return null;
+        }
+
+        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier)
+        {
+            using (var scope = dbContextScopeFactory.Create())
+            {
+                var dbContext = scope.DbContexts.Get<TDbContext>();
+
+                try
+                {
+                    return dbContext.Set<RawSnapshot>()
+                        .AsQueryable()
+                        .Where(x =>
+                            x.StreamName == streamName &&
+                            x.StateIdentifier == stateIdentifier)
+                        .OrderByDescending(x => x.StreamRevision)
+                        .FirstOrDefault();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.ToString());
+                    throw;
+                }
+            }
+        }
+
+        public async Task SaveSnapshot(IStreamState state, int streamRevision)
+        {
+            await SaveSnapshot(new RawSnapshot
+            {
+                StreamName = state.StreamName,
+                StateIdentifier = Serializer.Binder.BindToName(state.GetType()),
+                StreamRevision = streamRevision,
+                StateSerialized = System.Text.Json.JsonSerializer.Serialize(state),
+                CreatedAt = DateTime.UtcNow
+            }).ConfigureAwait(false);
+        }
+
+        private async Task SaveSnapshot(RawSnapshot snapshot)
+        {
+            using (var scope = dbContextScopeFactory.Create())
+            {
+                var dbContext = scope.DbContexts.Get<TDbContext>();
+
+                try
+                {
+                    dbContext.Set<RawSnapshot>()
+                        .Add(snapshot);
+                    await dbContext.SaveChangesAsync().ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.ToString());
+                    throw;
+                }
+            }
         }
     }
 }

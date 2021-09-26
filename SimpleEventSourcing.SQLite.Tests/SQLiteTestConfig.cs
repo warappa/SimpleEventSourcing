@@ -1,4 +1,6 @@
-﻿using SimpleEventSourcing.ReadModel;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.SQLite.ReadModel;
 using SimpleEventSourcing.SQLite.Storage;
@@ -8,6 +10,7 @@ using SimpleEventSourcing.WriteModel;
 using SQLite;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.SQLite.WriteModel.Tests
@@ -97,14 +100,15 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
                 };
             }
 
-            public ISerializationBinder GetBinder()
+            public SimpleEventSourcing.WriteModel.ISerializationBinder GetBinder()
             {
                 return new VersionedBinder();
             }
-
+            
+            private ISerializer cachedSerializer;
             public ISerializer GetSerializer()
             {
-                return new JsonNetSerializer(GetBinder());
+                return cachedSerializer ??= new JsonNetSerializer(GetBinder());
             }
 
             public override IPersistenceEngine GetPersistenceEngine()

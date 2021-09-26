@@ -16,5 +16,6 @@ namespace SimpleEventSourcing.EntityFramework.Tests
         }
 
         public DbSet<RawStreamEntry> Commits { get; set; }
+        public DbSet<RawSnapshot> Snapshots { get; set; }
     }
 }

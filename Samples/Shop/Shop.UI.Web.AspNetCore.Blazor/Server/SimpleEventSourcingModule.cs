@@ -2,7 +2,6 @@
 using Shop.ReadModel.Articles;
 using Shop.ReadModel.Customers;
 using Shop.ReadModel.ShoppingCarts;
-using SimpleEventSourcing.Newtonsoft;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.SQLite;
 using SQLite;
@@ -25,8 +24,8 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
             writeConnection = SetupWriteConnection();
             readConnection = SetupReadConnection();
 
-            services.AddSimpleEventSourcing(() => writeConnection, () => readConnection);
-            services.AddNewtonsoftJson();
+            services.AddSimpleEventSourcing(() => writeConnection, () => readConnection)
+                .AddNewtonsoftJson();
 
             services.AddCatchupProjector(sp => new ArticleOverviewState(sp.GetRequiredService<IReadRepository>()));
             services.AddCatchupProjector(sp => new ArticleActivationHistoryReadModelState(sp.GetRequiredService<IReadRepository>()));
@@ -37,7 +36,7 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
 
             services.AddCatchupProjector(sp => new ShoppingCartOverviewState(sp.GetRequiredService<IReadRepository>()));
             services.AddCatchupProjector(sp => new ShoppingCartReadModelState(sp.GetRequiredService<IReadRepository>()));
-
+            
             services.AddHostedService<ReadModelUpdateBackgroundService>();
         }
 

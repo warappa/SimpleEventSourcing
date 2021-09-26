@@ -83,6 +83,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
             await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpStateWithReadModel>(cp);
             
             model = await Load().ConfigureAwait(false);
+            model.Should().NotBeNull();
             model.Count.Should().Be(1);
 
             await SaveRawStreamEntryAsync();

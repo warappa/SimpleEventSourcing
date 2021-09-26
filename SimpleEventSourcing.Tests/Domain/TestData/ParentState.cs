@@ -10,7 +10,7 @@ namespace SimpleEventSourcing.Tests
 
         public ParentState()
         {
-            ChildStateCreationMap.Add(typeof(ChildCreated), evt => new ChildState().Apply(evt as ChildCreated));
+            childStateCreationMap.Add(typeof(ChildCreated), evt => new ChildState().Apply(evt as ChildCreated));
         }
 
         public ParentState Apply(ParentCreated @event)

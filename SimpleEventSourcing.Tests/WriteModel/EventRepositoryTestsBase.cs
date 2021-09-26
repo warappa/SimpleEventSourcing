@@ -5,8 +5,13 @@ using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.State;
 using SimpleEventSourcing.Tests;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel.Tests
@@ -15,6 +20,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
     public abstract class EventRepositoryTestsBase
     {
         protected TestsBaseConfig config;
+        private IPersistenceEngine persistenceEngine;
         private EventRepository target;
 
         protected EventRepositoryTestsBase(TestsBaseConfig config)
@@ -25,7 +31,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
         [SetUp]
         public void Setup()
         {
-            target = new EventRepository(config.WriteModel.GetInstanceProvider(), config.WriteModel.GetPersistenceEngine(), config.WriteModel.GetRawStreamEntryFactory());
+            persistenceEngine = config.WriteModel.GetPersistenceEngine();
+
+            target = new EventRepository(config.WriteModel.GetInstanceProvider(), persistenceEngine, config.WriteModel.GetRawStreamEntryFactory());
         }
 
         [TearDown]
@@ -43,235 +51,197 @@ namespace SimpleEventSourcing.WriteModel.Tests
             await target.SaveAsync(entity);
 
             var loadedEntity = await target.GetAsync<TestEntity>(entity.Id);
-            loadedEntity.Should().BeEquivalentTo(entity,x => x.ComparingByMembers<TestEntity>().ComparingByMembers<TestEntityState>().WithTracing());
+            loadedEntity.Should().BeEquivalentTo(entity, x => x.ComparingByMembers<TestEntity>().ComparingByMembers<TestEntityState>().WithTracing());
             loadedEntity.StateModel.Name.Should().Be("test");
         }
 
-        public class TestEntityState : AggregateRootState<TestEntityState, string>
+        [Test]
+        public async Task Save_and_load_entity_with_child_entities_2()
         {
-            public TestEntityState() : base()
-		    {
-                ChildStateCreationMap.Add(typeof(TestEntityChildAdded), evt => new TestChildEntityState((TestEntityChildAdded)evt));
-            }
+            var entity = new TestEntity(Guid.NewGuid().ToString(), "test");
+            var child = entity.AddChild(Guid.NewGuid().ToString(), "child");
+            child.Rename("child new name");
+            child.Rename("child new name2");
+            child.Rename("child new name3");
+            child.Rename("child new name4");
+            await target.SaveAsync(entity);
 
-            public string Name { get; private set; }
+            var loadedEntity = await target.GetAsync<TestEntity>(entity.Id);
+            //loadedEntity.Should().BeEquivalentTo(entity, x => x.ComparingByMembers<TestEntity>().ComparingByMembers<TestEntityState>().WithTracing());
+            loadedEntity.StateModel.Children.First().Name.Should().Be("child new name4");
+        }
 
-            public IEnumerable<TestChildEntityState> Children => ChildStates.OfType<TestChildEntityState>().ToList();
+        class MagicConverter : JsonConverterFactory
+        {
 
-            public void Apply(TestEntityCreated @event)
+            public override bool CanConvert(Type typeToConvert) =>
+                !typeToConvert.IsAbstract &&
+                typeToConvert.GetConstructor(Type.EmptyTypes) != null &&
+                typeToConvert
+                    .GetProperties()
+                    .Where(x => !x.CanWrite)
+                    .Where(x => x.PropertyType.IsGenericType)
+                    .Select(x => new
+                    {
+                        Property = x,
+                        CollectionInterface = x.PropertyType.GetGenericInterfaces(typeof(IEnumerable<>)).FirstOrDefault()
+                    })
+                    .Where(x => x.CollectionInterface != null)
+                    .Any();
+
+            public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) => (JsonConverter)Activator.CreateInstance(typeof(SuperMagicConverter<>).MakeGenericType(typeToConvert))!;
+
+            class SuperMagicConverter<T> : JsonConverter<T> where T : new()
             {
-                Id = @event.Id;
-                Name = @event.Name;
-            }
-
-            public override bool Equals(object obj)
-            {
-                var other = obj as TestEntityState;
-                if (other is null)
+                readonly Dictionary<string, (Type PropertyType, Action<T, object>? Setter, Action<T, object>? Adder)> PropertyHandlers;
+                public SuperMagicConverter()
                 {
-                    return false;
+                    PropertyHandlers = typeof(T)
+                        .GetProperties()
+                        .Select(x => new
+                        {
+                            Property = x,
+                            CollectionInterface = !x.CanWrite && x.PropertyType.IsGenericType ? x.PropertyType.GetGenericInterfaces(typeof(ICollection<>)).FirstOrDefault() : null
+                        })
+                        .Select(x =>
+                        {
+                            var tParam = Expression.Parameter(typeof(T));
+                            var objParam = Expression.Parameter(typeof(object));
+                            Action<T, object>? setter = null;
+                            Action<T, object>? adder = null;
+                            Type? propertyType = null;
+                            if (x.Property.CanWrite)
+                            {
+                                propertyType = x.Property.PropertyType;
+                                setter = Expression.Lambda<Action<T, object>>(
+                                    Expression.Assign(
+                                        Expression.Property(tParam, x.Property),
+                                        Expression.Convert(objParam, propertyType)),
+                                    tParam,
+                                    objParam)
+                                    .Compile();
+                            }
+                            else
+                            {
+                                if (x.CollectionInterface != null)
+                                {
+                                    propertyType = x.CollectionInterface.GetGenericArguments()[0];
+                                    adder = Expression.Lambda<Action<T, object>>(
+                                        Expression.Call(
+                                            Expression.Property(tParam, x.Property),
+                                            x.CollectionInterface.GetMethod("Add"),
+                                            Expression.Convert(objParam, propertyType)),
+                                        tParam,
+                                        objParam)
+                                        .Compile();
+                                }
+                            }
+                            return new
+                            {
+                                x.Property.Name,
+                                setter,
+                                adder,
+                                propertyType
+                            };
+                        })
+                        .Where(x => x.propertyType != null)
+                        .ToDictionary(x => x.Name, x => (x.propertyType!, x.setter, x.adder));
                 }
-
-                return other.Id == Id &&
-                    other.Name == Name;
-            }
-
-            public override int GetHashCode()
-            {
-                var hashCode = -1410341252;
-                hashCode = hashCode * -1521134295 + base.GetHashCode();
-                hashCode = hashCode * -1521134295 + EqualityComparer<Type[]>.Default.GetHashCode(PayloadTypes);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(StreamName);
-                hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<IChildEventSourcedState>>.Default.GetHashCode(ChildStates);
-                hashCode = hashCode * -1521134295 + EqualityComparer<IDictionary<Type, Func<object, IChildEventSourcedState>>>.Default.GetHashCode(ChildStateCreationMap);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Id);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
-                hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<TestChildEntityState>>.Default.GetHashCode(Children);
-                return hashCode;
-            }
-
-            public static bool operator ==(TestEntityState left, TestEntityState right)
-            {
-                return EqualityComparer<TestEntityState>.Default.Equals(left, right);
-            }
-
-            public static bool operator !=(TestEntityState left, TestEntityState right)
-            {
-                return !(left == right);
-            }
-        }
-
-        public class TestChildEntityState : ChildEntityState<TestChildEntityState, string, string>
-        {
-            public TestChildEntityState():base()
-            {
-
-            }
-
-            public TestChildEntityState(TestEntityChildAdded @event)
-                :base()
-            {
-                Apply(@event);
-            }
-
-            public string Name { get; private set; }
-
-            public void Apply(TestEntityChildAdded @event)
-            {
-                AggregateRootId = @event.AggregateRootId;
-                Id = @event.Id;
-                Name = @event.Name;
-            }
-
-            public void Apply(TestChildEntityRenamed @event)
-            {
-                Name = @event.Name;
-            }
-
-            public override bool Equals(object obj)
-            {
-                var other = obj as TestChildEntityState;
-                if (other is null)
+                public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options) => throw new NotImplementedException();
+                public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
                 {
-                    return false;
+                    var item = new T();
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject)
+                        {
+                            break;
+                        }
+                        if (reader.TokenType == JsonTokenType.PropertyName)
+                        {
+                            if (PropertyHandlers.TryGetValue(reader.GetString(), out var handler))
+                            {
+                                if (!reader.Read())
+                                {
+                                    throw new JsonException($"Bad JSON");
+                                }
+                                if (handler.Setter != null)
+                                {
+                                    handler.Setter(item, JsonSerializer.Deserialize(ref reader, handler.PropertyType, options));
+                                }
+                                else
+                                {
+                                    if (reader.TokenType == JsonTokenType.StartArray)
+                                    {
+                                        while (true)
+                                        {
+                                            if (!reader.Read())
+                                            {
+                                                throw new JsonException($"Bad JSON");
+                                            }
+                                            if (reader.TokenType == JsonTokenType.EndArray)
+                                            {
+                                                break;
+                                            }
+                                            handler.Adder!(item, JsonSerializer.Deserialize(ref reader, handler.PropertyType, options));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        reader.Skip();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                reader.Skip();
+                            }
+                        }
+                    }
+                    return item;
                 }
-
-                return other.Id == Id &&
-                    other.Name == Name;
-            }
-
-            public override int GetHashCode()
-            {
-                var hashCode = 530994897;
-                hashCode = hashCode * -1521134295 + base.GetHashCode();
-                hashCode = hashCode * -1521134295 + EqualityComparer<Type[]>.Default.GetHashCode(PayloadTypes);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(StreamName);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Id);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AggregateRootId);
-                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
-                return hashCode;
-            }
-
-            public static bool operator ==(TestChildEntityState left, TestChildEntityState right)
-            {
-                return EqualityComparer<TestChildEntityState>.Default.Equals(left, right);
-            }
-
-            public static bool operator !=(TestChildEntityState left, TestChildEntityState right)
-            {
-                return !(left == right);
             }
         }
 
-        public class TestChildEntity : ChildEntity<TestChildEntityState, string, string>
+        [Test]
+        public async Task Serialize_snapshot_state_with_NewtonsoftJson()
         {
-            public TestChildEntity(IAggregateRoot aggregateRoot, string id, string name)
-                : base(aggregateRoot, new TestEntityChildAdded((string)aggregateRoot.Id, id, name))
-            {
+            var entity = new TestEntity(Guid.NewGuid().ToString(), "test");
+            var child = entity.AddChild(Guid.NewGuid().ToString(), "child");
 
+            for (var i = 0; i < 100; i++)
+            {
+                child.Rename($"child new name {i + 1}");
             }
 
-            public void Rename(string newName)
-            {
-                RaiseEvent(new TestChildEntityRenamed(AggregateRootId, Id, newName));
-            }
+            var binder = persistenceEngine.Serializer.Binder;
+            var serializer = new JsonNetSerializer(binder);
+            var json = serializer.Serialize(entity.StateModel.GetType(), (object)entity.StateModel);
+            Console.WriteLine(json);
+            var deserialized = (TestEntityState)serializer.Deserialize(entity.StateModel.GetType(), json);
 
-            public override bool Equals(object obj)
-            {
-                var other = obj as TestEntityChildAdded;
-                if (other is null)
-                {
-                    return false;
-                }
-
-                return other.Id == Id;
-            }
-
-            public override int GetHashCode()
-            {
-                return Id.GetHashCode();
-            }
+            deserialized.Children.First().Name.Should().Be("child new name 100");
         }
 
-        public class TestEntity : AggregateRoot<TestEntityState, string>
+        [Test]
+        public async Task Serialize_snapshot_state_with_SystemTextJson()
         {
-            public TestEntity() : base(Enumerable.Empty<IEvent>()) { }
-            public TestEntity(string id, string name)
-                : base(new TestEntityCreated(id, name))
-            {
+            var entity = new TestEntity(Guid.NewGuid().ToString(), "test");
+            var child = entity.AddChild(Guid.NewGuid().ToString(), "child");
 
+            for (var i = 0; i < 100; i++)
+            {
+                child.Rename($"child new name {i + 1}");
             }
 
-            public void Rename(string newName)
-            {
-                RaiseEvent(new TestEntityRenamed(Id, newName));
-            }
+            var binder = persistenceEngine.Serializer.Binder;
+            var serializer = new SystemTextJsonSerializer(binder);
 
-            public TestChildEntity AddChild(string id, string name)
-            {
-                var newChild = new TestChildEntity(this, id, name);
-                return newChild;
-            }
-        }
+            var json = serializer.Serialize(entity.StateModel.GetType(), (object)entity.StateModel);
+            Console.WriteLine(json);
+            var deserialized = (TestEntityState)serializer.Deserialize(entity.StateModel.GetType(), json);
 
-        public class TestEntityCreated : IEvent
-        {
-            public TestEntityCreated(string id, string name)
-            {
-                Id = id;
-                Name = name;
-            }
-
-            public string Id { get; private set; }
-            public string Name { get; private set; }
-        }
-
-        public class TestEntityRenamed : IEvent
-        {
-            public TestEntityRenamed(string id, string name)
-            {
-                Id = id;
-                Name = name;
-            }
-
-            public string Id { get; private set; }
-            public string Name { get; private set; }
-        }
-
-        public class TestEntityChildAdded : IChildEntityEvent
-        {
-            public TestEntityChildAdded(string aggregateRootId, string id, string name)
-            {
-                AggregateRootId = aggregateRootId;
-                Id = id;
-                Name = name;
-            }
-
-            public string AggregateRootId { get; private set; }
-            public string Name { get; private set; }
-            public string Id { get; private set; }
-
-            object IChildEntityEvent.AggregateRootId => AggregateRootId;
-
-            object IEventSourcedEntityEvent.Id => Id;
-        }
-
-        public class TestChildEntityRenamed : IChildEntityEvent
-        {
-            public TestChildEntityRenamed(string aggregateRootId, string id, string name)
-            {
-                AggregateRootId = aggregateRootId;
-                Id = id;
-                Name = name;
-            }
-
-            public string Id { get; private set; }
-            public string AggregateRootId { get; private set; }
-            public string Name { get; private set; }
-
-            object IChildEntityEvent.AggregateRootId => AggregateRootId;
-
-            object IEventSourcedEntityEvent.Id => Id;
+            deserialized.Children.First().Name.Should().Be("child new name 100");
         }
     }
 }

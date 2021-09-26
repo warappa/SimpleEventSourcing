@@ -14,7 +14,7 @@ namespace SimpleEventSourcing.SQLite
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSimpleEventSourcing(this IServiceCollection services,
+        public static ISimpleEventSourcingBuilder AddSimpleEventSourcing(this IServiceCollection services,
             Func<SQLiteConnectionWithLock> connectionFactory,
             Func<SQLiteConnectionWithLock> readConnectionFactory)
         {
@@ -53,7 +53,7 @@ namespace SimpleEventSourcing.SQLite
             });
             services.AddScoped<IObserverFactory>(sp => sp.GetRequiredService<IPollingObserverFactory>());
 
-            return services;
+            return new SimpleEventSourcingBuilder(services);
         }
 
         public static IServiceCollection AddCatchupProjector<TState>(

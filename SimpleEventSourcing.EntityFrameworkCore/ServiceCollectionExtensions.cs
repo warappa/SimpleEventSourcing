@@ -30,14 +30,14 @@ namespace SimpleEventSourcing.EntityFrameworkCore
 
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSimpleEventSourcing<TWriteDbContext, TReadDbContext>(
+        public static ISimpleEventSourcingBuilder AddSimpleEventSourcing<TWriteDbContext, TReadDbContext>(
             this IServiceCollection services)
             where TWriteDbContext : DbContext
             where TReadDbContext : DbContext
         {
             services.AddSimpleEventSourcing<TWriteDbContext, TReadDbContext, ServiceProviderDbContextFactory>();
 
-            return services;
+            return new SimpleEventSourcingBuilder(services);
         }
 
         public static IServiceCollection AddSimpleEventSourcing<TWriteDbContext, TReadDbContext, TDbContextFactory>(

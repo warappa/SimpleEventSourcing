@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using NHibernate.Cfg;
 using SimpleEventSourcing.Bus;
-using SimpleEventSourcing.Newtonsoft;
 using SimpleEventSourcing.NHibernate;
 using SimpleEventSourcing.NHibernate.Context;
 using SimpleEventSourcing.NHibernate.ReadModel;
@@ -72,11 +71,12 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                     typeof(RawStreamEntry), 
                     typeof(CheckpointInfo), 
                     typeof(PersistentEntity)
-                });
+                })
+                .AddNewtonsoftJson();
             services.AddCatchupProjector(new TestState());
             services.AddCatchupProjector(
                 sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
-            services.AddNewtonsoftJson();
+            
             services.AddBus();
 
             var serviceProvider = services.BuildServiceProvider();

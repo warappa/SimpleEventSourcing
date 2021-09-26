@@ -154,7 +154,7 @@ insert into hibernate_unique_key values ( 1 );";
             {
                 var p = GetNHibernateResetConfigurationProvider();
 
-                var cfg = p.GetConfigurationForTypes(typeof(RawStreamEntry));
+                var cfg = p.GetConfigurationForTypes(typeof(RawStreamEntry), typeof(RawSnapshot));
 
                 if (IsLoggingEnabled)
                 {
@@ -165,7 +165,7 @@ insert into hibernate_unique_key values ( 1 );";
 
             public override async Task CleanupWriteDatabaseAsync()
             {
-                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) }, true);
             }
 
             public ISerializationBinder GetBinder()
@@ -173,9 +173,10 @@ insert into hibernate_unique_key values ( 1 );";
                 return new VersionedBinder();
             }
 
+            private ISerializer cachedSerializer;
             public ISerializer GetSerializer()
             {
-                return new JsonNetSerializer(GetBinder());
+                return cachedSerializer ??= new JsonNetSerializer(GetBinder());
             }
 
             public override IRawStreamEntry GenerateRawStreamEntry()

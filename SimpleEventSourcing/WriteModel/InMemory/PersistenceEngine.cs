@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleEventSourcing.State;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 {
     public class PersistenceEngine : IPersistenceEngine
     {
-        private readonly List<RawStreamEntry> streamEntries = new();
+        private readonly List<IRawStreamEntry> streamEntries = new();
+        private readonly List<IRawSnapshot> snapshots = new();
         private readonly int batchSize;
         private int checkpointNumber = 0;
 
@@ -99,7 +101,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 
                 query = query.Take(nextBatchSize);
 
-                List<RawStreamEntry> rawStreamEntries = null;
+                List<IRawStreamEntry> rawStreamEntries = null;
                 try
                 {
                     rawStreamEntries = query.ToList();
@@ -147,7 +149,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
         public async IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string group, string category, string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             var taken = 0;
-            List<RawStreamEntry> rawStreamEntries = null;
+            List<IRawStreamEntry> rawStreamEntries = null;
             List<string> payloadValues = null;
 
             if (payloadTypes != null &&
@@ -252,6 +254,40 @@ namespace SimpleEventSourcing.WriteModel.InMemory
         public Task InitializeAsync()
         {
             return Task.CompletedTask;
+        }
+
+        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier)
+        {
+            return snapshots
+                .Where(x =>
+                    x.StreamName == streamName &&
+                    x.StateIdentifier == stateIdentifier)
+                .OrderByDescending(x => x.StreamRevision)
+                .FirstOrDefault();
+        }
+
+        public async Task SaveSnapshot(IStreamState state, int streamRevision)
+        {
+            var json = Serializer.Serialize(state.GetType(), state);
+
+            await SaveSnapshot(new RawSnapshot
+            {
+                StreamName = state.StreamName,
+                StateIdentifier = Serializer.Binder.BindToName(state.GetType()),
+                StreamRevision = streamRevision,
+                StateSerialized = json,
+                CreatedAt = DateTime.UtcNow
+            }).ConfigureAwait(false);
+        }
+
+        private async Task SaveSnapshot(RawSnapshot snapshot)
+        {
+            if (snapshots.Contains(snapshot))
+            {
+                return;
+            }
+
+            snapshots.Add(snapshot);
         }
     }
 }

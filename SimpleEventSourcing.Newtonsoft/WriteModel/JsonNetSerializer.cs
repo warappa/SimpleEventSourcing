@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
+using System.Reflection;
 
 namespace SimpleEventSourcing.WriteModel
 {
@@ -85,6 +87,7 @@ namespace SimpleEventSourcing.WriteModel
             return new JsonSerializerSettings()
             {
                 SerializationBinder = new BinderWrapper(binder),
+                ContractResolver = new NonPublicPropertiesResolver(),
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
                 DateParseHandling = DateParseHandling.DateTime,
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
@@ -102,6 +105,21 @@ namespace SimpleEventSourcing.WriteModel
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
                 TypeNameHandling = TypeNameHandling.Auto
             };
+        }
+
+
+        public class NonPublicPropertiesResolver : DefaultContractResolver
+        {
+            protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+            {
+                var prop = base.CreateProperty(member, memberSerialization);
+                if (member is PropertyInfo pi)
+                {
+                    prop.Readable = (pi.GetMethod != null);
+                    prop.Writable = (pi.SetMethod != null);
+                }
+                return prop;
+            }
         }
     }
 }

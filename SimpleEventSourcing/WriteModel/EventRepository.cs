@@ -1,5 +1,6 @@
 ﻿using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
+using SimpleEventSourcing.State;
 using SimpleEventSourcing.Utils;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace SimpleEventSourcing.WriteModel
 {
     public class EventRepository : IEventRepository
     {
+        private const int SnapshotInterval = 20;
+
         protected readonly ISubject<IMessage> committedMessagesSubject = new Subject<IMessage>();
         protected readonly IInstanceProvider instanceProvider;
         protected readonly IPersistenceEngine persistenceEngine;
@@ -39,16 +42,30 @@ namespace SimpleEventSourcing.WriteModel
                 throw new ArgumentNullException(nameof(streamName));
             }
 
+            var instance = (IEventSourcedEntity)instanceProvider.GetInstance(aggregateType);
+            var state = instance.UntypedStateModel;
+
+            var stateIdentifier = persistenceEngine.Serializer.Binder.BindToName(instance.UntypedStateModel.GetType());
+            var snapshot = await persistenceEngine.LoadLatestSnapshotAsync(streamName, stateIdentifier);
+
+            var streamRevision = 0;
+            if (snapshot is not null)
+            {
+                streamRevision = snapshot.StreamRevision + 1;
+
+                var type = instance.UntypedStateModel.GetType();
+                state = persistenceEngine.Serializer.Deserialize(type, snapshot.StateSerialized);
+            }
+
             var streamEntries = await persistenceEngine
-                .LoadStreamEntriesByStreamAsync(streamName)
+                .LoadStreamEntriesByStreamAsync(streamName, streamRevision)
                 .ToListAsync();
 
-            if (streamEntries.Count == 0)
+            if (streamEntries.Count == 0 &&
+                snapshot is null)
             {
                 return null;
             }
-
-            var instance = (IEventSourcedEntity)instanceProvider.GetInstance(aggregateType);
 
             var events = new List<IEvent>();
             for (var i = 0; i < streamEntries.Count; i++)
@@ -58,7 +75,7 @@ namespace SimpleEventSourcing.WriteModel
                 events.Add((IEvent)persistenceEngine.Serializer.Deserialize(rawStreamEntry.Payload));
             }
 
-            instance.LoadEvents(events);
+            instance.LoadEvents(events, state);
 
             return instance;
         }
@@ -121,6 +138,14 @@ namespace SimpleEventSourcing.WriteModel
 
             allMessages.Clear();
 
+            foreach (var entity in distinctEntitiesList)
+            {
+                if (entity.Version % SnapshotInterval == 0)
+                {
+                    await persistenceEngine.SaveSnapshot((IStreamState)entity.UntypedStateModel, entity.Version);
+                }
+            }
+
             return result;
         }
 
@@ -137,7 +162,7 @@ namespace SimpleEventSourcing.WriteModel
         public virtual IObservable<T> SubscribeTo<T>()
             where T : class, IMessage
         {
-            return 
+            return
                 committedMessagesSubject
                 .Where(m =>
                     (

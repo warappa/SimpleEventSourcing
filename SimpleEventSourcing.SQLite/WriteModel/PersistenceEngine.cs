@@ -1,4 +1,5 @@
-﻿using SimpleEventSourcing.WriteModel;
+﻿using SimpleEventSourcing.State;
+using SimpleEventSourcing.WriteModel;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel
                 try
                 {
                     connection.CreateTable<RawStreamEntry>();
+                    connection.CreateTable<RawSnapshot>();
                 }
                 catch (Exception e)
                 {
@@ -60,7 +62,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel
         {
             var taken = 0;
             List<RawStreamEntry> rawStreamEntries = null;
-            
+
             var payloadPredicate = GetPayloadPredicate(payloadTypes);
 
             while (true)
@@ -152,7 +154,7 @@ streamRevision >= @minRevision AND streamRevision <= @maxRevision ");
         {
             var taken = 0;
             List<RawStreamEntry> rawStreamEntries = null;
-            
+
             var payloadPredicate = GetPayloadPredicate(payloadTypes);
 
             var connection = connectionFactory();
@@ -304,6 +306,56 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             }
 
             return null;
+        }
+
+        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier)
+        {
+            var connection = connectionFactory();
+            using (connection.Lock())
+            {
+                var query = @"
+SELECT StreamName, StreamRevision, StateIdentifier, StateSerialized, DateTime
+FROM Snapshots
+ORDER BY StreamRevision DESC";
+
+                try
+                {
+                    var snapshot = connection.FindWithQuery<RawSnapshot>(query);
+                    return snapshot;
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.ToString());
+                    connection.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public async Task SaveSnapshot(IStreamState state, int streamRevision)
+        {
+            await SaveSnapshot(new RawSnapshot
+            {
+                StreamName = state.StreamName,
+                StateIdentifier = Serializer.Binder.BindToName(state.GetType()),
+                StreamRevision = streamRevision,
+                StateSerialized = Serializer.Serialize(state),
+                CreatedAt = DateTime.UtcNow
+            }).ConfigureAwait(false);
+        }
+
+        private async Task SaveSnapshot(RawSnapshot snapshot)
+        {
+            var connection = connectionFactory();
+            using (connection.Lock())
+            {
+                var rows = connection.Insert(snapshot);
+
+                if (rows != 1)
+                {
+                    throw new Exception($"Could not insert snapshot for stream {snapshot.StreamName} (rev. {snapshot.StreamRevision})");
+                }
+            }
         }
     }
 }

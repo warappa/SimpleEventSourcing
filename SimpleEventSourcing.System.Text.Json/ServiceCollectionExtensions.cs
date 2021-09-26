@@ -9,7 +9,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static ISimpleEventSourcingBuilder AddNewtonsoftJson(this ISimpleEventSourcingBuilder builder)
         {
             var binder = new VersionedBinder();
-            builder.Services.Replace(new ServiceDescriptor(typeof(ISerializer), new JsonNetSerializer(binder)));
+            builder.Services.Replace(new ServiceDescriptor(typeof(ISerializer), new SystemTextJsonSerializer(binder)));
 
             return builder;
         }

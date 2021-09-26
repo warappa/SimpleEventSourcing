@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.SQLite;
-using SimpleEventSourcing.Newtonsoft;
 using SimpleEventSourcing.ReadModel;
 using System;
 using System.Threading.Tasks;
@@ -19,11 +18,11 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         {
             var services = new ServiceCollection();
 
-            services.AddSimpleEventSourcing(ConnectionFactory, ReadConnectionFactory);
+            services.AddSimpleEventSourcing(ConnectionFactory, ReadConnectionFactory)
+                .AddNewtonsoftJson();
             services.AddCatchupProjector<TestState>(new TestState());
             services.AddCatchupProjector<PersistentState>(
                 sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
-            services.AddNewtonsoftJson();
             services.AddBus();
 
             var serviceProvider = services.BuildServiceProvider();

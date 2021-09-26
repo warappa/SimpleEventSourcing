@@ -3,15 +3,18 @@ using SimpleEventSourcing.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace SimpleEventSourcing.State
 {
     public abstract class AggregateRootState<TState, TKey> : StreamState<TState>, IAggregateRootState<TKey>, IAggregateRootStateInternal
         where TState : AggregateRootState<TState, TKey>, new()
     {
-        public IEnumerable<IChildEventSourcedState> ChildStates { get => childStates; }
-        public IDictionary<Type, Func<object, IChildEventSourcedState>> ChildStateCreationMap { get; } = new Dictionary<Type, Func<object, IChildEventSourcedState>>();
+        protected IDictionary<Type, Func<object, IChildEventSourcedState>> childStateCreationMap = new Dictionary<Type, Func<object, IChildEventSourcedState>>();
+        private List<IChildEventSourcedState> childStates = new();
+        [JsonInclude]
+        public IEnumerable<IChildEventSourcedState> ChildStates { get => childStates; private set => childStates = value.ToList(); }
+        IDictionary<Type, Func<object, IChildEventSourcedState>> IAggregateRootState.ChildStateCreationMap => childStateCreationMap;
         public TKey Id
         {
             get
@@ -41,7 +44,6 @@ namespace SimpleEventSourcing.State
         }
 
         private TKey id;
-        private List<IChildEventSourcedState> childStates = new();
 
         object IAggregateRootState.Id => Id;
 
@@ -50,7 +52,7 @@ namespace SimpleEventSourcing.State
         protected AggregateRootState(TState state)
         {
             StreamName = state.StreamName;
-            ChildStateCreationMap = state.ChildStateCreationMap;
+            childStateCreationMap = ((IAggregateRootState)state).ChildStateCreationMap;
             childStates = state.ChildStates.ToList();
         }
 
@@ -83,7 +85,7 @@ namespace SimpleEventSourcing.State
         {
             IChildEventSourcedState childState = null;
 
-            if (ChildStateCreationMap.TryGetValue(@event.GetType(), out var creator))
+            if (childStateCreationMap.TryGetValue(@event.GetType(), out var creator))
             {
                 childState = creator(@event).ExtractState<IChildEventSourcedState>();
                 childStates.Add(childState);

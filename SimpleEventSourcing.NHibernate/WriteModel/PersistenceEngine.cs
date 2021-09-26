@@ -5,6 +5,7 @@ using NHibernate.Linq;
 using NHibernate.Tool.hbm2ddl;
 using SimpleEventSourcing.NHibernate.ReadModel;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.State;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
@@ -339,6 +340,66 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             }
 
             return null;
+        }
+
+        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier)
+        {
+            using (var statelessSession = sessionFactory.OpenStatelessSession())
+            using (var transaction = statelessSession.BeginTransaction())
+            {
+
+                try
+                {
+                    return statelessSession.Query<RawSnapshot>().Where(x =>
+                            x.StreamName == streamName &&
+                            x.StateIdentifier == stateIdentifier)
+                        .OrderByDescending(x => x.StreamRevision)
+                        .FirstOrDefault();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.ToString());
+                    throw;
+                }
+                finally
+                {
+                    transaction.Commit();
+                }
+            }
+        }
+
+        public async Task SaveSnapshot(IStreamState state, int streamRevision)
+        {
+            await SaveSnapshot(new RawSnapshot
+            {
+                StreamName = state.StreamName,
+                StateIdentifier = Serializer.Binder.BindToName(state.GetType()),
+                StreamRevision = streamRevision,
+                StateSerialized = Serializer.Serialize(state),
+                CreatedAt = DateTime.UtcNow
+            }).ConfigureAwait(false);
+        }
+
+        private async Task SaveSnapshot(RawSnapshot snapshot)
+        {
+            using (var statelessSession = sessionFactory.OpenStatelessSession())
+            using (var transaction = statelessSession.BeginTransaction())
+            {
+
+                try
+                {
+                    statelessSession.Insert(snapshot);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.ToString());
+                    throw;
+                }
+                finally
+                {
+                    transaction.Commit();
+                }
+            }
         }
     }
 }

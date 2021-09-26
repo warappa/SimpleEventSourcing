@@ -15,7 +15,7 @@ namespace SimpleEventSourcing.NHibernate
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSimpleEventSourcing(this IServiceCollection services, Configuration baseConfiguration, Type[] entityTypes)
+        public static ISimpleEventSourcingBuilder AddSimpleEventSourcing(this IServiceCollection services, Configuration baseConfiguration, Type[] entityTypes)
         {
             services.AddSingleton<ISessionFactory>(sp =>
             {
@@ -68,7 +68,7 @@ namespace SimpleEventSourcing.NHibernate
             });
             services.AddScoped<IObserverFactory>(sp => sp.GetRequiredService<IPollingObserverFactory>());
 
-            return services;
+            return new SimpleEventSourcingBuilder(services);
         }
 
         public static IServiceCollection AddCatchupProjector<TState>(

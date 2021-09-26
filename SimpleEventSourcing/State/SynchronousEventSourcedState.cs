@@ -12,10 +12,10 @@ namespace SimpleEventSourcing.State
         where TState : class, ISynchronousEventSourcedState<TState>, new()
     {
 #pragma warning disable S2743 // Static fields should not be used in generic types
-        public static Type[] HandledEventTypes { get; protected set; }
-        public static Type[] HandledMessageTypes { get; protected set; }
-        public static Type[] PayloadTypesStatic { get; protected set; }
-        public Type[] PayloadTypes => PayloadTypesStatic;
+        private static Type[] HandledEventTypes { get; set; }
+        private static Type[] HandledMessageTypes { get; set; }
+        private static Type[] PayloadTypesStatic { get; set; }
+        Type[] IState.PayloadTypes => PayloadTypesStatic;
 
         private static readonly TypeInfo iMessageTypeInfo = typeof(IMessage).GetTypeInfo();
         private static readonly IDictionary<Type, MethodInfo> methodForEventType = new Dictionary<Type, MethodInfo>();

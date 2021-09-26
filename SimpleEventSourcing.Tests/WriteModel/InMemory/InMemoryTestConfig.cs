@@ -78,9 +78,10 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
                 };
             }
 
+            private ISerializer cachedSerializer;
             public ISerializer GetSerializer()
             {
-                return new JsonNetSerializer(GetBinder());
+                return cachedSerializer ??= new JsonNetSerializer(GetBinder());
             }
 
             public ISerializationBinder GetBinder()

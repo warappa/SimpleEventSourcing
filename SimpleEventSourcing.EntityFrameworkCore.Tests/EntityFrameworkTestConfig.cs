@@ -72,7 +72,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
             public override async Task CleanupWriteDatabaseAsync()
             {
-                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) }, true);
             }
 
             public static ISerializationBinder GetBinder()
@@ -80,9 +80,10 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
                 return new VersionedBinder();
             }
 
+            private static ISerializer cachedSerializer;
             public static ISerializer GetSerializer()
             {
-                return new JsonNetSerializer(GetBinder());
+                return cachedSerializer ??= new JsonNetSerializer(GetBinder());
             }
 
             public override IRawStreamEntry GenerateRawStreamEntry()
