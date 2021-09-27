@@ -106,6 +106,13 @@ namespace SimpleEventSourcing.ReadModel
                 await ApplyMessagesAsync(requiredMessages);
             }
 
+            if (requiredMessages.Count > 0)
+            {
+                await checkpointPersister.SaveCurrentCheckpointAsync(
+                    projectorIdentifier,
+                    requiredMessages[requiredMessages.Count - 1].CheckpointNumber);
+            }
+
             stopwatch.Stop();
             Debug.WriteLine($"{typeof(TState).Name} {requiredMessages.Count}x ({streamEntries.Count}): {stopwatch.ElapsedMilliseconds}ms");
 
@@ -118,13 +125,6 @@ namespace SimpleEventSourcing.ReadModel
             {
                 var result = StateModel.UntypedApply(message) ?? StateModel;
                 StateModel = await StateExtensions.ExtractStateAsync<TState>(result);
-            }
-
-            if (requiredMessages.Count > 0)
-            {
-                await checkpointPersister.SaveCurrentCheckpointAsync(
-                    projectorIdentifier,
-                    requiredMessages[requiredMessages.Count - 1].CheckpointNumber);
             }
         }
 
