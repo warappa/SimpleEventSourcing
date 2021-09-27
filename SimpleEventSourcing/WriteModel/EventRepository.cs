@@ -51,14 +51,14 @@ namespace SimpleEventSourcing.WriteModel
             var streamRevision = 0;
             if (snapshot is not null)
             {
-                streamRevision = snapshot.StreamRevision + 1;
+                streamRevision = snapshot.StreamRevision;
 
                 var type = instance.UntypedStateModel.GetType();
                 state = persistenceEngine.Serializer.Deserialize(type, snapshot.StateSerialized);
             }
 
             var streamEntries = await persistenceEngine
-                .LoadStreamEntriesByStreamAsync(streamName, streamRevision)
+                .LoadStreamEntriesByStreamAsync(streamName, streamRevision + 1)
                 .ToListAsync();
 
             if (streamEntries.Count == 0 &&
@@ -75,7 +75,7 @@ namespace SimpleEventSourcing.WriteModel
                 events.Add((IEvent)persistenceEngine.Serializer.Deserialize(rawStreamEntry.Payload));
             }
 
-            instance.LoadEvents(events, state);
+            instance.LoadEvents(events, state, streamRevision);
 
             return instance;
         }

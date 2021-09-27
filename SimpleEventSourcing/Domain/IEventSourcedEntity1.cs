@@ -7,7 +7,7 @@ namespace SimpleEventSourcing.Domain
     public interface IEventSourcedEntity<TState, TKey> : IEventSourcedEntity
         where TState : class, ISynchronousEventSourcedState<TState>, new()
     {
-        void LoadEvents(IEnumerable<IEvent> events, TState initialState = default(TState));
+        void LoadEvents(IEnumerable<IEvent> events, TState initialState = default(TState), int version = 0);
         new TKey Id { get; }
     }
 }

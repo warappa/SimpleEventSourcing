@@ -5,7 +5,7 @@ namespace SimpleEventSourcing.Domain
 {
     public interface IEventSourcedEntity
     {
-        void LoadEvents(IEnumerable<IEvent> events, object initialState = null);
+        void LoadEvents(IEnumerable<IEvent> events, object initialState = null, int version = 0);
         IEnumerable<IEvent> UncommittedEvents { get; }
         void ClearUncommittedEvents();
         int Version { get; }

@@ -22,16 +22,21 @@ namespace SimpleEventSourcing.Domain
         object IEventSourcedEntity.UntypedStateModel => stateModel;
         string IEventSourcedEntity.StreamName => StateModel.StreamName;
 
-        public EventSourcedEntity(IEnumerable<IEvent> events, TState initialState = null)
+        public EventSourcedEntity(IEnumerable<IEvent> events, TState initialState = null, int version = 0)
         {
-            (this as IEventSourcedEntity<TState, TKey>).LoadEvents(events, initialState);
+            (this as IEventSourcedEntity<TState, TKey>).LoadEvents(events, initialState, version);
+            
+            this.version = version + events.Count();
+            committedVersion = this.version;
         }
 
-        public EventSourcedEntity(IEvent @event, TState initialState = null)
+        public EventSourcedEntity(IEvent @event, TState initialState = null, int version = 0)
         {
             stateModel = SynchronousEventSourcedState<TState>.LoadState(initialState, new[] { @event });
             uncommittedEvents.Add(@event);
-            version = 1;
+
+            this.version = version + 1;
+            committedVersion = this.version;
         }
 
         public override bool Equals(object obj)
@@ -91,16 +96,16 @@ namespace SimpleEventSourcing.Domain
             version++;
         }
 
-        void IEventSourcedEntity.LoadEvents(IEnumerable<IEvent> events, object initialState)
+        void IEventSourcedEntity.LoadEvents(IEnumerable<IEvent> events, object initialState, int version)
         {
-            (this as IEventSourcedEntity<TState, TKey>).LoadEvents(events, (TState)initialState);
+            (this as IEventSourcedEntity<TState, TKey>).LoadEvents(events, (TState)initialState, version);
         }
 
-        void IEventSourcedEntity<TState, TKey>.LoadEvents(IEnumerable<IEvent> events, TState initialState)
+        void IEventSourcedEntity<TState, TKey>.LoadEvents(IEnumerable<IEvent> events, TState initialState, int version)
         {
-            committedVersion = version = events.Count();
-
             stateModel = SynchronousEventSourcedState<TState>.LoadState(initialState, events);
+
+            committedVersion = this.version = version + events.Count();
         }
 
         void IEventSourcedEntity.ClearUncommittedEvents()
