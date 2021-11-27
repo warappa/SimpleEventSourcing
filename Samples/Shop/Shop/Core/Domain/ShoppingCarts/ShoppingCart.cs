@@ -14,7 +14,7 @@ namespace Shop.Core.Domain.ShoppingCarts
     {
         public ShoppingCart() : base(Enumerable.Empty<IEvent>()) { }
 
-        public ShoppingCart(string id, CustomerId customerId, string customerName, DateTime? dateTime = null)
+        public ShoppingCart(ShoppingCartId id, CustomerId customerId, string customerName, DateTime? dateTime = null)
             : base(new ShoppingCartCreated(id, customerId, customerName, dateTime ?? DateTime.UtcNow))
         {
 
