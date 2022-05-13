@@ -314,7 +314,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             using (connection.Lock())
             {
                 var query = @"
-SELECT StreamName, StreamRevision, StateIdentifier, StateSerialized, DateTime
+SELECT StreamName, StreamRevision, StateIdentifier, StateSerialized, CreatedAt
 FROM Snapshots
 ORDER BY StreamRevision DESC";
 
