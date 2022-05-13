@@ -6,10 +6,10 @@ namespace SimpleEventSourcing.UI.ConsoleCore
     [Versioned("TestAggregateCreated", 0)]
 	public class TestAggregateCreated : IEvent, INameChangeEvent
 	{
-		public string Id;
-		public string Name;
+		public string Id { get; set; }
+		public string Name { get; set; }
 
-		public TestAggregateCreated(
+        public TestAggregateCreated(
 			string id,
 			string name)
 		{
@@ -26,10 +26,10 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 	[Versioned("Renamed", 0)]
 	public class Renamed : IEvent, INameChangeEvent
 	{
-		public string Id;
-		public string NewName;
+		public string Id { get; set; }
+        public string NewName { get; set; }
 
-		public Renamed(
+        public Renamed(
 			string id,
 			string newName)
 		{
@@ -46,10 +46,10 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 	[Versioned("SomethingDone", 0)]
 	public class SomethingDone : IEvent
 	{
-		public string Id;
-		public string Bla;
+		public string Id { get; set; }
+        public string Bla { get; set; }
 
-		public SomethingDone(
+        public SomethingDone(
 			string id,
 			string bla)
 		{
@@ -60,10 +60,10 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 	[Versioned("SomethingSpecialDone", 0)]
 	public class SomethingSpecialDone : IEvent
 	{
-		public string Id;
-		public string Bla;
+		public string Id { get; set; }
+        public string Bla { get; set; }
 
-		public SomethingSpecialDone(
+        public SomethingSpecialDone(
 			string id,
 			string bla)
 		{

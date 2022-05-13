@@ -25,7 +25,9 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             }, ServiceLifetime.Transient);
 
             services.AddSimpleEventSourcing<WriteModelDbContext, ReadModelDbContext>()
-                .AddNewtonsoftJson();
+                //.AddNewtonsoftJson()
+                .AddSystemTextJson()
+                ;
 
             services.AddCatchupProjector<TestState, ReadModelDbContext>(new TestState());
             services.AddCatchupProjector<PersistentState, ReadModelDbContext>(

@@ -28,7 +28,8 @@ namespace SimpleEventSourcing.WriteModel
         public static IMessage ToTypedMessage(this IRawStreamEntry rawStreamEntry, ISerializer serializer)
         {
             var headers = serializer.Deserialize<IDictionary<string, object>>(rawStreamEntry.Headers);
-            var body = serializer.Deserialize<IEvent>(rawStreamEntry.Payload);
+            var payloadType = serializer.Binder.BindToType(rawStreamEntry.PayloadType);
+            var body = (IEvent)serializer.Deserialize(payloadType, rawStreamEntry.Payload);
 
             var messageType = typedMessageTypeInfo.MakeGenericType(body.GetType());
 

@@ -16,7 +16,8 @@
     <ProjectReference Include="..\SimpleEventSourcing.NHibernate\SimpleEventSourcing.NHibernate.csproj" />
     <ProjectReference Include="..\SimpleEventSourcing.SQLite\SimpleEventSourcing.SQLite.csproj" />
     <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
-    <ProjectReference Include="..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />
+    <!--<ProjectReference Include="..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />-->
+    <ProjectReference Include="..\SimpleEventSourcing.System.Text.Json\SimpleEventSourcing.System.Text.Json.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.2" />

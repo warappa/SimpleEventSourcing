@@ -72,7 +72,8 @@ namespace SimpleEventSourcing.WriteModel
             {
                 var rawStreamEntry = streamEntries[i];
 
-                events.Add((IEvent)persistenceEngine.Serializer.Deserialize(rawStreamEntry.Payload));
+                var payloadType = persistenceEngine.Serializer.Binder.BindToType(rawStreamEntry.PayloadType);
+                events.Add((IEvent)persistenceEngine.Serializer.Deserialize(payloadType, rawStreamEntry.Payload));
             }
 
             instance.LoadEvents(events, state, streamRevision);

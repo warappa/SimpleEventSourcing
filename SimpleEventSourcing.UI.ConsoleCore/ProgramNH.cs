@@ -72,7 +72,10 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                     typeof(CheckpointInfo), 
                     typeof(PersistentEntity)
                 })
-                .AddNewtonsoftJson();
+                //.AddNewtonsoftJson()
+                .AddSystemTextJson()
+                ;
+
             services.AddCatchupProjector(new TestState());
             services.AddCatchupProjector(
                 sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
