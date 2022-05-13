@@ -44,6 +44,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
         }
 
         public DbSet<RawStreamEntry> Commits { get; set; }
+        public DbSet<RawSnapshot> Snapshots { get; set; }
     }
 
     public class DbContextFactory : IDbContextFactory

@@ -12,5 +12,6 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         }
 
         public DbSet<RawStreamEntry> Commits { get; set; }
+        public DbSet<RawSnapshot> Snapshots { get; set; }
     }
 }
