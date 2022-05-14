@@ -52,16 +52,6 @@ namespace SimpleEventSourcing.WriteModel
             return JsonSerializer.Serialize<object>(obj, settings);
         }
 
-        public object Deserialize(string value)
-        {
-            if (value == null)
-            {
-                return null;
-            }
-
-            return JsonSerializer.Deserialize<object>(value, settings);
-        }
-
         public object Deserialize(Type type, string value)
         {
             if (value == null)

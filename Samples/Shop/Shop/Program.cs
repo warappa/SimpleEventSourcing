@@ -93,16 +93,16 @@ namespace Shop
 
             var removedObservable = observer
                 .Where(x => x.PayloadType.StartsWith(nameof(ShoppingCartArticleRemoved)))
-                .Select(x => (ShoppingCartArticleRemoved)serializer.Deserialize(x.Payload))
+                .Select(x => serializer.Deserialize<ShoppingCartArticleRemoved>(x.Payload))
                 ;
 
             var shoppingCartCreatedObservable = observer
                 .Where(x => x.PayloadType.StartsWith(nameof(ShoppingCartCreated)))
-                .Select(x => (ShoppingCartCreated)serializer.Deserialize(x.Payload));
+                .Select(x => serializer.Deserialize<ShoppingCartCreated>(x.Payload));
 
             var shoppingCartOrderedObservable = observer
                 .Where(x => x.PayloadType.StartsWith(nameof(ShoppingCartOrdered)))
-                .Select(x => (ShoppingCartOrdered)serializer.Deserialize(x.Payload));
+                .Select(x => serializer.Deserialize<ShoppingCartOrdered>(x.Payload));
 
             var orderedWithCustomerNameObservable = shoppingCartOrderedObservable
                 .Join(
@@ -159,7 +159,7 @@ namespace Shop
                     typeof(ShoppingCartOrdered),
                     typeof(ShoppingCartCancelled)
                 })
-                .Select(x => engine.Serializer.Deserialize(x.Payload))
+                .Select(x => engine.Serializer.Deserialize(engine.Serializer.Binder.BindToType(x.PayloadType), x.Payload))
                 .ToListAsync();
 
             Console.WriteLine("Removed Articles: ");
@@ -214,7 +214,7 @@ namespace Shop
             var greatCustomer = await GetOrCreateGreatCustomerAsync().ConfigureAwait(false);
 
             var events = await engine.LoadStreamEntriesByStreamAsync(greatCustomer.Id)
-                .Select(x => serializer.Deserialize(x.Payload))
+                .Select(x => serializer.Deserialize(serializer.Binder.BindToType(x.PayloadType), x.Payload))
                 .ToListAsync();
 
             var state = CustomerRenameHistory.LoadState((CustomerRenameHistory)null, events);
@@ -235,7 +235,7 @@ namespace Shop
                         typeof(CustomerCreated),
                         typeof(CustomerRenamed)
                     })
-                .Select(x => serializer.Deserialize(x.Payload))
+                .Select(x => serializer.Deserialize(serializer.Binder.BindToType(x.PayloadType), x.Payload))
                 .ToListAsync();
 
             var state = CustomerRenameHistory.LoadState((CustomerRenameHistory)null, events);
