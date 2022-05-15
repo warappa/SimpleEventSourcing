@@ -10,7 +10,7 @@ namespace SimpleEventSourcing.State
     public abstract class AggregateRootState<TState, TKey> : StreamState<TState>, IAggregateRootState<TKey>, IAggregateRootStateInternal
         where TState : AggregateRootState<TState, TKey>, new()
     {
-        protected IDictionary<Type, Func<object, IChildEventSourcedState>> childStateCreationMap = new Dictionary<Type, Func<object, IChildEventSourcedState>>();
+        protected static IDictionary<Type, Func<object, IChildEventSourcedState>> childStateCreationMap = new Dictionary<Type, Func<object, IChildEventSourcedState>>();
         private List<IChildEventSourcedState> childStates = new();
         [JsonInclude]
         public IEnumerable<IChildEventSourcedState> ChildStates { get => childStates; private set => childStates = value.ToList(); }
