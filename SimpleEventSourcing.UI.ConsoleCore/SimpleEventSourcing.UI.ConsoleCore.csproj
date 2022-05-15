@@ -5,9 +5,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>SimpleEventSourcing.UI.ConsoleUI</RootNamespace>
     <AssetTargetFallback>net45</AssetTargetFallback>
-    <StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramSQLite</StartupObject>
-    <!--<StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramNH</StartupObject>-->
     <!--<StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramEFCore</StartupObject>-->
+    <!--<StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramNH</StartupObject>-->
+    <StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramSQLite</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,7 +27,6 @@
     <PackageReference Include="NHibernate" Version="5.3.5" />
     <PackageReference Include="NHibernate.Caches.CoreDistributedCache.SqlServer" Version="5.7.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
