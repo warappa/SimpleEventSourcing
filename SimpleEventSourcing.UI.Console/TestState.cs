@@ -17,7 +17,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             SomethingDone = state.SomethingDone;
         }
 
-        public Task<TestState> Apply(TestAggregateCreated @event)
+        public TestState Apply(TestAggregateCreated @event)
         {
             Console.Write("C");
             // Console.Write(Environment.CurrentManagedThreadId);
@@ -29,10 +29,10 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 Name = @event.Name
             };
 
-            return Task.FromResult(s);
+            return s;
         }
 
-        public Task<TestState> Apply(SomethingDone @event)
+        public TestState Apply(SomethingDone @event)
         {
             Console.Write("S");
             // Console.Write(Environment.CurrentManagedThreadId);
@@ -44,9 +44,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 SomethingDone = @event.Bla
             };
 
-            return Task.FromResult(s);
+            return s;
         }
-        public Task<TestState> Apply(Renamed @event)
+        public TestState Apply(Renamed @event)
         {
             Console.Write("R");
             // Console.Write(Environment.CurrentManagedThreadId);
@@ -57,7 +57,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 Name = @event.Name
             };
 
-            return Task.FromResult(s);
+            return s;
         }
     }
 }
