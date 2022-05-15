@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>net461;netcoreapp3.1;net5.0</TargetFrameworks>
+        <TargetFrameworks>net462;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
       <AssetTargetFallback>$(AssetTargetFallback);net472</AssetTargetFallback>
         <Version>2.0.0</Version>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -33,7 +33,7 @@
         <HintPath>$(NuGetPackageRoot)EntityFramework.DbContextScope\1.0.0\lib\net46\EntityFramework.DbContextScope.dll</HintPath>
       </Reference>
 
-      <Reference Include="System.Transactions" Condition=" '$(TargetFramework)' == 'net461' "></Reference>
+      <Reference Include="System.Transactions" Condition=" '$(TargetFramework)' == 'net462' "></Reference>
     </ItemGroup>
 
     <ItemGroup>

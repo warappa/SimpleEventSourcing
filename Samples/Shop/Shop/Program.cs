@@ -121,7 +121,7 @@ namespace Shop
                 )
                 .Where(x => x != null);
 
-            await orderedWithCustomerNameObservable
+            orderedWithCustomerNameObservable
                 .Join(
                     removedObservable,
                     _ => Observable.Never<Unit>(), // triggers window-data reset for left side (never)
@@ -140,7 +140,7 @@ namespace Shop
                     };
                 })
                 .Where(x => x != null)
-                //.Subscribe(x => Console.WriteLine($"ShoppingCart: {x.CustomerName}: " + string.Join(", ", x.relevant.Articlenumber)))
+                .Subscribe(x => Console.WriteLine($"ShoppingCart: {x.CustomerName}: " + string.Join(", ", x.relevant.Articlenumber)))
                 ;
 
             await observer.StartAsync();
