@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+	  <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+	  <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
+	  <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.0.6" />
+	  <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.6" />
+	  <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleEventSourcing.Bus\SimpleEventSourcing.Bus.csproj" />
+    <ProjectReference Include="..\SimpleEventSourcing.EntityFrameworkCore\SimpleEventSourcing.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />
+    <ProjectReference Include="..\SimpleEventSourcing.NHibernate\SimpleEventSourcing.NHibernate.csproj" />
+    <ProjectReference Include="..\SimpleEventSourcing.SQLite\SimpleEventSourcing.SQLite.csproj" />
+    <ProjectReference Include="..\SimpleEventSourcing.System.Text.Json\SimpleEventSourcing.System.Text.Json.csproj" />
+    <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
