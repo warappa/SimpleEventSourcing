@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.Benchmarking.Domain;
+using SimpleEventSourcing.Benchmarking.ReadModel;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.EntityFrameworkCore;
 using SimpleEventSourcing.ReadModel;
@@ -10,7 +11,7 @@ namespace SimpleEventSourcing.Benchmarking.EFCore
 {
     internal class SetupEFCore
     {
-        public static IServiceProvider BuildEntityFrameworkCore(IConfigurationRoot configuration, bool systemTextJson)
+        public static IServiceProvider BuildEntityFrameworkCore(IConfigurationRoot configuration, bool systemTextJson, bool readModel = false)
         {
             var services = new ServiceCollection();
 
@@ -34,9 +35,13 @@ namespace SimpleEventSourcing.Benchmarking.EFCore
                 esBuilder.AddNewtonsoftJson();
             }
 
-            services.AddCatchupProjector<TestState, ReadModelDbContext>(new TestState());
-            //services.AddCatchupProjector<PersistentState, ReadModelDbContext>(
-            //    sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
+            //services.AddCatchupProjector<TestState, ReadModelDbContext>(new TestState());
+
+            if (readModel)
+            {
+                services.AddCatchupProjector<PersistentState, ReadModelDbContext>(
+                    sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
+            }
 
             services.AddBus();
 

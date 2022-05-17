@@ -7,13 +7,14 @@ using SimpleEventSourcing.NHibernate;
 using SimpleEventSourcing.NHibernate.Context;
 using SimpleEventSourcing.NHibernate.ReadModel;
 using SimpleEventSourcing.NHibernate.WriteModel;
+using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.Storage;
 
 namespace SimpleEventSourcing.Benchmarking.NHibernate
 {
     internal class SetupNH
     {
-        public static IServiceProvider BuildNHibernate(IConfigurationRoot configuration, bool systemTextJson)
+        public static IServiceProvider BuildNHibernate(IConfigurationRoot configuration, bool systemTextJson, bool readModel = false)
         {
             var services = new ServiceCollection();
 
@@ -36,8 +37,12 @@ namespace SimpleEventSourcing.Benchmarking.NHibernate
             }
 
             //services.AddCatchupProjector(new TestState());
-            //services.AddCatchupProjector(
-            //    sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
+
+            if (readModel)
+            {
+                services.AddCatchupProjector<PersistentState>(
+                    sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
+            }
 
             services.AddBus();
 

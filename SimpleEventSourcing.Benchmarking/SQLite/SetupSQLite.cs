@@ -5,6 +5,8 @@ using SimpleEventSourcing.SQLite;
 using System;
 using System.Threading.Tasks;
 using SQLite;
+using SimpleEventSourcing.Benchmarking.ReadModel;
+using SimpleEventSourcing.ReadModel;
 
 namespace SimpleEventSourcing.Benchmarking.SQLite
 {
@@ -13,7 +15,7 @@ namespace SimpleEventSourcing.Benchmarking.SQLite
         private static SQLiteConnectionWithLock writeConn;
         private static SQLiteConnectionWithLock readConn;
 
-        public static IServiceProvider BuildSQLite(IConfigurationRoot configuration, bool systemTextJson)
+        public static IServiceProvider BuildSQLite(IConfigurationRoot configuration, bool systemTextJson, bool readModel = false)
         {
             if (File.Exists("writeDatabase.db"))
             {
@@ -37,8 +39,13 @@ namespace SimpleEventSourcing.Benchmarking.SQLite
                 esBuilder.AddNewtonsoftJson();
             }
             //services.AddCatchupProjector<TestState>(new TestState());
-            //services.AddCatchupProjector<PersistentState>(
-            //    sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
+
+            if (readModel)
+            {
+                services.AddCatchupProjector<PersistentState>(
+                    sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
+            }
+
             services.AddBus();
 
             var serviceProvider = services.BuildServiceProvider();

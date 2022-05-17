@@ -1,88 +1,12 @@
-﻿using BenchmarkDotNet.Attributes;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using SimpleEventSourcing.Benchmarking.Domain;
-using SimpleEventSourcing.Benchmarking.EFCore;
-using SimpleEventSourcing.Benchmarking.NHibernate;
-using SimpleEventSourcing.Benchmarking.SQLite;
+﻿using SimpleEventSourcing.Benchmarking.Domain;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.WriteModel;
 
 namespace SimpleEventSourcing.Benchmarking
 {
-    public class BenchmarkSQLiteVsNHVsEFCore
+    public static class BenchmarkHelper
     {
-        private IPersistenceEngine sqlitePersistenceEngine;
-        private IEventRepository sqliteEventRepository;
-        private IRawStreamEntryFactory sqliteRawStreamEntryFactory;
-        private IPersistenceEngine efCorePersistenceEngine;
-        private IEventRepository efCoreEventRepository;
-        private IRawStreamEntryFactory efCoreRawStreamEntryFactory;
-        private IPersistenceEngine nhPersistenceEngine;
-        private IEventRepository nhEventRepository;
-        private IRawStreamEntryFactory nhRawStreamEntryFactory;
-
-        public BenchmarkSQLiteVsNHVsEFCore()
-        {
-            Setup();
-        }
-
-        public void Setup()
-        {
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-
-            var useSystemTextJson = true;
-
-            var sqliteSericeProvider = SetupSQLite.BuildSQLite(config, useSystemTextJson);
-            sqlitePersistenceEngine = sqliteSericeProvider.GetRequiredService<IPersistenceEngine>();
-            sqliteEventRepository = sqliteSericeProvider.GetRequiredService<IEventRepository>();
-            sqliteRawStreamEntryFactory = sqliteSericeProvider.GetRequiredService<IRawStreamEntryFactory>();
-
-            var efCoreSericeProvider = SetupEFCore.BuildEntityFrameworkCore(config, useSystemTextJson);
-            efCorePersistenceEngine = efCoreSericeProvider.GetRequiredService<IPersistenceEngine>();
-            efCoreEventRepository = efCoreSericeProvider.GetRequiredService<IEventRepository>();
-            efCoreRawStreamEntryFactory = efCoreSericeProvider.GetRequiredService<IRawStreamEntryFactory>();
-
-            var nhSericeProvider = SetupNH.BuildNHibernate(config, useSystemTextJson);
-            nhPersistenceEngine = nhSericeProvider.GetRequiredService<IPersistenceEngine>();
-            nhEventRepository = nhSericeProvider.GetRequiredService<IEventRepository>();
-            nhRawStreamEntryFactory = nhSericeProvider.GetRequiredService<IRawStreamEntryFactory>();
-
-            sqlitePersistenceEngine.InitializeAsync().Wait();
-            efCorePersistenceEngine.InitializeAsync().Wait();
-            nhPersistenceEngine.InitializeAsync().Wait();
-        }
-
-        [Benchmark]
-        public async Task BenchmarkSQLite()
-        {
-            //var agg = GenerateAggregateWithEvents();
-            //await sqliteEventRepository.SaveAsync(agg);
-            var entries = GetRawStreamEntriesSQLite(Guid.NewGuid().ToString(), GetEvents());
-            await sqlitePersistenceEngine.SaveStreamEntriesAsync(entries);
-        }
-
-        [Benchmark]
-        public async Task BenchmarkEFCore()
-        {
-            //var agg = GenerateAggregateWithEvents();
-            //await efCoreEventRepository.SaveAsync(agg);
-            var entries = GetRawStreamEntriesEFCore(Guid.NewGuid().ToString(), GetEvents());
-            await efCorePersistenceEngine.SaveStreamEntriesAsync(entries);
-        }
-
-        [Benchmark]
-        public async Task BenchmarkNH()
-        {
-            //var agg = GenerateAggregateWithEvents();
-            //await nhEventRepository.SaveAsync(agg);
-            var entries = GetRawStreamEntriesNH(Guid.NewGuid().ToString(), GetEvents());
-            await nhPersistenceEngine.SaveStreamEntriesAsync(entries);
-        }
-
-        private IRawStreamEntry[] GetRawStreamEntriesNH(string streamName, IEvent[] events)
+        public static IRawStreamEntry[] GetRawStreamEntriesNH(this IPersistenceEngine nhPersistenceEngine, IRawStreamEntryFactory nhRawStreamEntryFactory, string streamName, IEvent[] events)
         {
             var commitId = Guid.NewGuid().ToString();
 
@@ -103,7 +27,7 @@ namespace SimpleEventSourcing.Benchmarking
             return streamDTOs;
         }
 
-        private IRawStreamEntry[] GetRawStreamEntriesEFCore(string streamName, IEvent[] events)
+        public static IRawStreamEntry[] GetRawStreamEntriesEFCore(this IPersistenceEngine efCorePersistenceEngine, IRawStreamEntryFactory efCoreRawStreamEntryFactory, string streamName, IEvent[] events)
         {
             var commitId = Guid.NewGuid().ToString();
 
@@ -124,7 +48,7 @@ namespace SimpleEventSourcing.Benchmarking
             return streamDTOs;
         }
 
-        private IRawStreamEntry[] GetRawStreamEntriesSQLite(string streamName, IEvent[] events)
+        public static IRawStreamEntry[] GetRawStreamEntriesSQLite(this IPersistenceEngine sqlitePersistenceEngine, IRawStreamEntryFactory sqliteRawStreamEntryFactory, string streamName, IEvent[] events)
         {
             var commitId = Guid.NewGuid().ToString();
 
@@ -145,16 +69,18 @@ namespace SimpleEventSourcing.Benchmarking
             return streamDTOs;
         }
 
-        private static IEvent[] GetEvents()
+        public static IEvent[] GetEvents(int count = 1000)
         {
             var id = Guid.NewGuid().ToString();
 
             var list = new List<IEvent>();
 
-            for (var i = 0; i < 10000; i++)
+            var limit = count;
+            for (var i = 0; i < limit; i++)
             {
-                if (i == 0)
+                if (i % 10 == 0)
                 {
+                    id = Guid.NewGuid().ToString();
                     list.Add(new TestAggregateCreated(id, "Test"));
                 }
                 else
@@ -188,7 +114,7 @@ namespace SimpleEventSourcing.Benchmarking
             return list.ToArray();
         }
 
-        private static TestAggregate GenerateAggregateWithEvents()
+        public static TestAggregate GenerateAggregateWithEvents()
         {
             var agg = new TestAggregate("abc" + Guid.NewGuid(), "test");
 
