@@ -1,9 +1,10 @@
 ﻿using SimpleEventSourcing.State;
+using System;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel
 {
-    public interface IProjector
+    public interface IProjector : IDisposable
     {
         Task ResetAsync();
         Task StartAsync();

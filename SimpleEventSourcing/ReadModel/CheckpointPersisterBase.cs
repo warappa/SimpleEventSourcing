@@ -19,7 +19,7 @@ namespace SimpleEventSourcing.ReadModel
 
         public async Task ResetCheckpointAsync(string projectorIdentifier)
         {
-            await SaveCurrentCheckpointAsync(projectorIdentifier, CheckpointDefaults.NoCheckpoint);
+            await SaveCurrentCheckpointAsync(projectorIdentifier, CheckpointDefaults.NoCheckpoint).ConfigureAwait(false);
         }
 
         public abstract Task<int> LoadLastCheckpointAsync(string projectorIdentifier);
@@ -29,17 +29,39 @@ namespace SimpleEventSourcing.ReadModel
         public async Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber, CancellationToken token = default)
             where TReadModelState : IAsyncState
         {
-            await WaitForCheckpointNumberAsync(typeof(TReadModelState), checkpointNumber, token);
+            await WaitForCheckpointNumberAsync(typeof(TReadModelState), checkpointNumber, token).ConfigureAwait(false);
+        }
+
+        public async Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber, TimeSpan timeout, CancellationToken token = default)
+            where TReadModelState : IAsyncState
+        {
+            await WaitForCheckpointNumberAsync(typeof(TReadModelState), checkpointNumber, timeout, token).ConfigureAwait(false);
         }
 
         public async Task WaitForCheckpointNumberAsync(Type readModelStateType, int checkpointNumber, CancellationToken token = default)
         {
+            await WaitForCheckpointNumberInternalAsync(readModelStateType, checkpointNumber, null, token).ConfigureAwait(false);
+        }
+        public async Task WaitForCheckpointNumberAsync(Type readModelStateType, int checkpointNumber, TimeSpan timeout, CancellationToken token = default)
+        {
+            await WaitForCheckpointNumberInternalAsync(readModelStateType, checkpointNumber, timeout, token).ConfigureAwait(false);
+        }
+
+        internal async Task WaitForCheckpointNumberInternalAsync(Type readModelStateType, int checkpointNumber, TimeSpan? timeout = null, CancellationToken token = default)
+        {
             var projectorIdentifier = GetProjectorIdentifier(readModelStateType);
 
-            var retries = 0;
+            //var retries = 0;
             var pow = 1;
             var delayInMs = 16;
             var maxDelayMs = 1000;
+
+            if (timeout is null)
+            {
+                timeout = TimeSpan.FromSeconds(10);
+            }
+
+            var endTime = DateTime.UtcNow + timeout;
 
             while (true)
             {
@@ -52,17 +74,18 @@ namespace SimpleEventSourcing.ReadModel
                     return;
                 }
 
-                retries++;
+                //retries++;
 
-                if (retries == 20)
+                //if (retries == 20)
+                if (DateTime.UtcNow > endTime)
                 {
                     throw new OperationCanceledException($"Projector '{readModelStateType.FullName}' did not reach checkpoint '{checkpointNumber}'.");
                 }
 
-                if (retries < 31)
-                {
-                    pow <<= 1;
-                }
+                //if (retries < 31)
+                //{
+                //    pow <<= 1;
+                //}
 
                 var delay = Math.Min(delayInMs * (pow - 1) / 2, maxDelayMs);
                 await Task.Delay(delay, token).ConfigureAwait(false);

@@ -83,16 +83,16 @@ namespace SimpleEventSourcing.ReadModel
                 return;
             }
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            //var stopwatch = new Stopwatch();
+            //stopwatch.Start();
 
             var requiredMessages = streamEntries
                 .Select(streamEntry => streamEntry.ToTypedMessage(engine.Serializer))
                 .ToList();
 
-            stopwatch.Stop();
-            Debug.WriteLine($"deserialized {typeof(TState).Name} {requiredMessages.Count}x ({streamEntries.Count}): {stopwatch.ElapsedMilliseconds}ms");
-            stopwatch.Restart();
+            //stopwatch.Stop();
+            //Debug.WriteLine($"deserialized {typeof(TState).Name} {requiredMessages.Count}x ({streamEntries.Count}): {stopwatch.ElapsedMilliseconds}ms");
+            //stopwatch.Restart();
 
             if (StateModel is IDbScopeAware scopeaware)
             {
@@ -113,8 +113,8 @@ namespace SimpleEventSourcing.ReadModel
                     requiredMessages[requiredMessages.Count - 1].CheckpointNumber);
             }
 
-            stopwatch.Stop();
-            Debug.WriteLine($"{typeof(TState).Name} {requiredMessages.Count}x ({streamEntries.Count}): {stopwatch.ElapsedMilliseconds}ms");
+            //stopwatch.Stop();
+            //Debug.WriteLine($"{typeof(TState).Name} {requiredMessages.Count}x ({streamEntries.Count}): {stopwatch.ElapsedMilliseconds}ms");
 
             requiredMessages.Clear();
         }
