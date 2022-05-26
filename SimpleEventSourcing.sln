@@ -68,7 +68,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.System.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Performance", "Performance", "{EB17FD39-5DA6-457B-8392-4D42AB3C6A54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleEventSourcing.Benchmarking", "SimpleEventSourcing.Benchmarking\SimpleEventSourcing.Benchmarking.csproj", "{7ED0870F-60E5-4BDF-BC9B-B745A68BC491}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleEventSourcing.Benchmarking", "SimpleEventSourcing.Benchmarking\SimpleEventSourcing.Benchmarking.csproj", "{7ED0870F-60E5-4BDF-BC9B-B745A68BC491}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
