@@ -43,9 +43,9 @@ namespace SimpleEventSourcing.WriteModel
             }
 
             var instance = (IEventSourcedEntity)instanceProvider.GetInstance(aggregateType);
-            var state = instance.UntypedStateModel;
+            var state = instance.UntypedState;
 
-            var stateIdentifier = persistenceEngine.Serializer.Binder.BindToName(instance.UntypedStateModel.GetType());
+            var stateIdentifier = persistenceEngine.Serializer.Binder.BindToName(instance.UntypedState.GetType());
             var snapshot = await persistenceEngine.LoadLatestSnapshotAsync(streamName, stateIdentifier);
 
             var streamRevision = 0;
@@ -53,7 +53,7 @@ namespace SimpleEventSourcing.WriteModel
             {
                 streamRevision = snapshot.StreamRevision;
 
-                var type = instance.UntypedStateModel.GetType();
+                var type = instance.UntypedState.GetType();
                 state = persistenceEngine.Serializer.Deserialize(type, snapshot.StateSerialized);
             }
 
@@ -143,7 +143,7 @@ namespace SimpleEventSourcing.WriteModel
             {
                 if (entity.Version % SnapshotInterval == 0)
                 {
-                    await persistenceEngine.SaveSnapshot((IStreamState)entity.UntypedStateModel, entity.Version);
+                    await persistenceEngine.SaveSnapshot((IStreamState)entity.UntypedState, entity.Version);
                 }
             }
 

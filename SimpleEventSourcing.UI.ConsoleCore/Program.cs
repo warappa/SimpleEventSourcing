@@ -37,7 +37,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             var checkpointPersister = serviceProvider.GetRequiredService<ICheckpointPersister>();
             var observerFactory = serviceProvider.GetRequiredService<IObserverFactory>();
             var readRepository = serviceProvider.GetRequiredService<IReadRepository>();
-            var persistentState = serviceProvider.GetRequiredService<IProjector<PersistentState>>();
+            var persistentState = serviceProvider.GetRequiredService<IProjectionManager<PersistentState>>();
             var viewModelResetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
             
             await persistenceEngine.InitializeAsync();
@@ -123,8 +123,8 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             agg = await repo.GetAsync<TestAggregate>(agg.Id);
 
-            var projection = TestState.LoadState(agg.StateModel);
-            var projection2 = agg.StateModel;
+            var projection = TestState.LoadState(agg.State);
+            var projection2 = agg.State;
             Console.WriteLine("Name: " + projection.Name + ", " + projection.SomethingDone);
             Console.WriteLine("Name: " + projection2.Name + ", " + projection2.SomethingDone);
 
@@ -134,7 +134,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             bus.Send(new TypedMessage<TestAggregateRename>(Guid.NewGuid().ToString(), new TestAggregateRename { Id = agg.Id, Name = "Command Renamed Name" }, null, null, null, DateTime.UtcNow, 0));
 
             agg = await repo.GetAsync<TestAggregate>(agg.Id);
-            projection2 = agg.StateModel;
+            projection2 = agg.State;
 
             Console.WriteLine("Name: " + projection2.Name);
 
@@ -234,7 +234,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             {
                 while (true)
                 {
-                    Console.WriteLine(persistentState.StateModel.Count);
+                    Console.WriteLine(persistentState.Projector.Count);
                     await Task.Delay(1000).ConfigureAwait(false);
                 }
             });
@@ -254,7 +254,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             stopwatch.Stop();
 
-            Console.WriteLine($"persistent: {persistentState.StateModel.Count} msgs, {stopwatch.ElapsedMilliseconds}ms -> {persistentState.StateModel.Count / (stopwatch.ElapsedMilliseconds / 1000.0)}");
+            Console.WriteLine($"persistent: {persistentState.Projector.Count} msgs, {stopwatch.ElapsedMilliseconds}ms -> {persistentState.Projector.Count / (stopwatch.ElapsedMilliseconds / 1000.0)}");
 
             observer.Dispose();
             /*

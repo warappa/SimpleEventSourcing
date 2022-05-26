@@ -15,7 +15,7 @@ namespace SimpleEventSourcing.State
         private static Type[] HandledEventTypes { get; set; }
         private static Type[] HandledMessageTypes { get; set; }
         private static Type[] PayloadTypesStatic { get; set; }
-        Type[] IState.PayloadTypes => PayloadTypesStatic;
+        Type[] IProjector.PayloadTypes => PayloadTypesStatic;
 
         private static readonly TypeInfo iMessageTypeInfo = typeof(IMessage).GetTypeInfo();
         private static readonly IDictionary<Type, MethodInfo> methodForEventType = new Dictionary<Type, MethodInfo>();
@@ -156,12 +156,12 @@ namespace SimpleEventSourcing.State
             return state;
         }
 
-        object IState.UntypedApply(object eventOrMessage)
+        object IProjector.UntypedApply(object eventOrMessage)
         {
             return InvokeAssociatedApply(eventOrMessage);
         }
 
-        TState ISynchronousStateInternal<TState>.Apply(object @event)
+        TState ISynchronousProjectorInternal<TState>.Apply(object @event)
         {
             return InvokeAssociatedApply(@event);
         }

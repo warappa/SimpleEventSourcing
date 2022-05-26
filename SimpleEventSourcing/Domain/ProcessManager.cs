@@ -8,7 +8,7 @@ namespace SimpleEventSourcing.Domain
     public abstract class ProcessManager<TState, TKey> : EventSourcedEntity<TState, TKey>, IProcessManager<TState, TKey>
         where TState : class, IStreamState<TState>, IProcessManagerState<TState>, new()
     {
-        public bool ProcessEnded => StateModel.ProcessEnded;
+        public bool ProcessEnded => State.ProcessEnded;
 
         protected List<ICommand> uncommittedCommands = new();
 
@@ -39,7 +39,7 @@ namespace SimpleEventSourcing.Domain
 
         protected void HandledEvent(IEvent @event)
         {
-            RaiseEvent(new ProcessManagerHandledEvent(StateModel.ConvertToStreamName(typeof(TKey), Id), @event));
+            RaiseEvent(new ProcessManagerHandledEvent(State.ConvertToStreamName(typeof(TKey), Id), @event));
         }
 
         protected void HandledStartEvent(string processId, IEvent @event)

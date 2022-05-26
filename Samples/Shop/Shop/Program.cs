@@ -74,7 +74,7 @@ namespace Shop
             article2 = await GetOrCreateAggregateAsync<ArticleViewModel, Article>(readRepository, x => x.Articlenumber == "B12345", () => new Article(ArticleId.Generate(), "B12345", "Another great article", Money.EUR(59.99m)))
                 .ConfigureAwait(false);
 
-            var shoppingCart = new ShoppingCart(ShoppingCartId.Generate(), greatCustomer.Id, greatCustomer.StateModel.Name);
+            var shoppingCart = new ShoppingCart(ShoppingCartId.Generate(), greatCustomer.Id, greatCustomer.State.Name);
             var shoppingCartArticle1 = await shoppingCart.PlaceArticleAsync(ShoppingCartArticleId.Generate(shoppingCart.Id), article.Id, 1, repository);
             await shoppingCart.PlaceArticleAsync(ShoppingCartArticleId.Generate(shoppingCart.Id), article2.Id, 1, repository);
             shoppingCartArticle1.RemoveFromShoppingCart();
@@ -83,7 +83,7 @@ namespace Shop
 
             await repository.SaveAsync(shoppingCart);
 
-            var projection = CustomerState.LoadState(greatCustomer.StateModel);
+            var projection = CustomerState.LoadState(greatCustomer.State);
         }
 
         public static async Task AnalyseAlmostOrderedAsync()

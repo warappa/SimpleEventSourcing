@@ -25,7 +25,7 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
                 var engine = scope.ServiceProvider.GetRequiredService<IPersistenceEngine>();
                 await engine.InitializeAsync();
 
-                var projectors = scope.ServiceProvider.GetRequiredService<IEnumerable<IProjector>>();
+                var projectors = scope.ServiceProvider.GetRequiredService<IEnumerable<IProjectionManager>>();
                 foreach (var projector in projectors)
                 {
                     await projector.StartAsync();

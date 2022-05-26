@@ -7,7 +7,7 @@ namespace SimpleEventSourcing.Utils
     public static class StateExtensions
     {
         public static async Task<TState> ExtractStateAsync<TState>(this object result)
-            where TState : class, IState
+            where TState : class//, IProjector
         {
             if (result == null)
             {
@@ -49,7 +49,7 @@ namespace SimpleEventSourcing.Utils
         }
 
         public static TState ExtractState<TState>(this object result)
-            where TState : class, ISynchronousState
+            where TState : class//, ISynchronousProjector
         {
             if (result == null)
             {

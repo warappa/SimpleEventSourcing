@@ -5,6 +5,6 @@ namespace SimpleEventSourcing.Domain
     public interface IProcessManager<TState, TKey> : IEventSourcedEntity<TState, TKey>, IProcessManager
         where TState : class, ISynchronousEventSourcedState<TState>, new()
     {
-        TState StateModel { get; }
+        TState State { get; }
     }
 }

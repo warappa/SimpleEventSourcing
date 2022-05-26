@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel
 {
-    public class ReadRepositoryState<TState> : AsyncEventSourcedState<TState>, 
-        IDbScopeAware, IReadRepositoryState<TState>
-        where TState : ReadRepositoryState<TState>, new()
+    public class ReadRepositoryProjector<TProjector> : AsyncEventSourcedProjector<TProjector>, 
+        IDbScopeAware, IReadRepositoryProjector<TProjector>
+        where TProjector : ReadRepositoryProjector<TProjector>, new()
     {
         protected IReadRepository readRepository;
 
-        public ReadRepositoryState(IReadRepository readRepository)
+        public ReadRepositoryProjector(IReadRepository readRepository)
         {
             this.readRepository = readRepository;
         }
 
-        public ReadRepositoryState()
+        public ReadRepositoryProjector()
         {
             throw new NotSupportedException();
         }

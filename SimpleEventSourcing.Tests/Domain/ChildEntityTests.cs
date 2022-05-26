@@ -53,10 +53,10 @@ namespace SimpleEventSourcing.Tests
 
 			parent.FixDateTime(dateTime);
 
-            child.StateModel.Id.Should().Be(child.Id);
-            child.StateModel.Name.Should().Be("test child renamed");
-            var childStates = parent.StateModel.ChildStates.ToList();
-            childStates[0].Should().Be(child.StateModel);
+            child.State.Id.Should().Be(child.Id);
+            child.State.Name.Should().Be("test child renamed");
+            var childStates = parent.State.ChildStates.ToList();
+            childStates[0].Should().Be(child.State);
 			(childStates[0] as ChildState).Name.Should().Be("test child renamed");
 
 			var createdEvents = parent.AsIEventSourcedEntity().UncommittedEvents.ToList();
@@ -66,17 +66,17 @@ namespace SimpleEventSourcing.Tests
 			createdEvents[2].Should().Be(new ChildRenamed(parent.Id, child.Id, "test child renamed", dateTime));
 
 			var parent2 = new ParentEntity(createdEvents);
-			(parent2.StateModel.ChildStates.Single() as ChildState).Name.Should().Be("test child renamed");
+			(parent2.State.ChildStates.Single() as ChildState).Name.Should().Be("test child renamed");
 			var child2 = new ChildEntity(parent2, createdEvents.Where(x => x is IChildEntityEvent).Cast<IChildEntityEvent>());
 			(parent2 as IEventSourcedEntityInternal).RaiseEvent(new ChildRenamed(child.AggregateRootId, child.Id, "new new 3", dateTime));
 
-			parent.StateModel.StreamName.Should().Be(parent2.StateModel.StreamName);
-			parent.StateModel.Name.Should().Be(parent2.StateModel.Name);
+			parent.State.StreamName.Should().Be(parent2.State.StreamName);
+			parent.State.Name.Should().Be(parent2.State.Name);
 
-            child2.StateModel.Id.Should().Be(child.Id);
-            child2.StateModel.AggregateRootId.Should().Be(parent2.StateModel.Id);
+            child2.State.Id.Should().Be(child.Id);
+            child2.State.AggregateRootId.Should().Be(parent2.State.Id);
 			child2.Id.Should().Be(child.Id);
-			child2.StateModel.Name.Should().Be("new new 3");
+			child2.State.Name.Should().Be("new new 3");
 		}
 
 		[Test]
@@ -95,12 +95,12 @@ namespace SimpleEventSourcing.Tests
 			createdEvents[1].Should().Be(new ChildCreated(parent.Id, child.Id, "test child", dateTime));
 			createdEvents[2].Should().Be(new ChildRenamed(parent.Id, child.Id, "test child renamed", dateTime));
 
-            child.StateModel.Id.Should().Be(child.Id);
-            child.StateModel.Name.Should().Be("test child renamed");
+            child.State.Id.Should().Be(child.Id);
+            child.State.Name.Should().Be("test child renamed");
 
-            var childStates = parent.StateModel.ChildStates.ToList();
+            var childStates = parent.State.ChildStates.ToList();
 
-            childStates[0].Should().Be(child.StateModel);
+            childStates[0].Should().Be(child.State);
 			(childStates[0] as ChildState).Name.Should().Be("test child renamed");
 		}
 
@@ -121,10 +121,10 @@ namespace SimpleEventSourcing.Tests
 			parent.FixDateTime(dateTime);
 
 			var child = parent.GetChildEntity<ChildEntity>(childId);
-			child.StateModel.Name.Should().Be("test child renamed");
+			child.State.Name.Should().Be("test child renamed");
 
-            var childStates = parent.StateModel.ChildStates.ToList();
-            childStates[0].Should().Be(child.StateModel);
+            var childStates = parent.State.ChildStates.ToList();
+            childStates[0].Should().Be(child.State);
 			(childStates[0] as ChildState).Name.Should().Be("test child renamed");
 		}
 
@@ -148,10 +148,10 @@ namespace SimpleEventSourcing.Tests
             parent.FixDateTime(dateTime);
 
             var child = parent.GetChildEntity<ChildEntity>(childId);
-            child.StateModel.Name.Should().Be("test child renamed");
+            child.State.Name.Should().Be("test child renamed");
 
-            var childStates = parent.StateModel.ChildStates.ToList();
-            childStates[0].Should().Be(child.StateModel);
+            var childStates = parent.State.ChildStates.ToList();
+            childStates[0].Should().Be(child.State);
             (childStates[0] as ChildState).Name.Should().Be("test child renamed");
         }
 
@@ -175,7 +175,7 @@ namespace SimpleEventSourcing.Tests
             parent.FixDateTime(dateTime);
 
             var child = parent.GetChildEntity<ChildEntity>(childId);
-            child.GetHashCode().Should().Be(child.StateModel.GetHashCode());
+            child.GetHashCode().Should().Be(child.State.GetHashCode());
         }
 
         [Test]
@@ -198,7 +198,7 @@ namespace SimpleEventSourcing.Tests
             parent.FixDateTime(dateTime);
 
             var child = parent.GetChildEntity<ChildEntity>(childId);
-            child.Equals(child.StateModel).Should().Be(true);
+            child.Equals(child.State).Should().Be(true);
 
             var child2 = parent.GetChildEntity<ChildEntity>(childId);
 

@@ -30,10 +30,10 @@ namespace Shop.Core.Domain.ShoppingCarts
                 this,
                 shoppingCartArticleId,
                 article.Id,
-                article.StateModel.Articlenumber,
-                article.StateModel.Description,
-                article.StateModel.Price, quantity,
-                article.StateModel.Price * quantity,
+                article.State.Articlenumber,
+                article.State.Description,
+                article.State.Price, quantity,
+                article.State.Price * quantity,
                 DateTime.UtcNow);
 
             // or: RaiseEvent(new ShoppingCartArticlePlaced(aggregateRoot.Id, shoppingCartArticleId, articleId, articlenumber, description, price, quantity, total, dateTime ?? DateTime.UtcNow));

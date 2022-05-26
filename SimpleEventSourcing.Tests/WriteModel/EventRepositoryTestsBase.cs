@@ -52,7 +52,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             var loadedEntity = await target.GetAsync<TestEntity>(entity.Id);
             loadedEntity.Should().BeEquivalentTo(entity, x => x.ComparingByMembers<TestEntity>().ComparingByMembers<TestEntityState>().WithTracing());
-            loadedEntity.StateModel.Name.Should().Be("test");
+            loadedEntity.State.Name.Should().Be("test");
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             var loadedEntity = await target.GetAsync<TestEntity>(entity.Id);
             //loadedEntity.Should().BeEquivalentTo(entity, x => x.ComparingByMembers<TestEntity>().ComparingByMembers<TestEntityState>().WithTracing());
-            loadedEntity.StateModel.Children.First().Name.Should().Be("child new name4");
+            loadedEntity.State.Children.First().Name.Should().Be("child new name4");
         }
 
         class MagicConverter : JsonConverterFactory
@@ -216,9 +216,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             var binder = persistenceEngine.Serializer.Binder;
             var serializer = new JsonNetSerializer(binder);
-            var json = serializer.Serialize(entity.StateModel.GetType(), (object)entity.StateModel);
+            var json = serializer.Serialize(entity.State.GetType(), (object)entity.State);
             Console.WriteLine(json);
-            var deserialized = (TestEntityState)serializer.Deserialize(entity.StateModel.GetType(), json);
+            var deserialized = (TestEntityState)serializer.Deserialize(entity.State.GetType(), json);
 
             deserialized.Children.First().Name.Should().Be("child new name 100");
         }
@@ -237,9 +237,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
             var binder = persistenceEngine.Serializer.Binder;
             var serializer = new SystemTextJsonSerializer(binder);
 
-            var json = serializer.Serialize(entity.StateModel.GetType(), (object)entity.StateModel);
+            var json = serializer.Serialize(entity.State.GetType(), (object)entity.State);
             Console.WriteLine(json);
-            var deserialized = (TestEntityState)serializer.Deserialize(entity.StateModel.GetType(), json);
+            var deserialized = (TestEntityState)serializer.Deserialize(entity.State.GetType(), json);
 
             deserialized.Children.First().Name.Should().Be("child new name 100");
         }

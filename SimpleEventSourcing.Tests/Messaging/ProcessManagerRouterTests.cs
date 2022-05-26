@@ -59,7 +59,7 @@ namespace SimpleEventSourcing.Tests.Messaging
 
             target.Handle(testMessage);
 
-            processManager.StateModel.StreamName.Should().Be("processId");
+            processManager.State.StreamName.Should().Be("processId");
 
             A.CallTo(() => processManagerRepository.Get(typeof(TestProcessManager), "processId")).MustHaveHappenedOnceExactly();
         }
@@ -81,13 +81,13 @@ namespace SimpleEventSourcing.Tests.Messaging
 
             target.Handle(testMessage);
 
-            processManager.StateModel.StreamName.Should().Be("processId");
+            processManager.State.StreamName.Should().Be("processId");
 
             A.CallTo(() => processManagerRepository.Get(typeof(TestProcessManager), "processId")).MustHaveHappenedOnceExactly();
 
             target.Handle(new DummyMessage<TestEventEnd>("processId", new TestEventEnd("anotherId")));
 
-            processManager.StateModel.ProcessEnded.Should().Be(true);
+            processManager.State.ProcessEnded.Should().Be(true);
         }
 
         [Test]

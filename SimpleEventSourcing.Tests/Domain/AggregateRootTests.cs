@@ -16,8 +16,8 @@ namespace SimpleEventSourcing.Tests.Domain
 
             var parent = new ParentEntity(id, "test parent");
 
-            parent.StateModel.Id.Should().Be(id);
-            parent.StateModel.Name.Should().Be("test parent");
+            parent.State.Id.Should().Be(id);
+            parent.State.Name.Should().Be("test parent");
         }
 
         [Test]
@@ -26,8 +26,8 @@ namespace SimpleEventSourcing.Tests.Domain
             var id = ParentEntityId.Generate();
             var parent = new ParentEntity(new ParentCreated(id, "test parent", DateTime.UtcNow));
 
-            parent.StateModel.Id.Should().Be(id);
-            parent.StateModel.Name.Should().Be("test parent");
+            parent.State.Id.Should().Be(id);
+            parent.State.Name.Should().Be("test parent");
         }
 
         [Test]
@@ -38,8 +38,8 @@ namespace SimpleEventSourcing.Tests.Domain
 
             var parent = new ParentEntity(Enumerable.Empty<IEvent>(), state);
 
-            parent.StateModel.Id.Should().Be(id);
-            parent.StateModel.Name.Should().Be("test parent");
+            parent.State.Id.Should().Be(id);
+            parent.State.Name.Should().Be("test parent");
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace SimpleEventSourcing.Tests.Domain
 
             var parent = new ParentEntity(Enumerable.Empty<IEvent>(), state);
 
-            parent.GetHashCode().Should().Be(parent.StateModel.GetHashCode());
+            parent.GetHashCode().Should().Be(parent.State.GetHashCode());
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace SimpleEventSourcing.Tests.Domain
 
             var parent = new ParentEntity(Enumerable.Empty<IEvent>(), state);
 
-            parent.Equals(parent.StateModel).Should().Be(true);
+            parent.Equals(parent.State).Should().Be(true);
 
             var state2 = new ParentState().Apply(new ParentCreated(id, "test parent", DateTime.UtcNow));
             var parent2 = new ParentEntity(Enumerable.Empty<IEvent>(), state2);

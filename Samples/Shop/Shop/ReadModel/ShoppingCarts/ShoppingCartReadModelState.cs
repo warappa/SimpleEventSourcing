@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Shop.ReadModel.ShoppingCarts
 {
     [ControlsReadModels(new[] { typeof(ShoppingCartViewModel), typeof(ShoppingCartArticleViewModel) })]
-    public class ShoppingCartReadModelState : ReadRepositoryState<ShoppingCartReadModelState>
+    public class ShoppingCartReadModelState : ReadRepositoryProjector<ShoppingCartReadModelState>
     {
         public ShoppingCartReadModelState() { throw new NotSupportedException(); }
 
