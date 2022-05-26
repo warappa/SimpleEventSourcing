@@ -19,7 +19,7 @@ namespace Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles
 
         public void RemoveFromShoppingCart()
         {
-            RaiseEvent(new ShoppingCartArticleRemoved(aggregateRootId, Id, StateModel.ArticleId, StateModel.Articlenumber, StateModel.Description, StateModel.Price, StateModel.Quantity, StateModel.Total, DateTime.UtcNow));
+            RaiseEvent(new ShoppingCartArticleRemoved(aggregateRootId, Id, State.ArticleId, State.Articlenumber, State.Description, State.Price, State.Quantity, State.Total, DateTime.UtcNow));
         }
     }
 }

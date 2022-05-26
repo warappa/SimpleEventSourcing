@@ -40,7 +40,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
         {
             var hashCode = -1410341252;
             hashCode = hashCode * -1521134295 + base.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<Type[]>.Default.GetHashCode(((IState)this).PayloadTypes);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Type[]>.Default.GetHashCode(((IProjector)this).PayloadTypes);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(StreamName);
             hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<IChildEventSourcedState>>.Default.GetHashCode(ChildStates);
             hashCode = hashCode * -1521134295 + EqualityComparer<IDictionary<Type, Func<object, IChildEventSourcedState>>>.Default.GetHashCode(childStateCreationMap);

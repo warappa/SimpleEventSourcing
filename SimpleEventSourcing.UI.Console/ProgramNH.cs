@@ -210,8 +210,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             agg = await repo.GetAsync<TestAggregate>(agg.Id);
 
-            var projection = TestState.LoadState(agg.StateModel);
-            var projection2 = agg.StateModel;
+            var projection = TestState.LoadState(agg.State);
+            var projection2 = agg.State;
             Console.WriteLine("Name: " + projection.Name + ", " + projection.SomethingDone);
             Console.WriteLine("Name: " + projection2.Name + ", " + projection2.SomethingDone);
 
@@ -221,7 +221,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             bus.Send(new TypedMessage<TestAggregateRename>(Guid.NewGuid().ToString(), new TestAggregateRename { Id = agg.Id, Name = "Command Renamed Name" }, null, null, null, DateTime.UtcNow, 0));
 
             agg = await repo.GetAsync<TestAggregate>(agg.Id);
-            projection2 = agg.StateModel;
+            projection2 = agg.State;
 
             Console.WriteLine("Name: " + projection2.Name);
 
@@ -319,8 +319,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             var resetter = new StorageResetter(nHibernateResetConfigurationProvider);
             //resetter.Reset(new[] { typeof(PersistentEntity) });
 
-            var persistentState = new CatchUpProjector<PersistentState>(
-                new PersistentState(readRepository),
+            var persistentState = new CatchUpProjectionManager<PersistentProjector>(
+                new PersistentProjector(readRepository),
                 checkpointPersister,
                 persistenceEngine,
                 viewModelResetter,
@@ -336,14 +336,14 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             {
                 while (true)
                 {
-                    Console.WriteLine(persistentState.StateModel.Count);
+                    Console.WriteLine(persistentState.Projector.Count);
                     await Task.Delay(1000).ConfigureAwait(false);
                 }
             });
 
             Console.ReadKey();
             stopwatch.Stop();
-            Console.WriteLine($"persistent: {persistentState.StateModel.Count} msgs, {stopwatch.ElapsedMilliseconds}ms -> {persistentState.StateModel.Count / (stopwatch.ElapsedMilliseconds / 1000.0)}");
+            Console.WriteLine($"persistent: {persistentState.Projector.Count} msgs, {stopwatch.ElapsedMilliseconds}ms -> {persistentState.Projector.Count / (stopwatch.ElapsedMilliseconds / 1000.0)}");
             observer.Dispose();
             /*
             Console.WriteLine(live.StateModel.Name);

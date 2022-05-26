@@ -141,7 +141,7 @@ namespace Shop
             observerFactory = new PollingObserverFactory(engine);
 
             // nicht-persistente Projektion
-            var liveProjector = new CatchUpProjector<CustomerState>(
+            var liveProjector = new CatchUpProjectionManager<CustomerState>(
                 new CustomerState(),
                 checkpointPersister,
                 engine,
@@ -180,9 +180,9 @@ namespace Shop
             ICheckpointPersister checkpointPersister,
             IStorageResetter StorageResetter,
             IObserverFactory observerFactory)
-            where TReadModelState : ReadRepositoryState<TReadModelState>, new()
+            where TReadModelState : ReadRepositoryProjector<TReadModelState>, new()
         {
-            var projection = new CatchUpProjector<TReadModelState>(
+            var projection = new CatchUpProjectionManager<TReadModelState>(
                 readModelState,
                 checkpointPersister,
                 engine,

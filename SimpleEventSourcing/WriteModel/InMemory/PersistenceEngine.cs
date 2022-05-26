@@ -282,6 +282,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 
         private async Task SaveSnapshot(RawSnapshot snapshot)
         {
+            // TODO: implement lru
             if (snapshots.Contains(snapshot))
             {
                 return;

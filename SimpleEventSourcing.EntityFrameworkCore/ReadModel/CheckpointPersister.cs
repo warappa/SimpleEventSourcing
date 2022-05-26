@@ -53,7 +53,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                 {
                     checkpointInfo = new TCheckpointInfo
                     {
-                        StateModel = projectorIdentifier,
+                        ProjectorIdentifier = projectorIdentifier,
                         CheckpointNumber = checkpoint
                     };
                     set.Add(checkpointInfo);

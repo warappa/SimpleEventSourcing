@@ -85,7 +85,7 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
         }
 
         private async Task WaitForReadModelUpdate<TReadModelState>(int? checkpointNumber = null)
-            where TReadModelState : IAsyncState
+            where TReadModelState : IAsyncProjector
         {
             checkpointNumber ??= await repository.GetCurrentCheckpointNumberAsync();
             await checkpointPersister.WaitForCheckpointNumberAsync<TReadModelState>(checkpointNumber.Value);

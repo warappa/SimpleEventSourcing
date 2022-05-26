@@ -8,31 +8,31 @@ namespace SimpleEventSourcing.ReadModel
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class ControlsReadModelsAttribute : Attribute
     {
-        public Type[] ViewModelTypes { get; set; }
+        public Type[] ReadModelTypes { get; set; }
 
         private static Assembly[] knownAssemblies = Array.Empty<Assembly>();
-        private static Type[] stateTypes;
+        private static Type[] projectorTypes;
 
         public ControlsReadModelsAttribute(Type[] viewModelTypes)
         {
-            ViewModelTypes = viewModelTypes;
+            ReadModelTypes = viewModelTypes;
         }
 
         internal static void ClearKnownAssemblies()
         {
-            stateTypes = null;
+            projectorTypes = null;
             knownAssemblies = Array.Empty<Assembly>();
         }
 
-        public static Type[] GetControlledReadModels(Type stateModel)
+        public static Type[] GetControlledReadModels(Type projectorType)
         {
-            var attr = stateModel.GetTypeInfo().GetCustomAttribute<ControlsReadModelsAttribute>(false);
+            var attr = projectorType.GetTypeInfo().GetCustomAttribute<ControlsReadModelsAttribute>(false);
             if (attr == null)
             {
                 return Array.Empty<Type>();
             }
 
-            return attr.ViewModelTypes;
+            return attr.ReadModelTypes;
         }
 
         public static Type GetStateTypeForReadModel(Type readModel, params Assembly[] assemblies)
@@ -40,7 +40,7 @@ namespace SimpleEventSourcing.ReadModel
             if (assemblies.Except(knownAssemblies).Any())
             {
                 // if new assemblies are found, reset projectorTypes
-                stateTypes = null;
+                projectorTypes = null;
                 knownAssemblies = assemblies.Union(knownAssemblies).ToArray();
             }
 
@@ -49,14 +49,14 @@ namespace SimpleEventSourcing.ReadModel
                 throw new InvalidOperationException("No search assemblies provided and no previous known assemblies found!");
             }
 
-            stateTypes ??= knownAssemblies
+            projectorTypes ??= knownAssemblies
                     .Where(assembly => !assembly.IsDynamic)
                     .SelectMany(assembly => assembly.ExportedTypes)
-                    .Where(type => typeof(IState).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
+                    .Where(type => typeof(IProjector).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo()))
                     .ToArray()
                 ;
 
-            var found = stateTypes
+            var found = projectorTypes
                 .Where(projectorType =>
                     GetControlledReadModels(projectorType)
                         .Any(readModelType => readModelType == readModel))

@@ -11,6 +11,6 @@ namespace SimpleEventSourcing.Domain
         int Version { get; }
         object Id { get; }
         string StreamName { get; }
-        object UntypedStateModel { get; }
+        object UntypedState { get; }
     }
 }

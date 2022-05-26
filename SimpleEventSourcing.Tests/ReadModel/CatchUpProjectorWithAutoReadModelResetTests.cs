@@ -13,7 +13,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
     [TestFixture]
     public abstract class CatchUpProjectorWithAutoReadModelResetTests : TransactedTest
     {
-        private CatchUpProjector<CatchUpStateWithReadModel> target;
+        private CatchUpProjectionManager<CatchUpStateWithReadModel> target;
         protected TestsBaseConfig config;
         private IPersistenceEngine engine;
         private IReadRepository readRepository;
@@ -47,7 +47,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             readRepository = config.ReadModel.GetReadRepository();
 
-            target = new CatchUpProjector<CatchUpStateWithReadModel>(new CatchUpStateWithReadModel(readRepository), checkpointPersister, engine, readStorageResetter, observerFactory);
+            target = new CatchUpProjectionManager<CatchUpStateWithReadModel>(new CatchUpStateWithReadModel(readRepository), checkpointPersister, engine, readStorageResetter, observerFactory);
 
             await engine.InitializeAsync().ConfigureAwait(false);
 
@@ -122,7 +122,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
     }
 
     [ControlsReadModels(new[] { typeof(CatchUpReadModel) })]
-    public class CatchUpStateWithReadModel : ReadRepositoryState<CatchUpStateWithReadModel>
+    public class CatchUpStateWithReadModel : ReadRepositoryProjector<CatchUpStateWithReadModel>
     {
         private int idcounter = 0;
 

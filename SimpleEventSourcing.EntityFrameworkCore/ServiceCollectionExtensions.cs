@@ -71,10 +71,10 @@ namespace SimpleEventSourcing.EntityFrameworkCore
 
         public static IServiceCollection AddCatchupProjector<TState, TReadDbContext>(
             this IServiceCollection services, TState state)
-            where TState : class, IState, new()
+            where TState : class, IProjector, new()
             where TReadDbContext : DbContext
         {
-            services.AddScoped<IProjector<TState>>(
+            services.AddScoped<IProjectionManager<TState>>(
                 sp =>
                 {
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
@@ -82,20 +82,20 @@ namespace SimpleEventSourcing.EntityFrameworkCore
                     var storageResetter = sp.GetRequiredService<IReadModelStorageResetter>();
                     var observerFactory = sp.GetRequiredService<IObserverFactory>();
                     
-                    return new CatchUpProjector<TState>(state, checkpointPersister, engine, storageResetter, observerFactory);
+                    return new CatchUpProjectionManager<TState>(state, checkpointPersister, engine, storageResetter, observerFactory);
 
                 });
-            services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
+            services.AddScoped<IProjectionManager>(sp => sp.GetRequiredService<IProjectionManager<TState>>());
 
             return services;
         }
 
         public static IServiceCollection AddCatchupProjector<TState, TReadDbContext>(
             this IServiceCollection services, Func<IServiceProvider, TState> stateFactory)
-            where TState : class, IState, new()
+            where TState : class, IProjector, new()
             where TReadDbContext : DbContext
         {
-            services.AddScoped<IProjector<TState>>(
+            services.AddScoped<IProjectionManager<TState>>(
                 sp =>
                 {
                     var checkpointPersister = sp.GetRequiredService<ICheckpointPersister>();
@@ -103,10 +103,10 @@ namespace SimpleEventSourcing.EntityFrameworkCore
                     var storageResetter = sp.GetRequiredService<IReadModelStorageResetter>();
                     var observerFactory = sp.GetRequiredService<IObserverFactory>();
 
-                    return new CatchUpProjector<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, observerFactory);
+                    return new CatchUpProjectionManager<TState>(stateFactory(sp), checkpointPersister, engine, storageResetter, observerFactory);
 
                 });
-            services.AddScoped<IProjector>(sp => sp.GetRequiredService<IProjector<TState>>());
+            services.AddScoped<IProjectionManager>(sp => sp.GetRequiredService<IProjectionManager<TState>>());
 
             return services;
         }

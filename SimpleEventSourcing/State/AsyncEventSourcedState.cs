@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.State
 {
-    public abstract class AsyncEventSourcedState<TState> : IEventSourcedState<TState>
-        where TState : class, IEventSourcedState<TState>, new()
+    public abstract class AsyncEventSourcedProjector<TProjector> : IEventSourcedState<TProjector>
+        where TProjector : class, IEventSourcedState<TProjector>, new()
     {
 #pragma warning disable S2743 // Static fields should not be used in generic types
         public static Type[] HandledEventTypes { get; protected set; }
@@ -22,14 +22,14 @@ namespace SimpleEventSourcing.State
         private static readonly IDictionary<Type, MethodInfo> methodForMessageType = new Dictionary<Type, MethodInfo>();
 #pragma warning restore S2743 // Static fields should not be used in generic types
 
-        static AsyncEventSourcedState()
+        static AsyncEventSourcedProjector()
         {
             var handledEventTypes = new List<Type>();
             var handledMessageTypes = new List<Type>();
             var parameterTypes = new List<Type>();
             var payloadTypes = new List<Type>();
 
-            var type = typeof(TState).GenericTypeArguments.Length > 0 ? typeof(TState).GenericTypeArguments[0] : typeof(TState);
+            var type = typeof(TProjector).GenericTypeArguments.Length > 0 ? typeof(TProjector).GenericTypeArguments[0] : typeof(TProjector);
 
             var methodInfos = type
                 .GetRuntimeMethods()
@@ -85,15 +85,15 @@ namespace SimpleEventSourcing.State
                     .Contains(eventOrMessage.GetType());
         }
 
-        public virtual TState Apply(object @event)
+        public virtual TProjector Apply(object @event)
         {
             // default noop
-            return this as TState;
+            return this as TProjector;
         }
 
-        protected virtual async Task<TState> InvokeAssociatedApplyAsync(object eventOrMessage)
+        protected virtual async Task<TProjector> InvokeAssociatedApplyAsync(object eventOrMessage)
         {
-            var state = this as TState;
+            var state = this as TProjector;
 
             if (eventOrMessage is IMessage message)
             {
@@ -102,7 +102,7 @@ namespace SimpleEventSourcing.State
                     object result;
 
                     result = mi.Invoke(state, new[] { message });
-                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
+                    state = await StateExtensions.ExtractStateAsync<TProjector>(result) ?? state;
                 }
 
                 if (methodForEventType.TryGetValue(message.Body.GetType(), out mi))
@@ -110,7 +110,7 @@ namespace SimpleEventSourcing.State
                     object result;
 
                     result = mi.Invoke(state, new[] { message.Body });
-                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
+                    state = await StateExtensions.ExtractStateAsync<TProjector>(result) ?? state;
                 }
             }
             else
@@ -122,52 +122,52 @@ namespace SimpleEventSourcing.State
                     object result;
 
                     result = mi.Invoke(state, new[] { @event });
-                    state = await StateExtensions.ExtractStateAsync<TState>(result) ?? state;
+                    state = await StateExtensions.ExtractStateAsync<TProjector>(result) ?? state;
                 }
             }
 
             return state;
         }
 
-        public static async Task<TState> LoadStateAsync(TState state, IEnumerable<object> eventsOrMessages = null)
+        public static async Task<TProjector> LoadStateAsync(TProjector state, IEnumerable<object> eventsOrMessages = null)
         {
-            state = state ?? new TState();
+            state = state ?? new TProjector();
 
             eventsOrMessages = eventsOrMessages ?? Array.Empty<object>();
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
-                state = await state.ApplyAsync(eventOrMessage).ExtractStateAsync<TState>() ?? state;
+                state = await state.ApplyAsync(eventOrMessage).ExtractStateAsync<TProjector>() ?? state;
             }
 
             return state;
         }
 
-        public static async Task<TState> LoadStateAsync(IStateFactory stateFactory, IEnumerable<object> eventsOrMessages = null)
+        public static async Task<TProjector> LoadStateAsync(IStateFactory stateFactory, IEnumerable<object> eventsOrMessages = null)
         {
-            var state = stateFactory.CreateState<TState>();
+            var state = stateFactory.CreateState<TProjector>();
 
             eventsOrMessages = eventsOrMessages ?? Array.Empty<object>();
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
-                state = await state.ApplyAsync(eventOrMessage).ExtractStateAsync<TState>() ?? state;
+                state = await state.ApplyAsync(eventOrMessage).ExtractStateAsync<TProjector>() ?? state;
             }
 
             return state;
         }
 
-        async Task<object> IAsyncState.UntypedApplyAsync(object eventOrMessage)
+        async Task<object> IAsyncProjector.UntypedApplyAsync(object eventOrMessage)
         {
             return await InvokeAssociatedApplyAsync(eventOrMessage);
         }
 
-        async Task<TState> IStateInternal<TState>.ApplyAsync(object @event)
+        async Task<TProjector> IProjectorInternal<TProjector>.ApplyAsync(object @event)
         {
             return await InvokeAssociatedApplyAsync(@event);
         }
 
-        object IState.UntypedApply(object eventOrMessage)
+        object IProjector.UntypedApply(object eventOrMessage)
         {
             return InvokeAssociatedApplyAsync(eventOrMessage); // may return a Task/ValueTask
         }

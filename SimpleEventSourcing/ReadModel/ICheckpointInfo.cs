@@ -2,7 +2,8 @@
 {
     public interface ICheckpointInfo
     {
-        string StateModel { get; set; }
+        // TODO: Rename
+        string ProjectorIdentifier { get; set; }
         int CheckpointNumber { get; set; }
     }
 }

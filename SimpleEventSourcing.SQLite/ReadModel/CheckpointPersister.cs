@@ -52,7 +52,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             {
                 connection.RunInLock((SQLiteConnection conn) =>
                 {
-                    var cmd = conn.CreateCommand("UPDATE CheckpointInfos SET checkpointnumber=@p0 WHERE CheckpointInfos.statemodel=@p1");
+                    var cmd = conn.CreateCommand("UPDATE CheckpointInfos SET Checkpointnumber=@p0 WHERE CheckpointInfos.ProjectorIdentifier=@p1");
                     cmd.Bind("@p0", checkpoint);
                     cmd.Bind("@p1", projectorIdentifier);
 
@@ -60,7 +60,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
 
                     if (res == 0)
                     {
-                        cmd.CommandText = "INSERT INTO CheckpointInfos (statemodel, checkpointnumber) VALUES (@p0, @p1)";
+                        cmd.CommandText = "INSERT INTO CheckpointInfos (ProjectorIdentifier, Checkpointnumber) VALUES (@p0, @p1)";
                         cmd.Bind("@p0", projectorIdentifier);
                         cmd.Bind("@p1", checkpoint);
                         cmd.ExecuteNonQuery();

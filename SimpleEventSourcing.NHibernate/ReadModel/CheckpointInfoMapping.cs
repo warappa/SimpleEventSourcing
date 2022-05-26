@@ -9,7 +9,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
         {
             Table("CheckpointInfos");
 
-            Id(x => x.StateModel, c => c.Generator(Generators.Assigned));
+            Id(x => x.ProjectorIdentifier, c => c.Generator(Generators.Assigned));
             Property(x => x.CheckpointNumber);
         }
     }

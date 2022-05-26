@@ -1,22 +1,22 @@
 ﻿using SimpleEventSourcing.ReadModel;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.UI.ConsoleCore
+namespace SimpleEventSourcing.UI.ConsoleUI
 {
     [ControlsReadModels(new[] { typeof(PersistentEntity) })]
-    public class PersistentState : ReadRepositoryProjector<PersistentState>
+    public class PersistentProjector : ReadRepositoryProjector<PersistentProjector>
     {
         public string Name { get; protected set; }
         public string SomethingDone { get; protected set; }
         public int Count { get; set; }
 
-        public PersistentState() : base() { }
-        public PersistentState(IReadRepository readRepository)
+        public PersistentProjector() : base() { }
+        public PersistentProjector(IReadRepository readRepository)
             : base(readRepository)
         {
         }
 
-        public async ValueTask Apply(TestAggregateCreated @event)
+        public async Task Apply(TestAggregateCreated @event)
         {
             Count++;
             var s = new PersistentEntity
@@ -28,7 +28,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             await readRepository.InsertAsync(s).ConfigureAwait(false);
         }
 
-        public async ValueTask Apply(SomethingDone @event)
+        public async Task Apply(SomethingDone @event)
         {
             Count++;
             await UpdateByIdAsync<PersistentEntity, string>(@event.Id,
@@ -38,7 +38,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 }).ConfigureAwait(false);
         }
 
-        public async ValueTask Apply(Renamed @event)
+        public async Task Apply(Renamed @event)
         {
             Count++;
             await UpdateByIdAsync<PersistentEntity, string>(@event.Id,

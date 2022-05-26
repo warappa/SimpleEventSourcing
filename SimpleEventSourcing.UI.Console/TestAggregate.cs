@@ -18,17 +18,17 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
 		public void DoSomething(string bla)
 		{
-			RaiseEvent(new SomethingDone(stateModel.StreamName, bla));
+			RaiseEvent(new SomethingDone(state.StreamName, bla));
 		}
 
 		public void DoSomethingSpecial(string bla)
 		{
-			RaiseEvent(new SomethingSpecialDone(stateModel.StreamName, bla));
+			RaiseEvent(new SomethingSpecialDone(state.StreamName, bla));
 		}
 
 		internal void Rename(string name)
 		{
-			RaiseEvent(new Renamed(stateModel.StreamName, name));
+			RaiseEvent(new Renamed(state.StreamName, name));
 		}
 	}
 }

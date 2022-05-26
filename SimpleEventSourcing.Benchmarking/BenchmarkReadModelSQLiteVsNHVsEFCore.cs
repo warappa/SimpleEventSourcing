@@ -76,7 +76,7 @@ namespace SimpleEventSourcing.Benchmarking
         {
             var cp = await sqlitePersistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
 
-            using var sqlitePersistentState = sqliteServiceProvider.GetRequiredService<IProjector<PersistentState>>();
+            using var sqlitePersistentState = sqliteServiceProvider.GetRequiredService<IProjectionManager<PersistentState>>();
             await sqlitePersistentState.ResetAsync();
             await sqlitePersistentState.StartAsync();
 
@@ -89,7 +89,7 @@ namespace SimpleEventSourcing.Benchmarking
         {
             var cp = await efCorePersistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
 
-            using var efCorePersistentState = efCoreServiceProvider.GetRequiredService<IProjector<PersistentState>>();
+            using var efCorePersistentState = efCoreServiceProvider.GetRequiredService<IProjectionManager<PersistentState>>();
             await efCorePersistentState.ResetAsync();
             await efCorePersistentState.StartAsync();
 
@@ -102,7 +102,7 @@ namespace SimpleEventSourcing.Benchmarking
         {
             var cp = await nhPersistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
 
-            using var nhPersistentState = nhServiceProvider.GetRequiredService<IProjector<PersistentState>>();
+            using var nhPersistentState = nhServiceProvider.GetRequiredService<IProjectionManager<PersistentState>>();
             await nhPersistentState.ResetAsync();
             await nhPersistentState.StartAsync();
 

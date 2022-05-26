@@ -13,7 +13,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
     [TestFixture]
     public abstract class CatchUpProjectorTests : TransactedTest
     {
-        private CatchUpProjector<CatchUpState> target;
+        private CatchUpProjectionManager<CatchUpState> target;
         protected TestsBaseConfig config;
         private ICheckpointPersister checkpointPersister;
         private IPersistenceEngine engine;
@@ -52,7 +52,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             await engine.InitializeAsync().ConfigureAwait(false);
 
-            target = new CatchUpProjector<CatchUpState>(null, checkpointPersister, engine, storageResetter, observerFactory);
+            target = new CatchUpProjectionManager<CatchUpState>(null, checkpointPersister, engine, storageResetter, observerFactory);
 
             var readResetter = config.ReadModel.GetStorageResetter();
             await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetCheckpointInfoType() });
@@ -65,7 +65,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             var hasResults = await target.PollNowAsync();
             hasResults.Should().Be(false);
-            target.StateModel.Count.Should().Be(0);
+            target.Projector.Count.Should().Be(0);
 
             await SaveRawStreamEntryAsync();
 
@@ -76,7 +76,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
             var cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
             await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpState>(cp);
 
-            target.StateModel.Count.Should().Be(1);
+            target.Projector.Count.Should().Be(1);
 
             await SaveRawStreamEntryAsync();
 
@@ -86,7 +86,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
             cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
             await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpState>(cp);
 
-            target.StateModel.Count.Should().Be(2);
+            target.Projector.Count.Should().Be(2);
         }
 
         private async Task SaveRawStreamEntryAsync()
@@ -109,7 +109,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         public int Amount { get; set; }
     }
 
-    public class CatchUpState : AsyncEventSourcedState<CatchUpState>
+    public class CatchUpState : AsyncEventSourcedProjector<CatchUpState>
     {
         public int Count { get; set; }
 

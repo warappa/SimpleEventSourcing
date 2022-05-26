@@ -42,7 +42,7 @@ namespace Shop.Core.Domain.ShoppingCarts
                     {
                         var article = repository.GetAsync<Article>(articleId).Result;
 
-                        return article?.StateModel.Active == true;
+                        return article?.State.Active == true;
                     }, $"Article does not exist or is deactivated!!");
                 });
         }
@@ -56,16 +56,16 @@ namespace Shop.Core.Domain.ShoppingCarts
                     rule.AddCheck(ShoppingCartSpecifications.IsActive, "Shopping cart is deactivated!");
 
                     rule.AddCheck(wk =>
-                        wk.StateModel.ShoppingCartStatus == ShoppingCartStatus.Open,
+                        wk.State.ShoppingCartStatus == ShoppingCartStatus.Open,
                         "Cannot order shopping cart in current status!");
 
                     rule.AddCheck(wk =>
-                        wk.StateModel.ShoppingCartArticleStates.Any(x => x.Active),
+                        wk.State.ShoppingCartArticleStates.Any(x => x.Active),
                         "Shopping cart is empty!");
 
                     rule.AddCheck(shoppingCart =>
                     {
-                        foreach (var shoppingCartArticleState in shoppingCart.StateModel.ShoppingCartArticleStates.Where(x => x.Active))
+                        foreach (var shoppingCartArticleState in shoppingCart.State.ShoppingCartArticleStates.Where(x => x.Active))
                         {
                             var article = repository.GetAsync<Article>(shoppingCartArticleState.ArticleId)
                                 .Result;

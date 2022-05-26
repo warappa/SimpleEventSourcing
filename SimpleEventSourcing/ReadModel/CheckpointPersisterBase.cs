@@ -26,30 +26,30 @@ namespace SimpleEventSourcing.ReadModel
 
         public abstract Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint);
 
-        public async Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber, CancellationToken token = default)
-            where TReadModelState : IAsyncState
+        public async Task WaitForCheckpointNumberAsync<TReadModelProjector>(int checkpointNumber, CancellationToken token = default)
+            where TReadModelProjector : IAsyncProjector
         {
-            await WaitForCheckpointNumberAsync(typeof(TReadModelState), checkpointNumber, token).ConfigureAwait(false);
+            await WaitForCheckpointNumberAsync(typeof(TReadModelProjector), checkpointNumber, token).ConfigureAwait(false);
         }
 
-        public async Task WaitForCheckpointNumberAsync<TReadModelState>(int checkpointNumber, TimeSpan timeout, CancellationToken token = default)
-            where TReadModelState : IAsyncState
+        public async Task WaitForCheckpointNumberAsync<TReadModelProjector>(int checkpointNumber, TimeSpan timeout, CancellationToken token = default)
+            where TReadModelProjector : IAsyncProjector
         {
-            await WaitForCheckpointNumberAsync(typeof(TReadModelState), checkpointNumber, timeout, token).ConfigureAwait(false);
+            await WaitForCheckpointNumberAsync(typeof(TReadModelProjector), checkpointNumber, timeout, token).ConfigureAwait(false);
         }
 
-        public async Task WaitForCheckpointNumberAsync(Type readModelStateType, int checkpointNumber, CancellationToken token = default)
+        public async Task WaitForCheckpointNumberAsync(Type readModelProjectorType, int checkpointNumber, CancellationToken token = default)
         {
-            await WaitForCheckpointNumberInternalAsync(readModelStateType, checkpointNumber, null, token).ConfigureAwait(false);
+            await WaitForCheckpointNumberInternalAsync(readModelProjectorType, checkpointNumber, null, token).ConfigureAwait(false);
         }
-        public async Task WaitForCheckpointNumberAsync(Type readModelStateType, int checkpointNumber, TimeSpan timeout, CancellationToken token = default)
+        public async Task WaitForCheckpointNumberAsync(Type readModelProjectorType, int checkpointNumber, TimeSpan timeout, CancellationToken token = default)
         {
-            await WaitForCheckpointNumberInternalAsync(readModelStateType, checkpointNumber, timeout, token).ConfigureAwait(false);
+            await WaitForCheckpointNumberInternalAsync(readModelProjectorType, checkpointNumber, timeout, token).ConfigureAwait(false);
         }
 
-        internal async Task WaitForCheckpointNumberInternalAsync(Type readModelStateType, int checkpointNumber, TimeSpan? timeout = null, CancellationToken token = default)
+        internal async Task WaitForCheckpointNumberInternalAsync(Type readModelProjectorType, int checkpointNumber, TimeSpan? timeout = null, CancellationToken token = default)
         {
-            var projectorIdentifier = GetProjectorIdentifier(readModelStateType);
+            var projectorIdentifier = GetProjectorIdentifier(readModelProjectorType);
 
             //var retries = 0;
             var pow = 1;
@@ -79,7 +79,7 @@ namespace SimpleEventSourcing.ReadModel
                 //if (retries == 20)
                 if (DateTime.UtcNow > endTime)
                 {
-                    throw new OperationCanceledException($"Projector '{readModelStateType.FullName}' did not reach checkpoint '{checkpointNumber}'.");
+                    throw new OperationCanceledException($"Projector '{readModelProjectorType.FullName}' did not reach checkpoint '{checkpointNumber}'.");
                 }
 
                 //if (retries < 31)

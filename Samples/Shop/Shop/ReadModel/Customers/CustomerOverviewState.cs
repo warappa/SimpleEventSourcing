@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Shop.ReadModel.Customers
 {
     [ControlsReadModels(new[] { typeof(CustomerOverviewViewModel) })]
-    public class CustomerOverviewState : ReadRepositoryState<CustomerOverviewState>
+    public class CustomerOverviewState : ReadRepositoryProjector<CustomerOverviewState>
     {
         public CustomerOverviewState() { throw new NotSupportedException(); }
 

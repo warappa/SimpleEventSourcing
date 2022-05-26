@@ -67,7 +67,7 @@ namespace Shop.Web.UI.Controllers
         }
 
         private async Task WaitForReadModelUpdate<TReadModelState>(int? checkpointNumber = null)
-            where TReadModelState : IAsyncState
+            where TReadModelState : IAsyncProjector
         {
             checkpointNumber ??= await Program.repository.GetCurrentCheckpointNumberAsync();
             await Program.checkpointPersister.WaitForCheckpointNumberAsync<TReadModelState>(checkpointNumber.Value);

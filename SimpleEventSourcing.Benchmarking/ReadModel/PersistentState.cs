@@ -4,7 +4,7 @@ using SimpleEventSourcing.ReadModel;
 namespace SimpleEventSourcing.Benchmarking.ReadModel
 {
     [ControlsReadModels(new[] { typeof(PersistentEntity) })]
-    public class PersistentState : ReadRepositoryState<PersistentState>
+    public class PersistentState : ReadRepositoryProjector<PersistentState>
     {
         public string Name { get; protected set; }
         public string SomethingDone { get; protected set; }

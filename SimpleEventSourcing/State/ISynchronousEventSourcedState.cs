@@ -1,9 +1,9 @@
 ﻿namespace SimpleEventSourcing.State
 {
-    public interface ISynchronousEventSourcedState<TState> : ISynchronousStateInternal<TState>
+    public interface ISynchronousEventSourcedState<TState> : ISynchronousProjectorInternal<TState>
     {
     }
-    public interface IEventSourcedState<TState> : IStateInternal<TState>
+    public interface IEventSourcedState<TState> : IProjectorInternal<TState>
     {
     }
 }

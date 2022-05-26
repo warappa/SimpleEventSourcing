@@ -7,11 +7,11 @@ namespace SimpleEventSourcing.SQLite.ReadModel
     public class CheckpointInfo : IReadModel<string>, ICheckpointInfo
     {
         [PrimaryKey]
-        public string StateModel { get; set; }
+        public string ProjectorIdentifier { get; set; }
         [Indexed]
         public int CheckpointNumber { get; set; }
 
-        object IReadModelBase.Id { get { return StateModel; } set { StateModel = (string)value; } }
-        string IReadModel<string>.Id { get => StateModel; set => StateModel = value; }
+        object IReadModelBase.Id { get { return ProjectorIdentifier; } set { ProjectorIdentifier = (string)value; } }
+        string IReadModel<string>.Id { get => ProjectorIdentifier; set => ProjectorIdentifier = value; }
     }
 }

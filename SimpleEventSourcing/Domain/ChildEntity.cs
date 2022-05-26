@@ -11,7 +11,7 @@ namespace SimpleEventSourcing.Domain
     {
         public TChildKey Id { get; protected set; }
         public TAggregateRootkey AggregateRootId => aggregateRootId;
-        public TState StateModel => (TState)(aggregateRoot.UntypedStateModel as IAggregateRootState).ChildStates.First(x => x.Id?.Equals(Id) == true && x.GetType() == typeof(TState));
+        public TState State => (TState)(aggregateRoot.UntypedState as IAggregateRootState).ChildStates.First(x => x.Id?.Equals(Id) == true && x.GetType() == typeof(TState));
 
         protected TAggregateRootkey aggregateRootId { get => (TAggregateRootkey)aggregateRoot.Id; }
 
@@ -54,7 +54,7 @@ namespace SimpleEventSourcing.Domain
 
             if (obj is ChildEntity<TState, TAggregateRootkey, TChildKey> other)
             {
-                otherState = other.StateModel;
+                otherState = other.State;
             }
             else if (obj is TState state)
             {
@@ -66,12 +66,12 @@ namespace SimpleEventSourcing.Domain
                 return false;
             }
 
-            return StateModel.Equals(otherState);
+            return State.Equals(otherState);
         }
 
         public override int GetHashCode()
         {
-            return StateModel.GetHashCode();
+            return State.GetHashCode();
         }
 
         protected void RaiseEvent(IEvent @event)

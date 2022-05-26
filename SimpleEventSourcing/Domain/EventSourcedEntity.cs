@@ -8,19 +8,19 @@ namespace SimpleEventSourcing.Domain
     public class EventSourcedEntity<TState, TKey> : IEventSourcedEntity<TState, TKey>, IEventSourcedEntityInternal
         where TState : class, IStreamState<TState>, ISynchronousEventSourcedState<TState>, new()
     {
-        public TKey Id => (TKey)StateModel.ConvertFromStreamName(typeof(TKey), stateModel.StreamName);
-        public TState StateModel => SynchronousEventSourcedState<TState>.LoadState(stateModel);
+        public TKey Id => (TKey)State.ConvertFromStreamName(typeof(TKey), state.StreamName);
+        public TState State => SynchronousEventSourcedState<TState>.LoadState(state);
 
         protected int committedVersion;
         protected int version;
-        protected TState stateModel;
+        protected TState state;
         protected IList<IEvent> uncommittedEvents = new List<IEvent>();
 
         IEnumerable<IEvent> IEventSourcedEntity.UncommittedEvents => uncommittedEvents;
         int IEventSourcedEntity.Version => version;
         object IEventSourcedEntity.Id => Id;
-        object IEventSourcedEntity.UntypedStateModel => stateModel;
-        string IEventSourcedEntity.StreamName => StateModel.StreamName;
+        object IEventSourcedEntity.UntypedState => state;
+        string IEventSourcedEntity.StreamName => State.StreamName;
 
         public EventSourcedEntity(IEnumerable<IEvent> events, TState initialState = null, int version = 0)
         {
@@ -32,7 +32,7 @@ namespace SimpleEventSourcing.Domain
 
         public EventSourcedEntity(IEvent @event, TState initialState = null, int version = 0)
         {
-            stateModel = SynchronousEventSourcedState<TState>.LoadState(initialState, new[] { @event });
+            state = SynchronousEventSourcedState<TState>.LoadState(initialState, new[] { @event });
             uncommittedEvents.Add(@event);
 
             this.version = version + 1;
@@ -45,7 +45,7 @@ namespace SimpleEventSourcing.Domain
 
             if (obj is EventSourcedEntity<TState, TKey> other)
             {
-                otherState = other.StateModel;
+                otherState = other.State;
             }
             else if (obj is TState state)
             {
@@ -57,22 +57,22 @@ namespace SimpleEventSourcing.Domain
                 return false;
             }
 
-            return StateModel.Equals(otherState);
+            return State.Equals(otherState);
         }
 
         public override int GetHashCode()
         {
-            return StateModel.GetHashCode();
+            return State.GetHashCode();
         }
 
         protected void RaiseEvent(IEvent @event)
         {
-            stateModel = SynchronousEventSourcedState<TState>.LoadState(stateModel, new[] { @event });
+            state = SynchronousEventSourcedState<TState>.LoadState(state, new[] { @event });
 
             if (@event is IChildEntityEvent &&
                 this is IAggregateRoot)
             {
-                var aggregateRootState = stateModel as IAggregateRootStateInternal;
+                var aggregateRootState = state as IAggregateRootStateInternal;
                 var childEvent = @event as IChildEntityEvent;
 
                 var originalChildState = aggregateRootState.ChildStates.FirstOrDefault(x => x.Id.Equals(childEvent.Id));
@@ -103,7 +103,7 @@ namespace SimpleEventSourcing.Domain
 
         void IEventSourcedEntity<TState, TKey>.LoadEvents(IEnumerable<IEvent> events, TState initialState, int version)
         {
-            stateModel = SynchronousEventSourcedState<TState>.LoadState(initialState, events);
+            state = SynchronousEventSourcedState<TState>.LoadState(initialState, events);
 
             committedVersion = this.version = version + events.Count();
         }

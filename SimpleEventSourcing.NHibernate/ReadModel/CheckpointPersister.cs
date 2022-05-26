@@ -42,7 +42,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
             {
                 checkpointInfo = new TCheckpointInfo
                 {
-                    StateModel = projectorIdentifier,
+                    ProjectorIdentifier = projectorIdentifier,
                     CheckpointNumber = checkpoint
                 };
 
