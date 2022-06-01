@@ -4,4 +4,24 @@
     <LangVersion>latest</LangVersion>
     <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
   </PropertyGroup>
+
+  <PropertyGroup Label="NuGet Packaging">
+    <IsPackable>false</IsPackable>
+    <Version>3.0.0-pre1</Version>
+    <Authors>David Rettenbacher</Authors>
+    <Company />
+    <PackageProjectUrl>https://github.com/warappa/SimpleEventSourcing</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/warappa/SimpleEventSourcing</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>eventsourcing cqrs ddd</PackageTags>
+    <Copyright>David Rettenbacher</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>Library for simple event sourcing</Description>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="NuGet Debugging Support">
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
 </Project>

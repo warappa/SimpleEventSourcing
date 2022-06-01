@@ -2,17 +2,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;netcoreapp2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
-        <Version>2.0.0</Version>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Authors>David Rettenbacher</Authors>
-        <Company />
-        <PackageProjectUrl>https://github.com/warappa/SimpleEventSourcing</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/warappa/SimpleEventSourcing</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageTags>eventsourcing cqrs ddd</PackageTags>
-        <Copyright>David Rettenbacher</Copyright>
-        <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <Description>Library for simple event sourcing</Description>
+        <IsPackable>true</IsPackable>
         <NoWarn>$(NoWarn);SYSLIB0011</NoWarn>
     </PropertyGroup>
 
