@@ -315,16 +315,16 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             observer.Dispose();
             /*
-            Console.WriteLine(live.StateModel.Name);
-            Console.WriteLine(live.StateModel.SomethingDone);
-            Console.WriteLine(live.StateModel.StreamName);
+            Console.WriteLine(live.State.Name);
+            Console.WriteLine(live.State.SomethingDone);
+            Console.WriteLine(live.State.StreamName);
             
 
-            Console.WriteLine("a: " + live2.StateModel.ACount);
-            Console.WriteLine("e: " + live2.StateModel.ECount);
-            Console.WriteLine("i: " + live2.StateModel.ICount);
-            Console.WriteLine("o: " + live2.StateModel.OCount);
-            Console.WriteLine("u: " + live2.StateModel.UCount);
+            Console.WriteLine("a: " + live2.State.ACount);
+            Console.WriteLine("e: " + live2.State.ECount);
+            Console.WriteLine("i: " + live2.State.ICount);
+            Console.WriteLine("o: " + live2.State.OCount);
+            Console.WriteLine("u: " + live2.State.UCount);
             */
 
 

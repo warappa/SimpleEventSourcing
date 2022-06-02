@@ -10,9 +10,9 @@ namespace SimpleEventSourcing.ReadModel
         Task StartAsync();
     }
 
-    public interface IProjectionManager<TState> : IProjectionManager
-        where TState : class, IProjector, new()
+    public interface IProjectionManager<TProjector> : IProjectionManager
+        where TProjector : class, IProjector, new()
     {
-        TState Projector { get; }
+        TProjector Projector { get; }
     }
 }

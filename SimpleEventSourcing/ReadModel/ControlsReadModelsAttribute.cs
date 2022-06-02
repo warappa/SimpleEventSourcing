@@ -35,7 +35,7 @@ namespace SimpleEventSourcing.ReadModel
             return attr.ReadModelTypes;
         }
 
-        public static Type GetStateTypeForReadModel(Type readModel, params Assembly[] assemblies)
+        public static Type GetProjectorTypeForReadModel(Type readModel, params Assembly[] assemblies)
         {
             if (assemblies.Except(knownAssemblies).Any())
             {
@@ -64,7 +64,7 @@ namespace SimpleEventSourcing.ReadModel
 
             if (found.Count > 1)
             {
-                throw new InvalidOperationException($"Found multiple states claiming to control read model '{readModel.FullName}': {string.Join(", ", found.Select(x => x.FullName))}");
+                throw new InvalidOperationException($"Found multiple projectors claiming to control read model '{readModel.FullName}': {string.Join(", ", found.Select(x => x.FullName))}");
             }
 
             return found.SingleOrDefault();

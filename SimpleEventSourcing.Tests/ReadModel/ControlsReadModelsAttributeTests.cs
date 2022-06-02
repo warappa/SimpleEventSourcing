@@ -12,7 +12,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         [Test]
         public void GetStateTypeForReadModel_returns_state_in_provided_search_assemblies()
         {
-            var foundState = ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModel), typeof(State).Assembly);
+            var foundState = ControlsReadModelsAttribute.GetProjectorTypeForReadModel(typeof(StateReadModel), typeof(State).Assembly);
             foundState.Should().Be(typeof(State));
         }
 
@@ -21,7 +21,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             ControlsReadModelsAttribute.ClearKnownAssemblies();
 
-            ((Action)(() => ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModel)))).Should().Throw<InvalidOperationException>();
+            ((Action)(() => ControlsReadModelsAttribute.GetProjectorTypeForReadModel(typeof(StateReadModel)))).Should().Throw<InvalidOperationException>();
         }
 
         [Test]
@@ -29,10 +29,10 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             ControlsReadModelsAttribute.ClearKnownAssemblies();
 
-            ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModel), typeof(State).Assembly);
+            ControlsReadModelsAttribute.GetProjectorTypeForReadModel(typeof(StateReadModel), typeof(State).Assembly);
 
             Type foundState = null;
-            ((Action)(() => foundState = ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModel)))).Should().NotThrow<InvalidOperationException>();
+            ((Action)(() => foundState = ControlsReadModelsAttribute.GetProjectorTypeForReadModel(typeof(StateReadModel)))).Should().NotThrow<InvalidOperationException>();
 
             foundState.Should().Be(typeof(State));
         }
@@ -42,7 +42,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             ControlsReadModelsAttribute.ClearKnownAssemblies();
 
-            ((Action)(() => ControlsReadModelsAttribute.GetStateTypeForReadModel(typeof(StateReadModelClaimedByMultiple), typeof(State).Assembly))).Should().Throw<InvalidOperationException>();
+            ((Action)(() => ControlsReadModelsAttribute.GetProjectorTypeForReadModel(typeof(StateReadModelClaimedByMultiple), typeof(State).Assembly))).Should().Throw<InvalidOperationException>();
         }
 
         [ControlsReadModels(new[] { typeof(StateReadModel) })]
