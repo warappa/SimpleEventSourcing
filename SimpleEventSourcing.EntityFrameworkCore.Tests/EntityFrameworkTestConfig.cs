@@ -66,8 +66,11 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
                     // dbContext.Database.Connection.Close();
                 }
+            }
 
-                //GetStorageResetter().Reset(new[] { typeof(RawStreamEntry) });
+            public override async Task ResetAsync()
+            {
+                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) });
             }
 
             public override async Task CleanupWriteDatabaseAsync()
@@ -114,7 +117,14 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
             public override IStorageResetter GetStorageResetter()
             {
-                return new StorageResetter<WriteModelTestDbContext>(parent.GetDbContextScopeFactory(), new DbContextOptionsBuilder<WriteModelTestDbContext>().UseSqlServer(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("integrationtest")).ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning)).Options);
+                var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+                var connectionString = configuration.GetConnectionString("integrationtest");
+                var optionsBuilder = new DbContextOptionsBuilder<WriteModelTestDbContext>();
+                optionsBuilder.UseSqlServer(connectionString);
+                optionsBuilder.ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning));
+
+                var options = optionsBuilder.Options;
+                return new StorageResetter<WriteModelTestDbContext>(parent.GetDbContextScopeFactory(), options);
             }
 
 

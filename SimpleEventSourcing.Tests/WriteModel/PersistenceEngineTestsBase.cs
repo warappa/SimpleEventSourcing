@@ -72,7 +72,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
         {
             persistenceEngine = config.WriteModel.GetPersistenceEngine();
 
-            await persistenceEngine.InitializeAsync();
+            //await persistenceEngine.InitializeAsync();
+            await config.WriteModel.ResetAsync();
+            
 
             serializer = persistenceEngine.Serializer;
         }

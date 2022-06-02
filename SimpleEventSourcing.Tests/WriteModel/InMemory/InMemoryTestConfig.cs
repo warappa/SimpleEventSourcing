@@ -52,6 +52,11 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
 
             }
 
+            public override async Task ResetAsync()
+            {
+                persistenceEngine = null;
+            }
+
             public override async Task CleanupWriteDatabaseAsync()
             {
                 persistenceEngine = null;

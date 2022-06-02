@@ -62,16 +62,21 @@ namespace SimpleEventSourcing.EntityFramework.Tests
                 using (var dbContext = new EmptyDbContext("integrationtest"))
                 {
                     dbContext.Database.CreateIfNotExists();
-                    
+
                     dbContext.Database.Connection.Close();
                 }
 
-                //GetStorageResetter().Reset(new[] { typeof(RawStreamEntry) });
+                //await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) });
             }
 
             public override async Task CleanupWriteDatabaseAsync()
             {
-                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(WriteModel.RawSnapshot) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) }, true);
+            }
+
+            public override async Task ResetAsync()
+            {
+                await GetPersistenceEngine().InitializeAsync();
             }
 
             public static ISerializationBinder GetBinder()

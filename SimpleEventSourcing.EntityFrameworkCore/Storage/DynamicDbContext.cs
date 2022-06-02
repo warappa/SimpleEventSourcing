@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.EntityFrameworkCore.Internal;
 using System;
 using System.Data.Common;
@@ -24,21 +26,22 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 
         private static DbContextOptions BuildOptions(DbContextOptions options, DbConnection connection, IModel model)
         {
-            var builder = new DbContextOptionsBuilder<DynamicDbContext>()
-                .UseModel(model);
+            var builder = new DbContextOptionsBuilder<DynamicDbContext>();
 
-            var newExtension = options.Extensions.OfType<RelationalOptionsExtension>().First().WithConnection(connection).WithConnectionString(connection.ConnectionString);
-            var builderType = ((IDbContextOptionsBuilderInfrastructure)builder).GetType();
-            var actualExtensioType = newExtension.GetType();
-            var a = builderType.GetRuntimeMethods();
+            var builderType = builder.GetType();
             var miGeneric = builderType.GetRuntimeMethods().First(x => x.Name == "Microsoft.EntityFrameworkCore.Infrastructure.IDbContextOptionsBuilderInfrastructure.AddOrUpdateExtension");
-            var mi = miGeneric.MakeGenericMethod(actualExtensioType);
-            //((IDbContextOptionsBuilderInfrastructure)builder).AddOrUpdateExtension(newExtension);
-            mi.Invoke(builder, new[] { newExtension });
 
+            foreach (var ext in options.Extensions)
+            {
+                var mi = miGeneric.MakeGenericMethod(ext.GetType());
+                mi.Invoke(builder, new[] { ext });
+            }
+
+#if NET6_0_OR_GREATER
+            var a = model.GetRelationalModel();
+#endif
+            builder.UseModel(model);
             var newOptions = builder.Options;
-            var fieldInfos = newExtension.GetType().BaseType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-            fieldInfos.First(x => x.Name == "_connectionString").SetValue(newExtension, null);
             return newOptions;
         }
 
@@ -46,7 +49,22 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
         {
             var conventionSet = ConventionSet.CreateConventionSet(dbContext);
 
+#if NET6_0_OR_GREATER
+            var dbContextServices = dbContext.GetService<IDbContextServices>();
+
+            var modelCreationDependencies = dbContextServices.InternalServiceProvider.GetService<ModelCreationDependencies>();
+
+            var conventionSetBuilder = modelCreationDependencies.ConventionSetBuilder;
+            var modelConfigurationBuilder = new ModelConfigurationBuilder(conventionSetBuilder.CreateConventionSet());
+
+            //dbContext.ConfigureConventions(modelConfigurationBuilder);
+
+            var modelDependencies = modelCreationDependencies.ModelDependencies;
+
+            var modelBuilder = modelConfigurationBuilder.CreateModelBuilder(modelDependencies);
+#else
             var modelBuilder = new ModelBuilder(conventionSet);
+#endif
 
             foreach (var type in typesOfModel)
             {
@@ -58,18 +76,26 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                 if (!typesOfModel.Contains(t.ClrType))
                 {
                     // workaround return-type change between 3.1.11 and 5.0.2
-                    dynamic model = modelBuilder.Model;
-                    model.RemoveEntityType(t.ClrType);
+                    dynamic modelDynamic = modelBuilder.Model;
+                    modelDynamic.RemoveEntityType(t.ClrType);
                 }
             }
 
             modelBuilder.BuildIndexesFromAnnotations();
 
-            return new DynamicDbContext(
+            var model = modelBuilder.FinalizeModel();
+
+#if NET6_0_OR_GREATER
+            modelCreationDependencies.ModelRuntimeInitializer.Initialize(model, true);
+            modelCreationDependencies.ModelRuntimeInitializer.Initialize(model, false);
+#endif
+            var newDbContext = new DynamicDbContext(
                 options,
                 connection,
-                modelBuilder.Model.FinalizeModel()
+                model
                 );
+
+            return newDbContext;
         }
     }
 }

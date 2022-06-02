@@ -60,6 +60,10 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
             {
 
             }
+            public override async Task ResetAsync()
+            {
+                await GetPersistenceEngine().InitializeAsync();
+            }
 
             public void CloseConnection()
             {
