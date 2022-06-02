@@ -39,7 +39,7 @@ namespace SimpleEventSourcing.Benchmarking.EFCore
 
             if (readModel)
             {
-                services.AddCatchupProjector<PersistentState, ReadModelDbContext>(
+                services.AddCatchupProjector<PersistentState>(
                     sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
             }
 

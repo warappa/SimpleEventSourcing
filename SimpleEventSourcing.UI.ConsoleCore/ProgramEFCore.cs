@@ -29,8 +29,8 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 .AddSystemTextJson()
                 ;
 
-            services.AddCatchupProjector<TestState, ReadModelDbContext>(new TestState());
-            services.AddCatchupProjector<PersistentState, ReadModelDbContext>(
+            services.AddCatchupProjector(new TestState());
+            services.AddCatchupProjector(
                 sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
             
             services.AddBus();
