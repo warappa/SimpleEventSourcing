@@ -8,7 +8,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
 {
     public class TestEntityState : AggregateRootState<TestEntityState, string>
     {
-        public TestEntityState() : base()
+        static TestEntityState()
         {
             childStateCreationMap.Add(typeof(TestEntityChildAdded), evt => new TestChildEntityState((TestEntityChildAdded)evt));
         }

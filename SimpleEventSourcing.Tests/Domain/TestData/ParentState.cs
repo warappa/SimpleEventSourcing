@@ -8,7 +8,7 @@ namespace SimpleEventSourcing.Tests
     {
         public string Name { get; private set; }
 
-        public ParentState()
+        static ParentState()
         {
             childStateCreationMap.Add(typeof(ChildCreated), evt => new ChildState().Apply(evt as ChildCreated));
         }
