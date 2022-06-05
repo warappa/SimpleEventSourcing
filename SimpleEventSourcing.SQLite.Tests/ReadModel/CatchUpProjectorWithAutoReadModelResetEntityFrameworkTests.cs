@@ -18,9 +18,9 @@ namespace SimpleEventSourcing.SQLite.Tests
 
         protected override async Task BeforeFixtureTransactionAsync()
         {
-            await config.ReadModel.EnsureReadDatabaseAsync();
+            await config.ReadModel.EnsureReadDatabaseAsync().ConfigureAwait(false);
 
-            await base.BeforeFixtureTransactionAsync();
+            await base.BeforeFixtureTransactionAsync().ConfigureAwait(false);
 
             var connection = SQLiteConfig.ReadModel.GetConnection();
             var mapping = connection.GetMapping(typeof(CatchUpReadModel), CreateFlags.ImplicitPK);

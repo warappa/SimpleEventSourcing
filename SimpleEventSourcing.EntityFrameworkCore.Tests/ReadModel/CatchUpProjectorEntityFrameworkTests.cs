@@ -16,9 +16,9 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
         protected override async Task BeforeFixtureTransactionAsync()
         {
-            await efConfig.ReadModel.EnsureReadDatabaseAsync();
+            await efConfig.ReadModel.EnsureReadDatabaseAsync().ConfigureAwait(false);
 
-            await base.BeforeFixtureTransactionAsync(); 
+            await base.BeforeFixtureTransactionAsync().ConfigureAwait(false);
         }
     }
 }

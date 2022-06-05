@@ -53,7 +53,7 @@ namespace SimpleEventSourcing.ReadModel
         {
             var readModel = await readRepository.GetAsync<TReadModel>(id).ConfigureAwait(false);
 
-            await action(readModel);
+            await action(readModel).ConfigureAwait(false);
 
             await readRepository.UpdateAsync(readModel).ConfigureAwait(false);
         }
@@ -73,7 +73,7 @@ namespace SimpleEventSourcing.ReadModel
         {
             var readModel = await readRepository.GetByStreamnameAsync<TReadModel>(streamName).ConfigureAwait(false);
 
-            await action(readModel);
+            await action(readModel).ConfigureAwait(false);
 
             await readRepository.UpdateAsync(readModel).ConfigureAwait(false);
         }
@@ -100,7 +100,7 @@ namespace SimpleEventSourcing.ReadModel
 
             foreach (var readModel in readModels)
             {
-                await action(readModel);
+                await action(readModel).ConfigureAwait(false);
 
                 await readRepository.UpdateAsync(readModel).ConfigureAwait(false);
             }

@@ -19,15 +19,15 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
         protected override async Task BeforeFixtureTransactionAsync()
         {
-            await config.WriteModel.EnsureWriteDatabaseAsync();
-            await config.ReadModel.EnsureReadDatabaseAsync();
+            await config.WriteModel.EnsureWriteDatabaseAsync().ConfigureAwait(false);
+            await config.ReadModel.EnsureReadDatabaseAsync().ConfigureAwait(false);
         }
 
         [TearDown]
         public async Task TearDown()
         {
-            await config.ReadModel.CleanupReadDatabaseAsync();
-            await config.WriteModel.CleanupWriteDatabaseAsync();
+            await config.ReadModel.CleanupReadDatabaseAsync().ConfigureAwait(false);
+            await config.WriteModel.CleanupWriteDatabaseAsync().ConfigureAwait(false);
         }
 
         [SetUp]
@@ -36,13 +36,13 @@ namespace SimpleEventSourcing.ReadModel.Tests
             readRepository = config.ReadModel.GetReadRepository();
 
             var readResetter = config.ReadModel.GetStorageResetter();
-            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType() });
+            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType() }).ConfigureAwait(false);
         }
 
         [Test]
         public async Task Can_save_entity()
         {
-            await readRepository.InsertAsync(config.ReadModel.GetTestEntityA());
+            await readRepository.InsertAsync(config.ReadModel.GetTestEntityA()).ConfigureAwait(false);
         }
 
         [Test]
@@ -50,14 +50,14 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             var expected = config.ReadModel.GetTestEntityA();
             readRepository.InsertAsync(expected).Wait();
-            var loaded = (ITestEntityA)await readRepository.GetAsync(expected.GetType(), expected.Id);
+            var loaded = (ITestEntityA)await readRepository.GetAsync(expected.GetType(), expected.Id).ConfigureAwait(false);
 
             loaded.Value.Should().Be(expected.Value);
 
             loaded.Value = "test2";
             readRepository.UpdateAsync(loaded).Wait();
 
-            loaded = (ITestEntityA)await readRepository.GetAsync(expected.GetType(), expected.Id);
+            loaded = (ITestEntityA)await readRepository.GetAsync(expected.GetType(), expected.Id).ConfigureAwait(false);
             loaded.Value.Should().Be("test2");
         }
 
@@ -89,7 +89,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             readRepository.InsertAsync(expected).Wait();
 
-            var loaded = (ITestEntityA)await readRepository.GetByStreamnameAsync(expected.GetType(), expected.Streamname);
+            var loaded = (ITestEntityA)await readRepository.GetByStreamnameAsync(expected.GetType(), expected.Streamname).ConfigureAwait(false);
 
             loaded.Id.Should().Be(expected.Id);
 

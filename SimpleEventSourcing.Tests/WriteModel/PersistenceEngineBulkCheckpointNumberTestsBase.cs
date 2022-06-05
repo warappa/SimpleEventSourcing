@@ -24,7 +24,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
         {
             EarlySetup();
 
-            await InitializeAsync();
+            await InitializeAsync().ConfigureAwait(false);
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 entries.Add(entry);
             }
 
-            await persistenceEngine.SaveStreamEntriesAsync(entries);
+            await persistenceEngine.SaveStreamEntriesAsync(entries).ConfigureAwait(false);
 
             // patch for comparison
             for (var i = 0; i < sampleSize; i++)
@@ -49,7 +49,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
             }
 
             var loaded = await persistenceEngine.LoadStreamEntriesAsync()
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             var actual = loaded.Select(x => x.StreamRevision).ToArray();
             var expected = entries.Select(x => x.StreamRevision).ToArray();
@@ -74,7 +75,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
             var stopwatch =new Stopwatch();
             
             stopwatch.Start();
-            await persistenceEngine.SaveStreamEntriesAsync(entries);
+            await persistenceEngine.SaveStreamEntriesAsync(entries).ConfigureAwait(false);
             stopwatch.Stop();
             Console.WriteLine($"\nInsert Duration: {stopwatch.ElapsedMilliseconds}ms\n");
             
@@ -85,7 +86,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
             }
 
             var loaded = await persistenceEngine.LoadStreamEntriesAsync()
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             var actual = loaded.Select(x => x.CheckpointNumber).ToArray();
             var expected = entries.Select(x => x.CheckpointNumber).ToArray();

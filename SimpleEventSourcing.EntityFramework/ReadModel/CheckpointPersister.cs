@@ -25,7 +25,8 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
                 {
                     checkpointInfo = await scope.DbContexts.Get<TDbContext>()
                         .Set<TCheckpointInfo>()
-                        .FindAsync(projectorIdentifier);
+                        .FindAsync(projectorIdentifier)
+                        .ConfigureAwait(false);
                 }
                 catch
                 {
@@ -47,7 +48,7 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
             {
                 var set = scope.DbContexts.Get<TDbContext>()
                     .Set<TCheckpointInfo>();
-                var checkpointInfo = await set.FindAsync(projectorIdentifier);
+                var checkpointInfo = await set.FindAsync(projectorIdentifier).ConfigureAwait(false);
 
                 if (checkpointInfo == null)
                 {
@@ -63,7 +64,7 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
                     checkpointInfo.CheckpointNumber = checkpoint;
                 }
 
-                await scope.SaveChangesAsync();
+                await scope.SaveChangesAsync().ConfigureAwait(false);
             }
         }
     }

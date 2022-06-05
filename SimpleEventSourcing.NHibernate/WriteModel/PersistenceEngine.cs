@@ -111,7 +111,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
                         query = query.Take(nextBatchSize);
 
-                        rawStreamEntries = await query.ToListAsync();
+                        rawStreamEntries = await query.ToListAsync().ConfigureAwait(false);
                     }
                     finally
                     {
@@ -177,7 +177,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             if (!ascending &&
                 maxCheckpointNumber == int.MaxValue)
             {
-                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
+                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
             }
 
             while (true)
@@ -222,7 +222,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                     try
                     {
                         // TODO: utilize async enumerable
-                        rawStreamEntries = await query.ToListAsync();
+                        rawStreamEntries = await query.ToListAsync().ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {
@@ -281,11 +281,11 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
                 foreach (var rawStreamEntry in entries)
                 {
-                    //await statelessSession.InsertAsync(rawStreamEntry); // Async variant has some serious performance penalties (20% slower!)
+                    //await statelessSession.InsertAsync(rawStreamEntry).ConfigureAwait(false); // Async variant has some serious performance penalties (20% slower!)
                     statelessSession.Insert(rawStreamEntry);
                 }
 
-                result = await GetCurrentEventStoreCheckpointNumberInternalAsync(statelessSession);
+                result = await GetCurrentEventStoreCheckpointNumberInternalAsync(statelessSession).ConfigureAwait(false);
 
                 transaction.Commit();
             }
@@ -299,7 +299,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                 .Select(x => x.CheckpointNumber)
                 .OrderByDescending(x => x)
                 .Take(1)
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             if (list.Count == 0)
             {
@@ -318,7 +319,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             {
                 try
                 {
-                    result = await GetCurrentEventStoreCheckpointNumberInternalAsync(statelessSession);
+                    result = await GetCurrentEventStoreCheckpointNumberInternalAsync(statelessSession).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {

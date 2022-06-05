@@ -89,7 +89,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
         private static async Task Main(string[] args)
         {
-            await Program.Run(BuildNHibernate);
+            await Program.Run(BuildNHibernate).ConfigureAwait(false);
         }
     }
 }

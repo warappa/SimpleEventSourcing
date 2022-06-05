@@ -142,7 +142,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
             var getByStreamnameAsyncMethod = getByStreamnameAsyncMethodGeneric.MakeGenericMethod(entityType);
 
             var task = (Task)(getByStreamnameAsyncMethod.Invoke(this, new object[] { streamname }));
-            await task;
+            await task.ConfigureAwait(false);
 
             return ((dynamic)task).Result;
         }

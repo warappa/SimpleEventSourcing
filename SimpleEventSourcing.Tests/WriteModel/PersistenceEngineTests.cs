@@ -19,7 +19,7 @@ namespace SimpleEventSourcing.Tests
 
         protected override async Task BeforeFixtureTransactionAsync()
         {
-            await config.WriteModel.EnsureWriteDatabaseAsync();
+            await config.WriteModel.EnsureWriteDatabaseAsync().ConfigureAwait(false);
         }
 
         [SetUp]
@@ -33,20 +33,20 @@ namespace SimpleEventSourcing.Tests
         [TearDown]
         public async Task Cleanup()
         {
-            await config.WriteModel.CleanupWriteDatabaseAsync();
+            await config.WriteModel.CleanupWriteDatabaseAsync().ConfigureAwait(false);
         }
 
 
         [Test]
         public async Task Can_save_stream_entry()
         {
-            var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
             number.Should().Be(CheckpointDefaults.NoCheckpoint);
 
             var rawStreamEntry = config.WriteModel.GenerateRawStreamEntry();
-            await persistenceEngine.SaveStreamEntriesAsync(new[] { rawStreamEntry });
+            await persistenceEngine.SaveStreamEntriesAsync(new[] { rawStreamEntry }).ConfigureAwait(false);
 
-            number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
             number.Should().BeGreaterThan(CheckpointDefaults.NoCheckpoint);
         }
 
@@ -55,12 +55,13 @@ namespace SimpleEventSourcing.Tests
         {
             var expected = config.WriteModel.GenerateRawStreamEntry();
 
-            var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
             number.Should().Be(CheckpointDefaults.NoCheckpoint) ;
 
-            await persistenceEngine.SaveStreamEntriesAsync(new[] { expected }); 
+            await persistenceEngine.SaveStreamEntriesAsync(new[] { expected }).ConfigureAwait(false);
             var streamEntry = await persistenceEngine.LoadStreamEntriesAsync()
-                .FirstAsync();
+                .FirstAsync()
+                .ConfigureAwait(false);
             streamEntry.Payload.Should().Be(expected.Payload);
         }
 
@@ -69,13 +70,14 @@ namespace SimpleEventSourcing.Tests
         {
             var expected = config.WriteModel.GenerateRawStreamEntry();
 
-            var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
             number.Should().Be(CheckpointDefaults.NoCheckpoint);
 
-            await persistenceEngine.SaveStreamEntriesAsync(new[] { expected }); 
+            await persistenceEngine.SaveStreamEntriesAsync(new[] { expected }).ConfigureAwait(false);
 
             var streamEntry = await persistenceEngine.LoadStreamEntriesByStreamAsync(config.RawStreamEntryStreamname)
-                .FirstAsync();
+                .FirstAsync()
+                .ConfigureAwait(false);
 
             streamEntry.Payload.Should().Be(expected.Payload);
         }

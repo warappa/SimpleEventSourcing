@@ -162,7 +162,7 @@ streamRevision >= @minRevision AND streamRevision <= @maxRevision ");
             if (!ascending &&
                 maxCheckpointNumber == int.MaxValue)
             {
-                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
+                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
             }
 
             while (true)
@@ -255,7 +255,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             using (connection.Lock())
             {
                 connection.InsertAll(entries);
-                result = await GetCurrentEventStoreCheckpointNumberInternalAsync(connection);
+                result = await GetCurrentEventStoreCheckpointNumberInternalAsync(connection).ConfigureAwait(false);
             }
 
             return result;
@@ -278,7 +278,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             var connection = connectionFactory();
             using (connection.Lock())
             {
-                return await GetCurrentEventStoreCheckpointNumberInternalAsync(connection);
+                return await GetCurrentEventStoreCheckpointNumberInternalAsync(connection).ConfigureAwait(false);
             }
         }
 

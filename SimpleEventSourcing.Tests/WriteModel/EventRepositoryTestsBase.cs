@@ -48,9 +48,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
             var entity = new TestEntity(Guid.NewGuid().ToString(), "test");
             var child = entity.AddChild(Guid.NewGuid().ToString(), "child");
             child.Rename("child new name");
-            await target.SaveAsync(entity);
+            await target.SaveAsync(entity).ConfigureAwait(false);
 
-            var loadedEntity = await target.GetAsync<TestEntity>(entity.Id);
+            var loadedEntity = await target.GetAsync<TestEntity>(entity.Id).ConfigureAwait(false);
             loadedEntity.Should().BeEquivalentTo(entity, x => x.ComparingByMembers<TestEntity>().ComparingByMembers<TestEntityState>().WithTracing());
             loadedEntity.State.Name.Should().Be("test");
         }
@@ -64,9 +64,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
             child.Rename("child new name2");
             child.Rename("child new name3");
             child.Rename("child new name4");
-            await target.SaveAsync(entity);
+            await target.SaveAsync(entity).ConfigureAwait(false);
 
-            var loadedEntity = await target.GetAsync<TestEntity>(entity.Id);
+            var loadedEntity = await target.GetAsync<TestEntity>(entity.Id).ConfigureAwait(false);
             //loadedEntity.Should().BeEquivalentTo(entity, x => x.ComparingByMembers<TestEntity>().ComparingByMembers<TestEntityState>().WithTracing());
             loadedEntity.State.Children.First().Name.Should().Be("child new name4");
         }

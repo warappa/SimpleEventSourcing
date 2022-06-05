@@ -15,9 +15,9 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
 
         protected override async Task BeforeFixtureTransactionAsync()
         {
-            await config.ReadModel.CleanupReadDatabaseAsync();
+            await config.ReadModel.CleanupReadDatabaseAsync().ConfigureAwait(false);
 
-            await base.BeforeFixtureTransactionAsync();
+            await base.BeforeFixtureTransactionAsync().ConfigureAwait(false);
         }
     }
 }

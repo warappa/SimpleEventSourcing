@@ -40,7 +40,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             var persistentState = serviceProvider.GetRequiredService<IProjectionManager<PersistentState>>();
             var viewModelResetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
             
-            await persistenceEngine.InitializeAsync();
+            await persistenceEngine.InitializeAsync().ConfigureAwait(false);
 
             // let bus subscribe to repository and publish its committed events
             repo.SubscribeTo<IMessage<IEvent>>()
@@ -93,9 +93,9 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             bus.SubscribeTo<IMessage<TestAggregateDoSomething>>()
                 .Select(command => Observable.FromAsync(async () =>
                 {
-                    var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id);
+                    var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id).ConfigureAwait(false);
                     aggregate.DoSomething(command.Body.Foo);
-                    await repo.SaveAsync(aggregate);
+                    await repo.SaveAsync(aggregate).ConfigureAwait(false);
                 }))
                 .Concat()
                 .Subscribe();
@@ -119,9 +119,9 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             agg.Rename("Hi!");
 
             
-            await repo.SaveAsync(agg);
+            await repo.SaveAsync(agg).ConfigureAwait(false);
 
-            agg = await repo.GetAsync<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id).ConfigureAwait(false);
 
             var projection = TestState.LoadState(agg.State);
             var projection2 = agg.State;
@@ -133,7 +133,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             bus.Send(new TypedMessage<TestAggregateDoSomething>(Guid.NewGuid().ToString(), new TestAggregateDoSomething { Id = agg.Id, Foo = "Command DoSomething Bla" }, null, null, null, DateTime.UtcNow, 0));
             bus.Send(new TypedMessage<TestAggregateRename>(Guid.NewGuid().ToString(), new TestAggregateRename { Id = agg.Id, Name = "Command Renamed Name" }, null, null, null, DateTime.UtcNow, 0));
 
-            agg = await repo.GetAsync<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id).ConfigureAwait(false);
             projection2 = agg.State;
 
             Console.WriteLine("Name: " + projection2.Name);
@@ -144,13 +144,13 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             var engine = persistenceEngine;
 
-            var observer = await observerFactory.CreateObserverAsync(0);
+            var observer = await observerFactory.CreateObserverAsync(0).ConfigureAwait(false);
             observer.Subscribe((s) =>
             {
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);
             });
 
-            await observer.StartAsync();
+            await observer.StartAsync().ConfigureAwait(false);
 
             string entityId = null;
 
@@ -170,11 +170,11 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 list.Add(entity);
             }
 
-            await repository.SaveAsync(list);
+            await repository.SaveAsync(list).ConfigureAwait(false);
 
             list.Clear();
 
-            var loadedEntity = await repository.GetAsync<TestAggregate>(entityId);
+            var loadedEntity = await repository.GetAsync<TestAggregate>(entityId).ConfigureAwait(false);
 
             //Console.WriteLine("Commits: " + await engine.LoadStreamEntriesAsync().CountAsync());
             //Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(payloadTypes: new[] { typeof(Renamed) })
@@ -194,7 +194,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 typeof(NHCheckpointInfo) :
                 typeof(SQLiteCheckpointInfo);
 
-            await viewModelResetter.ResetAsync(new[] { checkpointInfotype, typeof(PersistentEntity) });
+            await viewModelResetter.ResetAsync(new[] { checkpointInfotype, typeof(PersistentEntity) }).ConfigureAwait(false);
 
             WaitForInput();
 
@@ -222,13 +222,13 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             //resetter.Reset(new[] { typeof(MyPersistentEntity) });
             */
 
-            var initialCheckpointNumber = await checkpointPersister.LoadLastCheckpointAsync(nameof(PersistentState));
+            var initialCheckpointNumber = await checkpointPersister.LoadLastCheckpointAsync(nameof(PersistentState)).ConfigureAwait(false);
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            await persistentState.ResetAsync();
-            await persistentState.StartAsync();
+            await persistentState.ResetAsync().ConfigureAwait(false);
+            await persistentState.StartAsync().ConfigureAwait(false);
 
             _ = Task.Run(async () =>
             {
@@ -239,17 +239,17 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 }
             });
 
-            var endCP = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            var endCP = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
             while (true)
             {
-                var cp = await checkpointPersister.LoadLastCheckpointAsync(nameof(PersistentState));
+                var cp = await checkpointPersister.LoadLastCheckpointAsync(nameof(PersistentState)).ConfigureAwait(false);
 
                 if (cp == endCP)
                 {
                     break;
                 }
 
-                await Task.Delay(333);
+                await Task.Delay(333).ConfigureAwait(false);
             }
 
             stopwatch.Stop();

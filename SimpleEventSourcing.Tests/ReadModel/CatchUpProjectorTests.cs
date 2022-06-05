@@ -31,7 +31,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             engine = config.WriteModel.GetPersistenceEngine();
 
-            await base.BeforeFixtureTransactionAsync();
+            await base.BeforeFixtureTransactionAsync().ConfigureAwait(false);
         }
 
         [TearDown]
@@ -39,8 +39,8 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             target?.Dispose();
 
-            await config.ReadModel.CleanupReadDatabaseAsync();
-            await config.WriteModel.CleanupWriteDatabaseAsync();
+            await config.ReadModel.CleanupReadDatabaseAsync().ConfigureAwait(false);
+            await config.WriteModel.CleanupWriteDatabaseAsync().ConfigureAwait(false);
         }
 
         [SetUp]
@@ -55,36 +55,36 @@ namespace SimpleEventSourcing.ReadModel.Tests
             target = new CatchUpProjectionManager<CatchUpState>(null, checkpointPersister, engine, storageResetter, observerFactory);
 
             var readResetter = config.ReadModel.GetStorageResetter();
-            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetCheckpointInfoType() });
+            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetCheckpointInfoType() }).ConfigureAwait(false);
         }
 
         [Test]
         public async Task Can_poll()
         {
-            await target.StartAsync();
+            await target.StartAsync().ConfigureAwait(false);
 
-            var hasResults = await target.PollNowAsync();
+            var hasResults = await target.PollNowAsync().ConfigureAwait(false);
             hasResults.Should().Be(false);
             target.Projector.Count.Should().Be(0);
 
-            await SaveRawStreamEntryAsync();
+            await SaveRawStreamEntryAsync().ConfigureAwait(false);
 
-            hasResults = await target.PollNowAsync();
+            hasResults = await target.PollNowAsync().ConfigureAwait(false);
 
             hasResults.Should().Be(true);
 
-            var cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
-            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpState>(cp);
+            var cp = await engine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
+            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpState>(cp).ConfigureAwait(false);
 
             target.Projector.Count.Should().Be(1);
 
-            await SaveRawStreamEntryAsync();
+            await SaveRawStreamEntryAsync().ConfigureAwait(false);
 
-            hasResults = await target.PollNowAsync();
+            hasResults = await target.PollNowAsync().ConfigureAwait(false);
             hasResults.Should().Be(true);
 
-            cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
-            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpState>(cp);
+            cp = await engine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
+            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpState>(cp).ConfigureAwait(false);
 
             target.Projector.Count.Should().Be(2);
         }
@@ -100,7 +100,8 @@ namespace SimpleEventSourcing.ReadModel.Tests
                         Guid.NewGuid().ToString(),
                         1,
                         new TestCatchUpEvent().ToTypedMessage(Guid.NewGuid().ToString(), null, null, null, DateTime.UtcNow, 0))
-                });
+                })
+                .ConfigureAwait(false);
         }
     }
 

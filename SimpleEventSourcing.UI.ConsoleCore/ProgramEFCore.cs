@@ -52,7 +52,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
         private static async Task Main(string[] args)
         {
-            await Program.Run(BuildEntityFrameworkCore);
+            await Program.Run(BuildEntityFrameworkCore).ConfigureAwait(false);
         }
     }
 }

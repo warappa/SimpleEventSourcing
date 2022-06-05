@@ -28,14 +28,14 @@ namespace SimpleEventSourcing.ReadModel.Tests
         {
             engine = config.WriteModel.GetPersistenceEngine();
 
-            await base.BeforeFixtureTransactionAsync();
+            await base.BeforeFixtureTransactionAsync().ConfigureAwait(false);
         }
 
         [TearDown]
         public async Task TearDown()
         {
-            await config.ReadModel.CleanupReadDatabaseAsync();
-            await config.WriteModel.CleanupWriteDatabaseAsync();
+            await config.ReadModel.CleanupReadDatabaseAsync().ConfigureAwait(false);
+            await config.WriteModel.CleanupWriteDatabaseAsync().ConfigureAwait(false);
         }
 
         [SetUp]
@@ -52,7 +52,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
             await engine.InitializeAsync().ConfigureAwait(false);
 
             var readResetter = config.ReadModel.GetStorageResetter();
-            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetCheckpointInfoType() });
+            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetCheckpointInfoType() }).ConfigureAwait(false);
         }
 
         private async Task<CatchUpReadModel> Load()
@@ -66,33 +66,33 @@ namespace SimpleEventSourcing.ReadModel.Tests
         [Test]
         public async Task Resets_ReadModel_automatically()
         {
-            await target.StartAsync();
+            await target.StartAsync().ConfigureAwait(false);
 
-            var hasResults = await target.PollNowAsync();
+            var hasResults = await target.PollNowAsync().ConfigureAwait(false);
             hasResults.Should().Be(false);
 
             var model = await Load().ConfigureAwait(false);
             model.Should().Be(null);
 
-            await SaveRawStreamEntryAsync();
+            await SaveRawStreamEntryAsync().ConfigureAwait(false);
 
-            hasResults = await target.PollNowAsync();
+            hasResults = await target.PollNowAsync().ConfigureAwait(false);
             hasResults.Should().Be(true);
 
-            var cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
-            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpStateWithReadModel>(cp);
+            var cp = await engine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
+            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpStateWithReadModel>(cp).ConfigureAwait(false);
             
             model = await Load().ConfigureAwait(false);
             model.Should().NotBeNull();
             model.Count.Should().Be(1);
 
-            await SaveRawStreamEntryAsync();
+            await SaveRawStreamEntryAsync().ConfigureAwait(false);
 
-            hasResults = await target.PollNowAsync();
+            hasResults = await target.PollNowAsync().ConfigureAwait(false);
             hasResults.Should().Be(true);
 
-            cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
-            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpStateWithReadModel>(cp);
+            cp = await engine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
+            await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpStateWithReadModel>(cp).ConfigureAwait(false);
 
             model = await Load().ConfigureAwait(false);
             model.Count.Should().Be(2);
@@ -109,7 +109,8 @@ namespace SimpleEventSourcing.ReadModel.Tests
                         Guid.NewGuid().ToString(),
                         1,
                         new TestCatchUpEvent().ToTypedMessage(Guid.NewGuid().ToString(), null, null, null, DateTime.UtcNow, 0))
-                });
+                })
+                .ConfigureAwait(false);
         }
     }
 
@@ -144,7 +145,8 @@ namespace SimpleEventSourcing.ReadModel.Tests
             {
                 found = true;
                 model.Count++;
-            });
+            })
+            .ConfigureAwait(false);
 
             if (!found)
             {
@@ -152,7 +154,8 @@ namespace SimpleEventSourcing.ReadModel.Tests
                 {
                     Id = ++idcounter,
                     Count = 1
-                });
+                })
+                .ConfigureAwait(false);
             }
 
             return this;

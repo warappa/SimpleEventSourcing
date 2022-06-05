@@ -36,8 +36,8 @@ namespace SimpleEventSourcing.Tests.Storage
         [TearDown]
         public async Task TearDown()
         {
-            await config.ReadModel.CleanupReadDatabaseAsync();
-            await config.WriteModel.CleanupWriteDatabaseAsync();
+            await config.ReadModel.CleanupReadDatabaseAsync().ConfigureAwait(false);
+            await config.WriteModel.CleanupWriteDatabaseAsync().ConfigureAwait(false);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace SimpleEventSourcing.Tests.Storage
 
             tableExists.Should().BeFalse();
 
-            await storageResetter.ResetAsync(new[] { entityTypeA });
+            await storageResetter.ResetAsync(new[] { entityTypeA }).ConfigureAwait(false);
 
             tableExists = config.ReadModel.IsTableInDatabase(entityTypeA);
 
@@ -61,10 +61,10 @@ namespace SimpleEventSourcing.Tests.Storage
 
             tableExists.Should().BeFalse();
 
-            await storageResetter.ResetAsync(new[] { entityTypeA });
+            await storageResetter.ResetAsync(new[] { entityTypeA }).ConfigureAwait(false);
             using ((readRepository as IDbScopeAware).OpenScope())
             {
-                var res = (await readRepository.QueryAsync(entityTypeA, x => true)).ToList();
+                var res = (await readRepository.QueryAsync(entityTypeA, x => true).ConfigureAwait(false)).ToList();
                 res.Count.Should().Be(0);
             }
 
@@ -73,7 +73,7 @@ namespace SimpleEventSourcing.Tests.Storage
 
             using ((readRepository as IDbScopeAware).OpenScope())
             {
-                var res = (await readRepository.QueryAsync(entityTypeA, x => true)).ToList();
+                var res = (await readRepository.QueryAsync(entityTypeA, x => true).ConfigureAwait(false)).ToList();
                 res.Count.Should().Be(1);
             }
         }

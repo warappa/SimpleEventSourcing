@@ -57,7 +57,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 
             if (maxCheckpointNumber == int.MaxValue)
             {
-                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
+                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
             }
 
             if (payloadTypes != null &&
@@ -246,7 +246,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 
             streamEntries.AddRange(rawStreamEntries.Cast<RawStreamEntry>());
 
-            result = await GetCurrentEventStoreCheckpointNumberAsync();
+            result = await GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
 
             return result;
         }

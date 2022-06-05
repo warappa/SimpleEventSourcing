@@ -23,8 +23,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
         [TearDown]
         public async Task TearDownNH()
         {
-            await config.ReadModel.CleanupReadDatabaseAsync();
-            await config.WriteModel.CleanupWriteDatabaseAsync();
+            await config.ReadModel.CleanupReadDatabaseAsync().ConfigureAwait(false);
+            await config.WriteModel.CleanupWriteDatabaseAsync().ConfigureAwait(false);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace SimpleEventSourcing.WriteModel
 
         public async Task<IObserveRawStreamEntries> CreateObserverAsync(int lastKnownCheckpointNumber = CheckpointDefaults.NoCheckpoint, Type[] payloadTypes = null)
         {
-            return await CreateObserverAsync(default, lastKnownCheckpointNumber, payloadTypes);
+            return await CreateObserverAsync(default, lastKnownCheckpointNumber, payloadTypes).ConfigureAwait(false);
         }
         public async Task<IObserveRawStreamEntries> CreateObserverAsync(TimeSpan interval, int lastKnownCheckpointNumber = CheckpointDefaults.NoCheckpoint, Type[] payloadTypes = null)
         {
@@ -70,12 +70,12 @@ namespace SimpleEventSourcing.WriteModel
 
                 tokenSource = new CancellationTokenSource();
 
-                pollLoopTask = Task.Run(async () => await PollLoop());
+                pollLoopTask = Task.Run(async () => await PollLoop().ConfigureAwait(false));
             }
 
             public async Task<bool> PollNowAsync()
             {
-                return await DoPoll(true);
+                return await DoPoll(true).ConfigureAwait(false);
             }
 
             private async Task PollLoop()
@@ -95,7 +95,7 @@ namespace SimpleEventSourcing.WriteModel
                         await Task.Delay(random.Next(intervalInMilliseconds / 2 + 1, intervalInMilliseconds)).ConfigureAwait(false);
                     }
 
-                    instant = await DoPoll(false);
+                    instant = await DoPoll(false).ConfigureAwait(false);
                 }
             }
 
@@ -113,7 +113,7 @@ namespace SimpleEventSourcing.WriteModel
 
                             var entries = persistenceEngine.LoadStreamEntriesAsync(lastKnownCheckpointNumber + 1, payloadTypes: payloadTypes, take: 10000).ConfigureAwait(false);
 
-                            await foreach (var entry in entries)
+                            await foreach (var entry in entries.ConfigureAwait(false))
                             {
                                 if (tokenSource.IsCancellationRequested)
                                 {

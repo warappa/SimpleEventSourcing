@@ -150,7 +150,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 
                         query = query.Take(nextBatchSize);
 
-                        rawStreamEntries = await query.ToListAsync();
+                        rawStreamEntries = await query.ToListAsync().ConfigureAwait(false);
                     }
                     finally
                     {
@@ -201,7 +201,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
             if (!ascending &&
                 maxCheckpointNumber == int.MaxValue)
             {
-                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync();
+                maxCheckpointNumber = await GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
             }
 
             while (true)
@@ -248,7 +248,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 
                     try
                     {
-                        rawStreamEntries = await query.ToListAsync();
+                        rawStreamEntries = await query.ToListAsync().ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {
@@ -313,7 +313,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                         PreserveInsertOrder = true
                     });
 
-                result = await GetCurrentEventStoreCheckpointNumberInternalAsync(dbContext);
+                result = await GetCurrentEventStoreCheckpointNumberInternalAsync(dbContext).ConfigureAwait(false);
 
                 transaction.Complete();
             }
@@ -337,7 +337,8 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                     .Select(x => x.CheckpointNumber)
                     .OrderByDescending(x => x)
                     .Take(1)
-                    .ToListAsync();
+                    .ToListAsync()
+                    .ConfigureAwait(false);
             }
 
             if (list.Count == 0)
@@ -358,7 +359,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 
                 try
                 {
-                    result = await GetCurrentEventStoreCheckpointNumberInternalAsync(dbContext);
+                    result = await GetCurrentEventStoreCheckpointNumberInternalAsync(dbContext).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {

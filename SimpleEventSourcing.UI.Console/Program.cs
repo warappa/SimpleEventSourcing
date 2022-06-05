@@ -84,9 +84,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             bus.SubscribeTo<IMessage<TestAggregateDoSomething>>()
                 .Select(command => Observable.FromAsync(async () =>
                 {
-                    var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id);
+                    var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id).ConfigureAwait(false);
                     aggregate.DoSomething(command.Body.Foo);
-                    await repo.SaveAsync(aggregate);
+                    await repo.SaveAsync(aggregate).ConfigureAwait(false);
                 }))
                 .Concat()
                 .Subscribe();
@@ -110,9 +110,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             agg.Rename("Hi!");
 
 
-            await repo.SaveAsync(agg);
+            await repo.SaveAsync(agg).ConfigureAwait(false);
 
-            agg = await repo.GetAsync<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id).ConfigureAwait(false);
 
             var projection = TestState.LoadState(agg.State);
             var projection2 = agg.State;
@@ -124,7 +124,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             bus.Send(new TypedMessage<TestAggregateDoSomething>(Guid.NewGuid().ToString(), new TestAggregateDoSomething { Id = agg.Id, Foo = "Command DoSomething Bla" }, null, null, null, DateTime.UtcNow, 0));
             bus.Send(new TypedMessage<TestAggregateRename>(Guid.NewGuid().ToString(), new TestAggregateRename { Id = agg.Id, Name = "Command Renamed Name" }, null, null, null, DateTime.UtcNow, 0));
 
-            agg = await repo.GetAsync<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id).ConfigureAwait(false);
             projection2 = agg.State;
 
             Console.WriteLine("Name: " + projection2.Name);
@@ -193,7 +193,7 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
             engine.InitializeAsync().Wait();
 
             var observerFactory = new PollingObserverFactory(engine, TimeSpan.FromMilliseconds(500));
-            var observer = await observerFactory.CreateObserverAsync(0);
+            var observer = await observerFactory.CreateObserverAsync(0).ConfigureAwait(false);
             var subscription = observer.Subscribe((s) =>
             {
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);
@@ -201,7 +201,7 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
             disposables.Add(subscription);
             disposables.Add(observer);
 
-            await observer.StartAsync();
+            await observer.StartAsync().ConfigureAwait(false);
 
             var repository = new EventRepository(
                 new DefaultInstanceProvider(),
@@ -226,32 +226,32 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                 list.Add(entity);
             }
 
-            await repository.SaveAsync(list);
+            await repository.SaveAsync(list).ConfigureAwait(false);
 
             list.Clear();
 
 
-            var loadedEntity = await repository.GetAsync<TestAggregate>(entityId);
+            var loadedEntity = await repository.GetAsync<TestAggregate>(entityId).ConfigureAwait(false);
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var count = await engine.LoadStreamEntriesAsync().CountAsync();
+            var count = await engine.LoadStreamEntriesAsync().CountAsync().ConfigureAwait(false);
             stopwatch.Stop();
             Console.WriteLine($"Load {count} entries: {stopwatch.ElapsedMilliseconds}ms");
             Console.ReadKey();
 
             Console.WriteLine("Commits: " + await engine.LoadStreamEntriesAsync()
-                .CountAsync());
+                .CountAsync().ConfigureAwait(false));
             Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(payloadTypes: new[] { typeof(Renamed) })
                 .CountAsync());
 
             Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", await engine
                 .LoadStreamEntriesAsync(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
-                .Select(x => "" + x.CheckpointNumber).ToArrayAsync()));
-            Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(minCheckpointNumber: await engine.GetCurrentEventStoreCheckpointNumberAsync()
+                .Select(x => "" + x.CheckpointNumber).ToArrayAsync().ConfigureAwait(false)));
+            Console.WriteLine("Rename count: " + await engine.LoadStreamEntriesAsync(minCheckpointNumber: await engine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false)
                 - 5, payloadTypes: new[] { typeof(Renamed) })
-                .CountAsync());
-            Console.WriteLine("Current CheckpointNumber: " + await engine.GetCurrentEventStoreCheckpointNumberAsync()
+                .CountAsync().ConfigureAwait(false));
+            Console.WriteLine("Current CheckpointNumber: " + await engine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false)
                 );
 
             var c = readConnectionFactory();
@@ -302,8 +302,8 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                 observerFactory);
             stopwatch.Start();
 
-            await persistentState.ResetAsync();
-            await persistentState.StartAsync();
+            await persistentState.ResetAsync().ConfigureAwait(false);
+            await persistentState.StartAsync().ConfigureAwait(false);
 
             _ = Task.Run(async () =>
             {
@@ -341,9 +341,9 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
 
         public static async Task Handle(IMessage<TestAggregateRename> command, IEventRepository repo)
         {
-            var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id);
+            var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id).ConfigureAwait(false);
             aggregate.Rename(command.Body.Name);
-            await repo.SaveAsync(aggregate);
+            await repo.SaveAsync(aggregate).ConfigureAwait(false);
         }
     }
 }

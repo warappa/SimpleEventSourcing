@@ -16,8 +16,8 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
         [TearDown]
         public async Task TearDownEF()
         {
-            await config.ReadModel.CleanupReadDatabaseAsync();
-            await config.WriteModel.CleanupWriteDatabaseAsync();
+            await config.ReadModel.CleanupReadDatabaseAsync().ConfigureAwait(false);
+            await config.WriteModel.CleanupWriteDatabaseAsync().ConfigureAwait(false);
         }
     }
 }

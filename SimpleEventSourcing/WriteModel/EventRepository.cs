@@ -32,7 +32,7 @@ namespace SimpleEventSourcing.WriteModel
         public virtual async Task<TEventSourcedEntity> GetAsync<TEventSourcedEntity>(string streamName, int minRevision = 0, int maxRevision = int.MaxValue)
                 where TEventSourcedEntity : class, IEventSourcedEntity
         {
-            return (TEventSourcedEntity)await GetAsync(typeof(TEventSourcedEntity), streamName, minRevision, maxRevision);
+            return (TEventSourcedEntity)await GetAsync(typeof(TEventSourcedEntity), streamName, minRevision, maxRevision).ConfigureAwait(false);
         }
 
         public virtual async Task<IEventSourcedEntity> GetAsync(Type aggregateType, string streamName, int minRevision = 0, int maxRevision = int.MaxValue)
@@ -46,7 +46,7 @@ namespace SimpleEventSourcing.WriteModel
             var state = instance.UntypedState;
 
             var stateIdentifier = persistenceEngine.Serializer.Binder.BindToName(instance.UntypedState.GetType());
-            var snapshot = await persistenceEngine.LoadLatestSnapshotAsync(streamName, stateIdentifier);
+            var snapshot = await persistenceEngine.LoadLatestSnapshotAsync(streamName, stateIdentifier).ConfigureAwait(false);
 
             var streamRevision = 0;
             if (snapshot is not null)
@@ -59,7 +59,8 @@ namespace SimpleEventSourcing.WriteModel
 
             var streamEntries = await persistenceEngine
                 .LoadStreamEntriesByStreamAsync(streamName, streamRevision + 1)
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             if (streamEntries.Count == 0 &&
                 snapshot is null)
@@ -124,7 +125,7 @@ namespace SimpleEventSourcing.WriteModel
                 allStreamEntries.AddRange(streamDTOs);
             }
 
-            result = await persistenceEngine.SaveStreamEntriesAsync(allStreamEntries);
+            result = await persistenceEngine.SaveStreamEntriesAsync(allStreamEntries).ConfigureAwait(false);
             allStreamEntries.Clear();
 
             foreach (var entity in entities)
@@ -143,7 +144,7 @@ namespace SimpleEventSourcing.WriteModel
             {
                 if (entity.Version % SnapshotInterval == 0)
                 {
-                    await persistenceEngine.SaveSnapshot((IStreamState)entity.UntypedState, entity.Version);
+                    await persistenceEngine.SaveSnapshot((IStreamState)entity.UntypedState, entity.Version).ConfigureAwait(false);
                 }
             }
 
@@ -152,7 +153,7 @@ namespace SimpleEventSourcing.WriteModel
 
         public virtual async Task<int> SaveAsync(IEventSourcedEntity entity, IDictionary<string, object> commitHeaders = null)
         {
-            return await SaveAsync(new[] { entity }, commitHeaders);
+            return await SaveAsync(new[] { entity }, commitHeaders).ConfigureAwait(false);
         }
 
         public virtual Task<int> GetCurrentCheckpointNumberAsync()

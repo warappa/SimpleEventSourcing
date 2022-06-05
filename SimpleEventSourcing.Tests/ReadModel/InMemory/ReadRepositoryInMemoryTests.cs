@@ -29,7 +29,7 @@ namespace SimpleEventSourcing.ReadModel.InMemory.Tests
                 .Any()
                 .Should().Be(true);
 
-            await (readRepository as ReadRepository).ResetAsync(new[] { typeof(TestAReadModel) });
+            await (readRepository as ReadRepository).ResetAsync(new[] { typeof(TestAReadModel) }).ConfigureAwait(false);
 
             (await readRepository.QueryAsync<TestAReadModel>(x => true).ConfigureAwait(false))
                 .Any()

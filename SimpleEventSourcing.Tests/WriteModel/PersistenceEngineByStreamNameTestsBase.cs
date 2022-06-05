@@ -19,7 +19,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         public async Task Loading_unexistent_stream_yields_zero_entries()
         {
             var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, null, "teststream nonexistent")
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             loaded.Should().HaveCount(0);
         }
@@ -28,7 +29,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         public async Task Can_load_by_streamName_accross_groups_and_categories()
         {
             var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, null, "teststream A")
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             var expected = testEvents
                 .WithStreamName("teststream A");
@@ -40,7 +42,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         public async Task Can_load_by_streamName_and_group_and_any_categories()
         {
             var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync("testgroup", null, "teststream A")
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -53,7 +56,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         public async Task Can_load_by_streamName_and_category_and_any_groups()
         {
             var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, "testcategory", "teststream A")
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -67,7 +71,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         public async Task Can_load_by_streamName_and_single_payloadType_accross_groups_and_categories()
         {
             var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, null, "teststream A", payloadTypes: new[] { typeof(TestEvent2) })
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -80,7 +85,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         public async Task Can_load_by_streamName_and_multiple_payloadTypes_accross_groups_and_categories()
         {
             var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, null, "teststream A", payloadTypes: new[] { typeof(TestEvent), typeof(TestEvent2) })
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -93,7 +99,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         public async Task Can_load_by_streamName_reverse()
         {
             var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync(GroupConstants.All, null, "teststream A", ascending: false)
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -106,7 +113,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         public async Task Can_load_by_stream_revision()
         {
             var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync("teststream A", 1, 2)
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             var expected = testEvents
                 .WithStreamName("teststream A")
@@ -122,7 +130,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         public async Task Can_load_by_checkpoint_number_with_take_respected()
         {
             var loaded = await persistenceEngine.LoadStreamEntriesByStreamAsync("teststream A", 1, 3, take: 2)
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             var expected = testEvents
                 .WithGroup(null)

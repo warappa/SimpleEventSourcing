@@ -22,10 +22,10 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
 
         protected override async Task BeforeFixtureTransactionAsync()
         {
-            await NHconfig.WriteModel.EnsureWriteDatabaseAsync();
-            await NHconfig.ReadModel.EnsureReadDatabaseAsync();
+            await NHconfig.WriteModel.EnsureWriteDatabaseAsync().ConfigureAwait(false);
+            await NHconfig.ReadModel.EnsureReadDatabaseAsync().ConfigureAwait(false);
 
-            await base.BeforeFixtureTransactionAsync();
+            await base.BeforeFixtureTransactionAsync().ConfigureAwait(false);
         }
 
         [OneTimeSetUp]

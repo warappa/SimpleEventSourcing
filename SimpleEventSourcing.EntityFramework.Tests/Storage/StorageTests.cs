@@ -15,9 +15,9 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
 
         protected override async Task BeforeFixtureTransactionAsync()
         {
-            await config.WriteModel.EnsureWriteDatabaseAsync();
+            await config.WriteModel.EnsureWriteDatabaseAsync().ConfigureAwait(false);
 
-            await base.BeforeFixtureTransactionAsync();
+            await base.BeforeFixtureTransactionAsync().ConfigureAwait(false);
         }
     }
 }

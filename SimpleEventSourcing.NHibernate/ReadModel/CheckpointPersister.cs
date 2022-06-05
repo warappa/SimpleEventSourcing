@@ -19,7 +19,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
         {
             using (var session = sessionFactory.OpenSession())
             {
-                var checkpointInfo = await session.GetAsync<TCheckpointInfo>(projectorIdentifier);
+                var checkpointInfo = await session.GetAsync<TCheckpointInfo>(projectorIdentifier).ConfigureAwait(false);
 
                 if (checkpointInfo == null)
                 {
@@ -36,7 +36,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
                 sessionFactory.GetCurrentSession() :
                 sessionFactory.OpenSession();
 
-            var checkpointInfo = await session.GetAsync<TCheckpointInfo>(projectorIdentifier);
+            var checkpointInfo = await session.GetAsync<TCheckpointInfo>(projectorIdentifier).ConfigureAwait(false);
 
             if (checkpointInfo == null)
             {
@@ -59,7 +59,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
 
             if (!CurrentSessionContext.HasBind(sessionFactory))
             {
-                await session.FlushAsync();
+                await session.FlushAsync().ConfigureAwait(false);
                 session.Dispose();
             }
         }

@@ -20,28 +20,28 @@ namespace SimpleEventSourcing.Utils
             }
             else if (result is Task<object> taskWithObjectResult)
             {
-                return (TState)await taskWithObjectResult;
+                return (TState)await taskWithObjectResult.ConfigureAwait(false);
             }
             else if (result is Task<TState> taskWithResult)
             {
-                return await taskWithResult;
+                return await taskWithResult.ConfigureAwait(false);
             }
             else if (result is Task task)
             {
-                await task;
+                await task.ConfigureAwait(false);
                 return null;
             }
             else if (result is ValueTask<object> valueTaskWithObjectResult)
             {
-                return (TState)await valueTaskWithObjectResult;
+                return (TState)await valueTaskWithObjectResult.ConfigureAwait(false);
             }
             else if (result is ValueTask<TState> valueTaskWithResult)
             {
-                return await valueTaskWithResult;
+                return await valueTaskWithResult.ConfigureAwait(false);
             }
             else if (result is ValueTask valueTask)
             {
-                await valueTask;
+                await valueTask.ConfigureAwait(false);
                 return null;
             }
 

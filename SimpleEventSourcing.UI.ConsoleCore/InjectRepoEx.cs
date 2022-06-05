@@ -10,18 +10,17 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 {
     public static class InjectRepoEx
     {
-
         public static IDisposable SubscribeToAndUpdate<TMessage, TEntity>(this IObservableMessageBus source, Action<TEntity, TMessage> onNext, IEventRepository repo)
             where TMessage : class, IMessage<IEventSourcedEntityCommand>
             where TEntity : class, IEventSourcedEntity
         {
             async Task a(TMessage obj)
             {
-                var ent = await repo.GetAsync<TEntity>(obj.Body.Id);
+                var ent = await repo.GetAsync<TEntity>(obj.Body.Id).ConfigureAwait(false);
 
                 onNext(ent, obj);
 
-                await repo.SaveAsync(ent);
+                await repo.SaveAsync(ent).ConfigureAwait(false);
             }
 
             return BusExtensions.SubscribeTo<TMessage>(source)

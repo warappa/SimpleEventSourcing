@@ -118,7 +118,7 @@ insert into hibernate_unique_key values ( 1 );";
 
             public override async Task ResetAsync()
             {
-                await GetPersistenceEngine().InitializeAsync();
+                await GetPersistenceEngine().InitializeAsync().ConfigureAwait(false);
             }
 
             public Configuration GetBaseConfiguration()
@@ -170,7 +170,7 @@ insert into hibernate_unique_key values ( 1 );";
 
             public override async Task CleanupWriteDatabaseAsync()
             {
-                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) }, true).ConfigureAwait(false);
             }
 
             public ISerializationBinder GetBinder()
@@ -311,7 +311,7 @@ insert into hibernate_unique_key values ( 1 );";
 
             public override async Task CleanupReadDatabaseAsync()
             {
-                await GetStorageResetter().ResetAsync(new[] { typeof(CheckpointInfo), typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(CheckpointInfo), typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel) }, true).ConfigureAwait(false);
             }
 
             public override async Task EnsureReadDatabaseAsync()

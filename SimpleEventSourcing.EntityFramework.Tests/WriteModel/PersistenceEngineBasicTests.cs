@@ -17,15 +17,15 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
         [Test]
         public async Task Can_initializeAsync()
         {
-            await InitializeAsync(); 
+            await InitializeAsync().ConfigureAwait(false);
         }
 
         [Test]
         public async Task Can_save_streamEntriesAsync()
         {
-            await InitializeAsync();
+            await InitializeAsync().ConfigureAwait(false);
 
-            await SaveStreamEntryAsync();
+            await SaveStreamEntryAsync().ConfigureAwait(false);
         }
     }
 }

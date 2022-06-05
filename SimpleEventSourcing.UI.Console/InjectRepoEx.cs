@@ -17,11 +17,11 @@ namespace SimpleEventSourcing.UI.ConsoleUI
         {
             async Task a(TMessage obj)
             {
-                var ent = await repo.GetAsync<TEntity>(obj.Body.Id);
+                var ent = await repo.GetAsync<TEntity>(obj.Body.Id).ConfigureAwait(false);
 
                 onNext(ent, obj);
 
-                await repo.SaveAsync(ent);
+                await repo.SaveAsync(ent).ConfigureAwait(false);
             }
 
             return BusExtensions.SubscribeTo<TMessage>(source)

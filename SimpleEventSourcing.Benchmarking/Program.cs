@@ -8,10 +8,10 @@ namespace SimpleEventSourcing.Benchmarking
         {
             var summary = BenchmarkRunner.Run<BenchmarkWriteModelSQLiteVsNHVsEFCore>();
             //var summary = BenchmarkRunner.Run<BenchmarkReadModelSQLiteVsNHVsEFCore>();
-            
+
             //var b = new BenchmarkReadModelSQLiteVsNHVsEFCore();
-            //await b.BenchmarkSQLite();
-            //await b.BenchmarkEFCore();
+            //await b.BenchmarkSQLite().ConfigureAwait(false);
+            //await b.BenchmarkEFCore().ConfigureAwait(false);
         }
     }
 }

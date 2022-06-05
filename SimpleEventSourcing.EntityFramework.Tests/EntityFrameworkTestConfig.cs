@@ -66,17 +66,17 @@ namespace SimpleEventSourcing.EntityFramework.Tests
                     dbContext.Database.Connection.Close();
                 }
 
-                //await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) });
+                //await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) }).ConfigureAwait(false);
             }
 
             public override async Task CleanupWriteDatabaseAsync()
             {
-                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) }, true).ConfigureAwait(false);
             }
 
             public override async Task ResetAsync()
             {
-                await GetPersistenceEngine().InitializeAsync();
+                await GetPersistenceEngine().InitializeAsync().ConfigureAwait(false);
             }
 
             public static ISerializationBinder GetBinder()
@@ -186,7 +186,7 @@ namespace SimpleEventSourcing.EntityFramework.Tests
 
             public override async Task CleanupReadDatabaseAsync()
             {
-                await GetStorageResetter().ResetAsync(new[] { typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel), typeof(CheckpointInfo) }, true);
+                await GetStorageResetter().ResetAsync(new[] { typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel), typeof(CheckpointInfo) }, true).ConfigureAwait(false);
             }
 
             public override IReadRepository GetReadRepository()

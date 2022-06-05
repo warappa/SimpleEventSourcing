@@ -62,7 +62,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
             }
             public override async Task ResetAsync()
             {
-                await GetPersistenceEngine().InitializeAsync();
+                await GetPersistenceEngine().InitializeAsync().ConfigureAwait(false);
             }
 
             public void CloseConnection()

@@ -42,20 +42,20 @@ namespace SimpleEventSourcing.ReadModel
 
         public override async Task ResetAsync()
         {
-            await storageResetter.ResetAsync(ControlsReadModelsAttribute.GetControlledReadModels(typeof(TProjector)));
-            await checkpointPersister.ResetCheckpointAsync(projectorIdentifier);
+            await storageResetter.ResetAsync(ControlsReadModelsAttribute.GetControlledReadModels(typeof(TProjector))).ConfigureAwait(false);
+            await checkpointPersister.ResetCheckpointAsync(projectorIdentifier).ConfigureAwait(false);
         }
 
         public override async Task StartAsync()
         {
-            var lastKnownCheckpointNumber = await checkpointPersister.LoadLastCheckpointAsync(projectorIdentifier);
+            var lastKnownCheckpointNumber = await checkpointPersister.LoadLastCheckpointAsync(projectorIdentifier).ConfigureAwait(false);
 
             if (lastKnownCheckpointNumber == CheckpointDefaults.NoCheckpoint)
             {
-                await storageResetter.ResetAsync(ControlsReadModelsAttribute.GetControlledReadModels(typeof(TProjector)));
+                await storageResetter.ResetAsync(ControlsReadModelsAttribute.GetControlledReadModels(typeof(TProjector))).ConfigureAwait(false);
             }
 
-            observer = await observerFactory.CreateObserverAsync(lastKnownCheckpointNumber, Projector.PayloadTypes);
+            observer = await observerFactory.CreateObserverAsync(lastKnownCheckpointNumber, Projector.PayloadTypes).ConfigureAwait(false);
 
             subscription = observer
                 .Buffer(TimeSpan.FromSeconds(0.1))
@@ -63,7 +63,7 @@ namespace SimpleEventSourcing.ReadModel
                 .Concat() //Ensure that the results are serialized
                 .Subscribe(); //do what you will here with the results of the async method calls
 
-            await observer.StartAsync();
+            await observer.StartAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> PollNowAsync()
@@ -73,7 +73,7 @@ namespace SimpleEventSourcing.ReadModel
                 throw new InvalidOperationException("CatchupProjector is currently not observing - did you call StartAsync?");
             }
 
-            return await observer.PollNowAsync();
+            return await observer.PollNowAsync().ConfigureAwait(false);
         }
 
         private async Task ProcessStreamEntries(IList<IRawStreamEntry> streamEntries)
@@ -98,19 +98,20 @@ namespace SimpleEventSourcing.ReadModel
             {
                 using (scopeaware.OpenScope())
                 {
-                    await ApplyMessagesAsync(requiredMessages);
+                    await ApplyMessagesAsync(requiredMessages).ConfigureAwait(false);
                 }
             }
             else
             {
-                await ApplyMessagesAsync(requiredMessages);
+                await ApplyMessagesAsync(requiredMessages).ConfigureAwait(false);
             }
 
             if (requiredMessages.Count > 0)
             {
                 await checkpointPersister.SaveCurrentCheckpointAsync(
                     projectorIdentifier,
-                    requiredMessages[requiredMessages.Count - 1].CheckpointNumber);
+                    requiredMessages[requiredMessages.Count - 1].CheckpointNumber)
+                    .ConfigureAwait(false);
             }
 
             //stopwatch.Stop();
@@ -124,7 +125,7 @@ namespace SimpleEventSourcing.ReadModel
             foreach (var message in requiredMessages)
             {
                 var result = Projector.UntypedApply(message) ?? Projector;
-                Projector = await StateExtensions.ExtractStateAsync<TProjector>(result);
+                Projector = await StateExtensions.ExtractStateAsync<TProjector>(result).ConfigureAwait(false);
             }
         }
 

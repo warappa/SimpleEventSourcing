@@ -15,8 +15,8 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
         [TearDown]
         public async Task TearDownSQLite()
         {
-            await config.ReadModel.CleanupReadDatabaseAsync();
-            await config.WriteModel.CleanupWriteDatabaseAsync();
+            await config.ReadModel.CleanupReadDatabaseAsync().ConfigureAwait(false);
+            await config.WriteModel.CleanupWriteDatabaseAsync().ConfigureAwait(false);
         }
     }
 }

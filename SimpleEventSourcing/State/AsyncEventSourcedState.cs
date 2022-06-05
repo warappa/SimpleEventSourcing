@@ -102,7 +102,7 @@ namespace SimpleEventSourcing.State
                     object result;
 
                     result = mi.Invoke(state, new[] { message });
-                    state = await StateExtensions.ExtractStateAsync<TProjector>(result) ?? state;
+                    state = await StateExtensions.ExtractStateAsync<TProjector>(result).ConfigureAwait(false) ?? state;
                 }
 
                 if (methodForEventType.TryGetValue(message.Body.GetType(), out mi))
@@ -110,7 +110,7 @@ namespace SimpleEventSourcing.State
                     object result;
 
                     result = mi.Invoke(state, new[] { message.Body });
-                    state = await StateExtensions.ExtractStateAsync<TProjector>(result) ?? state;
+                    state = await StateExtensions.ExtractStateAsync<TProjector>(result).ConfigureAwait(false) ?? state;
                 }
             }
             else
@@ -122,7 +122,7 @@ namespace SimpleEventSourcing.State
                     object result;
 
                     result = mi.Invoke(state, new[] { @event });
-                    state = await StateExtensions.ExtractStateAsync<TProjector>(result) ?? state;
+                    state = await StateExtensions.ExtractStateAsync<TProjector>(result).ConfigureAwait(false) ?? state;
                 }
             }
 
@@ -137,7 +137,7 @@ namespace SimpleEventSourcing.State
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
-                state = await state.ApplyAsync(eventOrMessage).ExtractStateAsync<TProjector>() ?? state;
+                state = await state.ApplyAsync(eventOrMessage).ExtractStateAsync<TProjector>().ConfigureAwait(false) ?? state;
             }
 
             return state;
@@ -151,7 +151,7 @@ namespace SimpleEventSourcing.State
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
-                state = await state.ApplyAsync(eventOrMessage).ExtractStateAsync<TProjector>() ?? state;
+                state = await state.ApplyAsync(eventOrMessage).ExtractStateAsync<TProjector>().ConfigureAwait(false) ?? state;
             }
 
             return state;
@@ -159,12 +159,12 @@ namespace SimpleEventSourcing.State
 
         async Task<object> IAsyncProjector.UntypedApplyAsync(object eventOrMessage)
         {
-            return await InvokeAssociatedApplyAsync(eventOrMessage);
+            return await InvokeAssociatedApplyAsync(eventOrMessage).ConfigureAwait(false);
         }
 
         async Task<TProjector> IProjectorInternal<TProjector>.ApplyAsync(object @event)
         {
-            return await InvokeAssociatedApplyAsync(@event);
+            return await InvokeAssociatedApplyAsync(@event).ConfigureAwait(false);
         }
 
         object IProjector.UntypedApply(object eventOrMessage)

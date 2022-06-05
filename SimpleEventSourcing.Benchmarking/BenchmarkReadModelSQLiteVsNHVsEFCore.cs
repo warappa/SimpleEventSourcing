@@ -74,39 +74,39 @@ namespace SimpleEventSourcing.Benchmarking
         [MaxIterationCount(18)]
         public async Task BenchmarkSQLite()
         {
-            var cp = await sqlitePersistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            var cp = await sqlitePersistenceEngine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
 
             using var sqlitePersistentState = sqliteServiceProvider.GetRequiredService<IProjectionManager<PersistentState>>();
-            await sqlitePersistentState.ResetAsync();
-            await sqlitePersistentState.StartAsync();
+            await sqlitePersistentState.ResetAsync().ConfigureAwait(false);
+            await sqlitePersistentState.StartAsync().ConfigureAwait(false);
 
-            await sqliteCheckpointPersister.WaitForCheckpointNumberAsync<PersistentState>(cp, TimeSpan.FromSeconds(60));
+            await sqliteCheckpointPersister.WaitForCheckpointNumberAsync<PersistentState>(cp, TimeSpan.FromSeconds(60)).ConfigureAwait(false);
         }
 
         [Benchmark]
         [MaxIterationCount(18)]
         public async Task BenchmarkEFCore()
         {
-            var cp = await efCorePersistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            var cp = await efCorePersistenceEngine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
 
             using var efCorePersistentState = efCoreServiceProvider.GetRequiredService<IProjectionManager<PersistentState>>();
-            await efCorePersistentState.ResetAsync();
-            await efCorePersistentState.StartAsync();
+            await efCorePersistentState.ResetAsync().ConfigureAwait(false);
+            await efCorePersistentState.StartAsync().ConfigureAwait(false);
 
-            await efCoreCheckpointPersister.WaitForCheckpointNumberAsync<PersistentState>(cp, TimeSpan.FromSeconds(60));
+            await efCoreCheckpointPersister.WaitForCheckpointNumberAsync<PersistentState>(cp, TimeSpan.FromSeconds(60)).ConfigureAwait(false);
         }
 
         [Benchmark]
         [MaxIterationCount(18)]
         public async Task BenchmarkNH()
         {
-            var cp = await nhPersistenceEngine.GetCurrentEventStoreCheckpointNumberAsync();
+            var cp = await nhPersistenceEngine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
 
             using var nhPersistentState = nhServiceProvider.GetRequiredService<IProjectionManager<PersistentState>>();
-            await nhPersistentState.ResetAsync();
-            await nhPersistentState.StartAsync();
+            await nhPersistentState.ResetAsync().ConfigureAwait(false);
+            await nhPersistentState.StartAsync().ConfigureAwait(false);
 
-            await nhCheckpointPersister.WaitForCheckpointNumberAsync<PersistentState>(cp, TimeSpan.FromSeconds(60));
+            await nhCheckpointPersister.WaitForCheckpointNumberAsync<PersistentState>(cp, TimeSpan.FromSeconds(60)).ConfigureAwait(false);
         }
 
         private IEvent[] GetEvents(int count)

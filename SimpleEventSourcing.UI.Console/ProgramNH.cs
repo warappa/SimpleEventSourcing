@@ -119,7 +119,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             var bus = new ObservableMessageBus();
             var persistenceEngine = new PersistenceEngine(sessionFactory, configuration, serializer);
 
-            await persistenceEngine.InitializeAsync();
+            await persistenceEngine.InitializeAsync().ConfigureAwait(false);
 
             var repo = new EventRepository(
                 new DefaultInstanceProvider(),
@@ -179,9 +179,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             bus.SubscribeTo<IMessage<TestAggregateDoSomething>>()
                 .Select(command => Observable.FromAsync(() => Task.Run(async () =>
                 {
-                    var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id);
+                    var aggregate = await repo.GetAsync<TestAggregate>(command.Body.Id).ConfigureAwait(false);
                     aggregate.DoSomething(command.Body.Foo);
-                    await repo.SaveAsync(aggregate);
+                    await repo.SaveAsync(aggregate).ConfigureAwait(false);
                 })))
                 .Concat()
                 .Subscribe()
@@ -206,9 +206,9 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             agg.Rename("Hi!");
 
 
-            await repo.SaveAsync(agg);
+            await repo.SaveAsync(agg).ConfigureAwait(false);
 
-            agg = await repo.GetAsync<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id).ConfigureAwait(false);
 
             var projection = TestState.LoadState(agg.State);
             var projection2 = agg.State;
@@ -220,7 +220,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             bus.Send(new TypedMessage<TestAggregateDoSomething>(Guid.NewGuid().ToString(), new TestAggregateDoSomething { Id = agg.Id, Foo = "Command DoSomething Bla" }, null, null, null, DateTime.UtcNow, 0));
             bus.Send(new TypedMessage<TestAggregateRename>(Guid.NewGuid().ToString(), new TestAggregateRename { Id = agg.Id, Name = "Command Renamed Name" }, null, null, null, DateTime.UtcNow, 0));
 
-            agg = await repo.GetAsync<TestAggregate>(agg.Id);
+            agg = await repo.GetAsync<TestAggregate>(agg.Id).ConfigureAwait(false);
             projection2 = agg.State;
 
             Console.WriteLine("Name: " + projection2.Name);
@@ -234,13 +234,13 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             //var engine = new PersistenceEngine(sessionFactory, configuration, serializer);
 
             var observerFactory = new PollingObserverFactory(persistenceEngine, TimeSpan.FromMilliseconds(500));
-            var observer = await observerFactory.CreateObserverAsync(0);
+            var observer = await observerFactory.CreateObserverAsync(0).ConfigureAwait(false);
             observer.Subscribe((s) =>
             {
                 //Console.WriteLine("Polling: " + s.StreamName + "@" + s.StreamRevision + " - " + s.CheckpointNumber);
             });
 
-            await observer.StartAsync();
+            await observer.StartAsync().ConfigureAwait(false);
 
             var repository = new EventRepository(
                 new DefaultInstanceProvider(),
@@ -264,26 +264,25 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
                 list.Add(entity);
             }
-            await repository.SaveAsync(list);
+            await repository.SaveAsync(list).ConfigureAwait(false);
 
             list.Clear();
 
-            var loadedEntity = await repository.GetAsync<TestAggregate>(entityId);
+            var loadedEntity = await repository.GetAsync<TestAggregate>(entityId).ConfigureAwait(false);
 
             Console.WriteLine("Commits: " + await persistenceEngine.LoadStreamEntriesAsync()
-                .CountAsync());
+                .CountAsync().ConfigureAwait(false));
             Console.WriteLine("Rename count: " + await persistenceEngine.LoadStreamEntriesAsync(payloadTypes: new[] { typeof(Renamed) })
-                .CountAsync());
+                .CountAsync().ConfigureAwait(false));
 
             Console.WriteLine("Rename checkpointnumbers of renames descending: " + string.Join(", ", await persistenceEngine
                 .LoadStreamEntriesAsync(ascending: false, payloadTypes: new[] { typeof(Renamed), typeof(SomethingDone) })
-                .Select(x => "" + x.CheckpointNumber).ToArrayAsync()));
+                .Select(x => "" + x.CheckpointNumber).ToArrayAsync().ConfigureAwait(false)));
             Console.WriteLine("Rename count: " + await persistenceEngine.LoadStreamEntriesAsync(
                     minCheckpointNumber: await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync() - 5,
                     payloadTypes: new[] { typeof(Renamed) })
-
-                .CountAsync());
-            Console.WriteLine("Current CheckpointNumber: " + await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync()
+                .CountAsync().ConfigureAwait(false));
+            Console.WriteLine("Current CheckpointNumber: " + await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false)
                 );
 
             var viewModelResetter = new StorageResetter(nHibernateResetConfigurationProvider);
@@ -329,8 +328,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            await persistentState.ResetAsync();
-            await persistentState.StartAsync();
+            await persistentState.ResetAsync().ConfigureAwait(false);
+            await persistentState.StartAsync().ConfigureAwait(false);
 
             _ = Task.Run(async () =>
             {

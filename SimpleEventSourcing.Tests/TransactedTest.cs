@@ -26,7 +26,7 @@ namespace SimpleEventSourcing.Tests
         [SetUp]
         public async Task SetupTest()
         {
-            await BeforeTestTransactionAsync();
+            await BeforeTestTransactionAsync().ConfigureAwait(false);
 
             if (UseTestTransaction)
             {

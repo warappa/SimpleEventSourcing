@@ -55,9 +55,9 @@ namespace SimpleEventSourcing.Benchmarking
         public async Task BenchmarkSQLite()
         {
             //var agg = GenerateAggregateWithEvents();
-            //await sqliteEventRepository.SaveAsync(agg);
+            //await sqliteEventRepository.SaveAsync(agg).ConfigureAwait(false);
             var entries = GetRawStreamEntriesSQLite(Guid.NewGuid().ToString(), GetEvents(eventCount));
-            await sqlitePersistenceEngine.SaveStreamEntriesAsync(entries);
+            await sqlitePersistenceEngine.SaveStreamEntriesAsync(entries).ConfigureAwait(false);
         }
 
         [Benchmark]
@@ -65,9 +65,9 @@ namespace SimpleEventSourcing.Benchmarking
         public async Task BenchmarkEFCore()
         {
             //var agg = GenerateAggregateWithEvents();
-            //await efCoreEventRepository.SaveAsync(agg);
+            //await efCoreEventRepository.SaveAsync(agg).ConfigureAwait(false);
             var entries = GetRawStreamEntriesEFCore(Guid.NewGuid().ToString(), GetEvents(eventCount));
-            await efCorePersistenceEngine.SaveStreamEntriesAsync(entries);
+            await efCorePersistenceEngine.SaveStreamEntriesAsync(entries).ConfigureAwait(false);
         }
 
         [Benchmark]
@@ -75,7 +75,7 @@ namespace SimpleEventSourcing.Benchmarking
         public async Task BenchmarkNH()
         {
             //var agg = GenerateAggregateWithEvents();
-            //await nhEventRepository.SaveAsync(agg);
+            //await nhEventRepository.SaveAsync(agg).ConfigureAwait(false);
             var entries = GetRawStreamEntriesNH(Guid.NewGuid().ToString(), GetEvents(eventCount));
             await nhPersistenceEngine.SaveStreamEntriesAsync(entries);
         }

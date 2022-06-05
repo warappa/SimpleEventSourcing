@@ -26,9 +26,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
         protected override async Task BeforeFixtureTransactionAsync()
         {
-            await config.WriteModel.EnsureWriteDatabaseAsync();
-            await config.ReadModel.EnsureReadDatabaseAsync();
-            await base.BeforeFixtureTransactionAsync();
+            await config.WriteModel.EnsureWriteDatabaseAsync().ConfigureAwait(false);
+            await config.ReadModel.EnsureReadDatabaseAsync().ConfigureAwait(false);
+            await base.BeforeFixtureTransactionAsync().ConfigureAwait(false);
         }
 
         protected virtual void EarlySetup()
@@ -43,17 +43,17 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             if (initialize)
             {
-                await InitializeAsync();
+                await InitializeAsync().ConfigureAwait(false);
 
-                await SaveStreamEntryAsync();
+                await SaveStreamEntryAsync().ConfigureAwait(false);
             }
         }
 
         [TearDown]
         public async Task TearDown()
         {
-            await config.ReadModel.CleanupReadDatabaseAsync();
-            await config.WriteModel.CleanupWriteDatabaseAsync();
+            await config.ReadModel.CleanupReadDatabaseAsync().ConfigureAwait(false);
+            await config.WriteModel.CleanupWriteDatabaseAsync().ConfigureAwait(false);
         }
 
         [OneTimeSetUp]
@@ -72,8 +72,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
         {
             persistenceEngine = config.WriteModel.GetPersistenceEngine();
 
-            //await persistenceEngine.InitializeAsync();
-            await config.WriteModel.ResetAsync();
+            //await persistenceEngine.InitializeAsync().ConfigureAwait(false);
+            await config.WriteModel.ResetAsync().ConfigureAwait(false);
             
 
             serializer = persistenceEngine.Serializer;
@@ -159,15 +159,16 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 .Concat(CreateTestData("testgroup", "testcategory"))
                 .ToArray();
 
-            await persistenceEngine.SaveStreamEntriesAsync(testEvents);
+            await persistenceEngine.SaveStreamEntriesAsync(testEvents).ConfigureAwait(false);
 
-            await FixTestDataAsync();
+            await FixTestDataAsync().ConfigureAwait(false);
         }
 
         protected async Task FixTestDataAsync()
         {
             var rawStreamEntries = await persistenceEngine.LoadStreamEntriesAsync()
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             foreach (var entry in rawStreamEntries)
             {
