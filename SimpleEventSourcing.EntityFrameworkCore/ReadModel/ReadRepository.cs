@@ -163,9 +163,6 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
                 if (res == null)
                 {
-                    var aaa = scope.DbContexts.Get<TDbContext>()
-                    .Set<T>()
-                    .ToList();
 
                     res = scope.DbContexts.Get<TDbContext>()
                     .Set<T>()

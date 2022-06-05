@@ -48,8 +48,8 @@ namespace SimpleEventSourcing.EntityFrameworkCore
         {
             services.AddSingleton<IRawStreamEntryFactory, RawStreamEntryFactory>();
             services.AddSingleton<IInstanceProvider, DefaultInstanceProvider>();
-            services.AddSingleton<IDbContextScopeFactory, DbContextScopeFactory>();
-            services.AddSingleton<IDbContextFactory, TDbContextFactory>();
+            services.AddScoped<IDbContextScopeFactory, DbContextScopeFactory>();
+            services.AddScoped<IDbContextFactory, TDbContextFactory>();
 
             services.AddScoped<IPersistenceEngine, PersistenceEngine<TWriteDbContext>>();
             services.AddScoped<IWriteModelStorageResetter, StorageResetter<TWriteDbContext>>();
