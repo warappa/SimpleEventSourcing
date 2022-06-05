@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dotfo.EntityFrameworkCore.DbContextScope" Version="1.0.0" />
+    <PackageReference Include="DoJo.EntityFrameworkCore.DbContextScope" Version="2.1.0" />
   </ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">

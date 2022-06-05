@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 {
-    public class ReadRepository<TDbContext> : IReadRepository, IDbScopeAware
+    public partial class ReadRepository<TDbContext> : IReadRepository, IDbScopeAware
         where TDbContext : DbContext
     {
         private readonly IDbContextScopeFactory dbContextScopeFactory;
@@ -20,7 +20,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
             this.dbContextScopeFactory = dbContextScopeFactory;
         }
 
-        public Task UpdateAsync(params IReadModelBase[] entities)
+        public async Task UpdateAsync(params IReadModelBase[] entities)
         {
             using (var scope = dbContextScopeFactory.Create())
             {
@@ -28,13 +28,11 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
                 UpdateInternal(dbContext, entities);
 
-                scope.SaveChanges();
+                await scope.SaveChangesAsync().ConfigureAwait(false);
             }
-
-            return Task.CompletedTask;
         }
 
-        public Task InsertAsync(params IReadModelBase[] entities)
+        public async Task InsertAsync(params IReadModelBase[] entities)
         {
             using (var scope = dbContextScopeFactory.Create())
             {
@@ -42,10 +40,8 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
                 InsertInternal(dbContext, entities);
 
-                scope.SaveChanges();
+                await scope.SaveChangesAsync().ConfigureAwait(false);
             }
-
-            return Task.CompletedTask;
         }
 
         protected void UpdateInternal(DbContext dbContext, IEnumerable<IReadModelBase> allEntities)
@@ -73,7 +69,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
             }
         }
 
-        public Task DeleteAsync(params IReadModelBase[] entities)
+        public async Task DeleteAsync(params IReadModelBase[] entities)
         {
             using (var scope = dbContextScopeFactory.Create())
             {
@@ -96,13 +92,11 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                     dbContext.Set(group.Key).RemoveRange(group.ToList());
                 }
 
-                scope.SaveChanges();
+                await scope.SaveChangesAsync().ConfigureAwait(false);
             }
-
-            return Task.CompletedTask;
         }
 
-        public Task<T> GetAsync<T>(object id)
+        public async Task<T> GetAsync<T>(object id)
              where T : class, IReadModelBase, new()
         {
             T res = null;
@@ -118,13 +112,13 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                     res = set.Find(id);
                 }
 
-                scope.SaveChanges();
+                await scope.SaveChangesAsync().ConfigureAwait(false);
             }
 
-            return Task.FromResult(res);
+            return res;
         }
 
-        public Task<object> GetAsync(Type type, object id)
+        public async Task<object> GetAsync(Type type, object id)
         {
             object res = null;
 
@@ -139,13 +133,13 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                     res = set.Find(id);
                 }
 
-                scope.SaveChanges();
+                await scope.SaveChangesAsync().ConfigureAwait(false);
             }
 
-            return Task.FromResult(res);
+            return res;
         }
 
-        public Task<T> GetByStreamnameAsync<T>(object streamname)
+        public async Task<T> GetByStreamnameAsync<T>(object streamname)
             where T : class, IStreamReadModel, new()
         {
             T res = null;
@@ -163,20 +157,19 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
                 if (res == null)
                 {
-
                     res = scope.DbContexts.Get<TDbContext>()
-                    .Set<T>()
-                    .AsQueryable()
-                    .Where(x =>
-                        x.Streamname != null &&
-                        x.Streamname == (string)streamname)
-                    .FirstOrDefault();
+                        .Set<T>()
+                        .AsQueryable()
+                        .Where(x =>
+                            x.Streamname != null &&
+                            x.Streamname == (string)streamname)
+                        .FirstOrDefault();
                 }
 
-                scope.SaveChanges();
+                await scope.SaveChangesAsync().ConfigureAwait(false);
             }
 
-            return Task.FromResult(res);
+            return res;
         }
 
         public async Task<object> GetByStreamnameAsync(Type type, object streamname)
@@ -190,12 +183,12 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
             var getByStreamnameAsyncMethod = getByStreamnameAsyncMethodGeneric.MakeGenericMethod(type);
 
             var task = (Task)(getByStreamnameAsyncMethod.Invoke(this, new object[] { streamname }));
-            await task;
+            await task.ConfigureAwait(false);
 
             return ((dynamic)task).Result;
         }
 
-        public Task<IQueryable<T>> QueryAsync<T>(Expression<Func<T, bool>> predicate)
+        public async Task<IQueryable<T>> QueryAsync<T>(Expression<Func<T, bool>> predicate)
              where T : class, IReadModelBase, new()
         {
             IQueryable<T> res = null;
@@ -205,10 +198,10 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                 res = scope.DbContexts.Get<TDbContext>().Set<T>().Where(predicate);
             }
 
-            return Task.FromResult(res);
+            return res;
         }
 
-        public Task<IQueryable> QueryAsync(Type type, Expression<Func<object, bool>> predicate)
+        public async Task<IQueryable> QueryAsync(Type type, Expression<Func<object, bool>> predicate)
         {
             var newPredicate = ChangeInputType(predicate, type);
 
@@ -232,7 +225,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
             var results = (IQueryable)whereTyped.Invoke(null, new object[] { set, newPredicate });
 
-            return Task.FromResult(results);
+            return results;
         }
 
         public IDisposable OpenScope()
@@ -254,49 +247,6 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
             var visitor = new SubstitutionExpressionVisitor(beforeParameter, afterParameter);
 
             return Expression.Lambda(visitor.Visit(expression.Body), afterParameter);
-        }
-
-        private class ScopeCommitter : IDisposable
-        {
-            private readonly IDbContextScope scope;
-
-            public ScopeCommitter(IDbContextScope scope)
-            {
-                this.scope = scope;
-            }
-
-            public void Dispose()
-            {
-                Dispose(true);
-            }
-
-            protected virtual void Dispose(bool disposing)
-            {
-                if (disposing)
-                {
-                    scope.DbContexts.Get<TDbContext>().ChangeTracker.DetectChanges();
-
-                    scope.SaveChanges();
-                    scope.Dispose();
-                }
-            }
-        }
-
-        private class SubstitutionExpressionVisitor : ExpressionVisitor
-        {
-            private readonly Expression before;
-            private readonly Expression after;
-
-            public SubstitutionExpressionVisitor(Expression before, Expression after)
-            {
-                this.before = before;
-                this.after = after;
-            }
-
-            public override Expression Visit(Expression node)
-            {
-                return node == before ? after : base.Visit(node);
-            }
         }
     }
 }
