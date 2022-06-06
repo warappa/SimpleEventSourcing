@@ -9,7 +9,7 @@
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
         <MudText Typo="Typo.h6">Shop Blazor</MudText>
-        <MudAppBarSpacer />
+        <MudSpacer />
         <MudPaper Class="search-container" Elevation="0">
             <MudGrid>
                 <MudItem Class="d-flex align-center ml-5 pa-0">
@@ -23,7 +23,7 @@
                 </MudItem>
             </MudGrid>
         </MudPaper>
-        <MudAppBarSpacer />
+        <MudSpacer />
         <MudIconButton Icon="@(Icons.Material.Filled.Brightness4)" Color="Color.Inherit" Variant="Variant.Text" OnClick="@((e) => DarkMode())">Toggle Dark/Light Mode</MudIconButton>
         @*<MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/Garderoben/MudBlazor" Target="_blank" />*@
     </MudAppBar>
