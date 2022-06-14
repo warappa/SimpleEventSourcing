@@ -24,11 +24,14 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
                 config.NotNullable(true);
                 config.Index("LoadSnapshots");
+                config.UniqueKey("LoadSnapshots");
             });
             
             Property(x => x.StreamRevision, config =>
             {
                 config.NotNullable(true);
+                config.Index("LoadSnapshots");
+                config.UniqueKey("LoadSnapshots");
             });
             Property(x => x.StateIdentifier, config =>
             {
@@ -42,6 +45,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
                 config.NotNullable(true);
                 config.Index("LoadSnapshots");
+                config.UniqueKey("LoadSnapshots");
             });
             Property(x => x.StateSerialized, config =>
             {

@@ -46,7 +46,7 @@ namespace SimpleEventSourcing.WriteModel
             var state = instance.UntypedState;
 
             var stateIdentifier = persistenceEngine.Serializer.Binder.BindToName(instance.UntypedState.GetType());
-            var snapshot = await persistenceEngine.LoadLatestSnapshotAsync(streamName, stateIdentifier).ConfigureAwait(false);
+            var snapshot = await persistenceEngine.LoadLatestSnapshotAsync(streamName, stateIdentifier, maxRevision).ConfigureAwait(false);
 
             var streamRevision = 0;
             if (snapshot is not null)
@@ -144,7 +144,7 @@ namespace SimpleEventSourcing.WriteModel
             {
                 if (entity.Version % SnapshotInterval == 0)
                 {
-                    await persistenceEngine.SaveSnapshot((IStreamState)entity.UntypedState, entity.Version).ConfigureAwait(false);
+                    await persistenceEngine.SaveSnapshotAsync((IStreamState)entity.UntypedState, entity.Version).ConfigureAwait(false);
                 }
             }
 

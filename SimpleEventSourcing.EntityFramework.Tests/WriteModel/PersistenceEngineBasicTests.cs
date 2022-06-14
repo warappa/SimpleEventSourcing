@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
 {
     [TestFixture]
-    public class PersistenceEngineBasicTests : PersistenceEngineTestsBase
+    public class PersistenceEngineBasicTests : PersistenceEngineBasicTestsBase
     {
         public PersistenceEngineBasicTests()
             : base(new EntityFrameworkTestConfig(), false)

@@ -20,6 +20,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel
         public string StateIdentifier { get; set; }
 
         [Column("StreamRevision")]
+        [Indexed(Name = "LoadSnapshots", Order = 3, Unique = true)]
         public int StreamRevision { get; set; }
 
         [Column("StateSerialized")]

@@ -62,7 +62,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
         {
             var taken = 0;
             List<RawStreamEntry> rawStreamEntries = null;
-            
+
             var payloadValues = GetPayloadValues(payloadTypes);
 
             while (true)
@@ -171,7 +171,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
         {
             var taken = 0;
             List<RawStreamEntry> rawStreamEntries = null;
-            
+
             var payloadValues = GetPayloadValues(payloadTypes);
 
             if (!ascending &&
@@ -343,7 +343,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             return null;
         }
 
-        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier)
+        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier, int maxRevision = int.MaxValue)
         {
             using (var statelessSession = sessionFactory.OpenStatelessSession())
             using (var transaction = statelessSession.BeginTransaction())
@@ -353,7 +353,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                 {
                     return statelessSession.Query<RawSnapshot>().Where(x =>
                             x.StreamName == streamName &&
-                            x.StateIdentifier == stateIdentifier)
+                            x.StateIdentifier == stateIdentifier &&
+                            x.StreamRevision <= maxRevision)
                         .OrderByDescending(x => x.StreamRevision)
                         .FirstOrDefault();
                 }
@@ -369,7 +370,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
             }
         }
 
-        public async Task SaveSnapshot(IStreamState state, int streamRevision)
+        public async Task SaveSnapshotAsync(IStreamState state, int streamRevision)
         {
             await SaveSnapshot(new RawSnapshot
             {

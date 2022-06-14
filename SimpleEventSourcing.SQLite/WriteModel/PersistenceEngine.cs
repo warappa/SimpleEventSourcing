@@ -308,14 +308,15 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
             return null;
         }
 
-        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier)
+        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier, int maxRevision = int.MaxValue)
         {
             var connection = connectionFactory();
             using (connection.Lock())
             {
-                var query = @"
+                var query = $@"
 SELECT StreamName, StreamRevision, StateIdentifier, StateSerialized, CreatedAt
 FROM Snapshots
+WHERE StreamRevision <= {maxRevision}
 ORDER BY StreamRevision DESC";
 
                 try
@@ -332,7 +333,7 @@ ORDER BY StreamRevision DESC";
             }
         }
 
-        public async Task SaveSnapshot(IStreamState state, int streamRevision)
+        public async Task SaveSnapshotAsync(IStreamState state, int streamRevision)
         {
             await SaveSnapshot(new RawSnapshot
             {

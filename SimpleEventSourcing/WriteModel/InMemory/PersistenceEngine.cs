@@ -256,17 +256,18 @@ namespace SimpleEventSourcing.WriteModel.InMemory
             return Task.CompletedTask;
         }
 
-        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier)
+        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier, int maxRevision = int.MaxValue)
         {
             return snapshots
                 .Where(x =>
                     x.StreamName == streamName &&
-                    x.StateIdentifier == stateIdentifier)
+                    x.StateIdentifier == stateIdentifier &&
+                    x.StreamRevision <= maxRevision)
                 .OrderByDescending(x => x.StreamRevision)
                 .FirstOrDefault();
         }
 
-        public async Task SaveSnapshot(IStreamState state, int streamRevision)
+        public async Task SaveSnapshotAsync(IStreamState state, int streamRevision)
         {
             var json = Serializer.Serialize(state.GetType(), state);
 

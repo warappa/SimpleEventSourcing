@@ -86,8 +86,7 @@ namespace SimpleEventSourcing.ReadModel
             //var stopwatch = new Stopwatch();
             //stopwatch.Start();
 
-            var requiredMessages = streamEntries
-                .Select(streamEntry => streamEntry.ToTypedMessage(engine.Serializer))
+            var requiredMessages = streamEntries.ToTypedMessages(engine.Serializer)
                 .ToList();
 
             //stopwatch.Stop();

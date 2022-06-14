@@ -382,7 +382,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
             return null;
         }
 
-        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier)
+        public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier, int maxRevision = int.MaxValue)
         {
             using (var scope = dbContextScopeFactory.Create())
             {
@@ -394,7 +394,8 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
                         .AsQueryable()
                         .Where(x =>
                             x.StreamName == streamName &&
-                            x.StateIdentifier == stateIdentifier)
+                            x.StateIdentifier == stateIdentifier &&
+                            x.StreamRevision <= maxRevision)
                         .OrderByDescending(x => x.StreamRevision)
                         .FirstOrDefault();
                 }
@@ -406,14 +407,14 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
             }
         }
 
-        public async Task SaveSnapshot(IStreamState state, int streamRevision)
+        public async Task SaveSnapshotAsync(IStreamState state, int streamRevision)
         {
             await SaveSnapshot(new RawSnapshot
             {
                 StreamName = state.StreamName,
                 StateIdentifier = Serializer.Binder.BindToName(state.GetType()),
                 StreamRevision = streamRevision,
-                StateSerialized = System.Text.Json.JsonSerializer.Serialize(state),
+                StateSerialized = Serializer.Serialize(state),
                 CreatedAt = DateTime.UtcNow
             }).ConfigureAwait(false);
         }

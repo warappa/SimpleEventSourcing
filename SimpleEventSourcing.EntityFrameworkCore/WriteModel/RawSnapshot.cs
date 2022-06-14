@@ -23,6 +23,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
         public string StateIdentifier { get; set; }
 
         [Column("StreamRevision")]
+        [Index("LoadSnapshots", Order = 3, IsUnique = true)]
         public int StreamRevision { get; set; }
 
         [Column("StateSerialized", TypeName = "nvarchar(MAX)")]

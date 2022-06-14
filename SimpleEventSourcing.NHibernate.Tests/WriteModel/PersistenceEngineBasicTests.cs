@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
 {
     [TestFixture]
-    public class PersistenceEngineBasicTests : PersistenceEngineTestsBase
+    public class PersistenceEngineBasicTests : PersistenceEngineBasicTestsBase
     {
         public NHibernateTestConfig NHconfig { get { return config as NHibernateTestConfig; } }
 

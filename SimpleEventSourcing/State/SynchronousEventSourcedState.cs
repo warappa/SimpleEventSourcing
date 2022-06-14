@@ -45,6 +45,11 @@ namespace SimpleEventSourcing.State
                 }
 
                 var parameterType = parameters[0].ParameterType;
+                if (parameterType == typeof(object))
+                {
+                    // skip Apply(object eventOrMessage);
+                    continue;
+                }
 
                 // IMessage<EventType>?
                 if (iMessageTypeInfo.IsAssignableFrom(parameterType.GetTypeInfo()))
@@ -84,10 +89,12 @@ namespace SimpleEventSourcing.State
                     .Contains(eventOrMessage.GetType());
         }
 
-        public virtual TState Apply(object @event)
+        public virtual TState Apply(object eventOrMessage)
         {
             // default noop
-            return this as TState;
+            //return this as TState;
+
+            return InvokeAssociatedApply(eventOrMessage);
         }
 
         protected virtual TState InvokeAssociatedApply(object eventOrMessage)
@@ -99,7 +106,7 @@ namespace SimpleEventSourcing.State
                 if (methodForMessageType.TryGetValue(message.Body.GetType(), out var mi))
                 {
                     object result;
-                    
+
                     result = mi.Invoke(state, new[] { message });
                     state = StateExtensions.ExtractState<TState>(result) ?? state;
                 }
@@ -107,7 +114,7 @@ namespace SimpleEventSourcing.State
                 if (methodForEventType.TryGetValue(message.Body.GetType(), out mi))
                 {
                     object result;
-                    
+
                     result = mi.Invoke(state, new[] { message.Body });
                     state = StateExtensions.ExtractState<TState>(result) ?? state;
                 }
@@ -119,7 +126,7 @@ namespace SimpleEventSourcing.State
                 if (methodForEventType.TryGetValue(@event.GetType(), out var mi))
                 {
                     object result;
-                    
+
                     result = mi.Invoke(state, new[] { @event });
                     state = StateExtensions.ExtractState<TState>(result) ?? state;
                 }

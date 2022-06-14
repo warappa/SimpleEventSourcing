@@ -1,6 +1,11 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
+using NUnit.Framework;
+using SimpleEventSourcing.State;
 using SimpleEventSourcing.WriteModel.InMemory.Tests;
 using SimpleEventSourcing.WriteModel.Tests;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel.InMemory.WriteModel.Tests

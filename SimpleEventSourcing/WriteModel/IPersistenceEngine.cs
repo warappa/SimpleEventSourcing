@@ -20,7 +20,7 @@ namespace SimpleEventSourcing.WriteModel
 
         ISerializer Serializer { get; }
 
-        Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier);
-        Task SaveSnapshot(IStreamState state, int streamRevision);
+        Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier, int maxStreamRevision = int.MaxValue);
+        Task SaveSnapshotAsync(IStreamState state, int streamRevision);
     }
 }
