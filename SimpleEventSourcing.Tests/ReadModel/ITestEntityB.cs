@@ -1,4 +1,6 @@
-﻿namespace SimpleEventSourcing.ReadModel.Tests
+﻿using System;
+
+namespace SimpleEventSourcing.ReadModel.Tests
 {
     public interface ITestEntityB : IStreamReadModel
     {

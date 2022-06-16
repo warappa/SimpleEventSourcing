@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using SimpleEventSourcing.EntityFrameworkCore.ReadModel;
+using SimpleEventSourcing.EntityFrameworkCore.Tests.Storage;
 using SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests;
 using SimpleEventSourcing.ReadModel.Tests;
 
@@ -27,8 +28,11 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
         public DbSet<CatchUpReadModel> CatchUpReadModel { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {   
+        {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<CompoundKeyTestEntity>()
+                .HasKey(x => new { x.Key1, x.Key2 });
         }
     }
 }

@@ -14,6 +14,8 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 {
     public class DynamicDbContext : DbContext
     {
+        private static MethodInfo miOnModelCreating;
+
         private DynamicDbContext(DbContextOptions options)
             : base(options)
         {
@@ -65,6 +67,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 #else
             var modelBuilder = new ModelBuilder(conventionSet);
 #endif
+            InvokeOnModelCreating(dbContext, modelBuilder);
 
             foreach (var type in typesOfModel)
             {
@@ -96,6 +99,18 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                 );
 
             return newDbContext;
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
+        private static void InvokeOnModelCreating(DbContext originalDbContext, ModelBuilder modelBuilder)
+        {
+            miOnModelCreating ??= typeof(DbContext)
+                .GetMethod("OnModelCreating", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(ModelBuilder) }, null);
+
+            miOnModelCreating.Invoke(originalDbContext, new[] { modelBuilder });
         }
     }
 }

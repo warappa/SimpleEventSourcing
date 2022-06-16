@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using SimpleEventSourcing.EntityFrameworkCore.ReadModel;
 using SimpleEventSourcing.EntityFrameworkCore.Storage;
+using SimpleEventSourcing.EntityFrameworkCore.Tests.Storage;
 using SimpleEventSourcing.EntityFrameworkCore.WriteModel;
 using SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests;
 using SimpleEventSourcing.ReadModel;
@@ -219,6 +220,14 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
             public override ITestEntityB GetTestEntityB()
             {
                 return new TestEntityB()
+                {
+                    Value = Guid.NewGuid().ToString()
+                };
+            }
+
+            public override ICompoundKeyTestEntity GetCompoundKeyTestEntity()
+            {
+                return new CompoundKeyTestEntity
                 {
                     Value = Guid.NewGuid().ToString()
                 };

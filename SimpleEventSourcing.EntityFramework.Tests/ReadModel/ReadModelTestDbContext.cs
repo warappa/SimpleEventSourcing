@@ -30,5 +30,13 @@ namespace SimpleEventSourcing.EntityFramework.Tests
         public DbSet<TestEntityB> TestEntityBs { get; set; }
 
         public DbSet<CatchUpReadModel> CatchUpReadModel { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<CompoundKeyTestEntity>()
+                .HasKey(x => new { x.Key1, x.Key2 });
+        }
     }
 }

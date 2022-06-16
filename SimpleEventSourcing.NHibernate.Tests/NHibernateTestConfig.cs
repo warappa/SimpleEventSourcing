@@ -388,6 +388,11 @@ insert into hibernate_unique_key values ( 1 );";
                 };
             }
 
+            public override ICompoundKeyTestEntity GetCompoundKeyTestEntity()
+            {
+                throw new NotImplementedException();
+            }
+
             public ISessionFactory GetSessionFactory(Configuration configuration = null)
             {
                 configuration ??= GetConfiguration();

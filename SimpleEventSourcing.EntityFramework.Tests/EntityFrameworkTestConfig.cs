@@ -217,6 +217,14 @@ namespace SimpleEventSourcing.EntityFramework.Tests
                 };
             }
 
+            public override ICompoundKeyTestEntity GetCompoundKeyTestEntity()
+            {
+                return new CompoundKeyTestEntity
+                {
+                    Value = Guid.NewGuid().ToString()
+                };
+            }
+
             public override async Task EnsureReadDatabaseAsync()
             {
                 using (var dbContext = new EmptyDbContext("integrationtest"))

@@ -28,7 +28,7 @@ namespace SimpleEventSourcing.EntityFramework.Storage
             {
                 var originalDbContext = scope.DbContexts.Get<TDbContext>();
 
-                var dbContext = DynamicDbContext.Create(originalDbContext.Database.Connection, false, entityTypes);
+                var dbContext = DynamicDbContext.Create(originalDbContext, originalDbContext.Database.Connection, false, entityTypes);
 
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
                 {

@@ -116,7 +116,7 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
 
                 if (res == null)
                 {
-                    res = set.Find(id);
+                    res = InternalDbSetInterop.Find<T>(set, id);
                 }
 
                 scope.SaveChanges();
@@ -137,7 +137,7 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
 
                 if (res == null)
                 {
-                    res = set.Find(id);
+                    res = InternalDbSetInterop.Find<object>(set, id);
                 }
 
                 scope.SaveChanges();

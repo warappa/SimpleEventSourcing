@@ -174,6 +174,11 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
             {
                 return new PollingObserverFactory(parent.WriteModel.GetPersistenceEngine(), interval);
             }
+
+            public override ICompoundKeyTestEntity GetCompoundKeyTestEntity()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

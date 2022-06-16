@@ -240,6 +240,11 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                 };
             }
 
+            public override ICompoundKeyTestEntity GetCompoundKeyTestEntity()
+            {
+                throw new NotImplementedException();
+            }
+
             public override ITestEntityB GetTestEntityB()
             {
                 return new TestEntityB()

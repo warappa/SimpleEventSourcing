@@ -31,6 +31,7 @@ namespace SimpleEventSourcing.Tests
 
             public abstract ITestEntityA GetTestEntityA();
             public abstract ITestEntityB GetTestEntityB();
+            public abstract ICompoundKeyTestEntity GetCompoundKeyTestEntity();
 
             public abstract IReadRepository GetReadRepository();
 

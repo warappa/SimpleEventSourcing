@@ -38,21 +38,18 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
         {
             var attachMi = dbSet.GetType().GetMethods().First(x => x.Name == "Attach");
             var result = attachMi.Invoke(dbSet, new object[] { entity });
-            //return (EntityEntry<T>)result;
         }
 
         public object Find(object id)
         {
-            var findMi = dbSet.GetType().GetMethods().First(x => x.Name == "Find");
-            return findMi.Invoke(dbSet, new object[] { new object[] { id } });
+            return InternalDbSetInterop.Find<object>(dbSet, id);
         }
 
         public IEnumerable Local
         {
             get
             {
-                var localPi = dbSet.GetType().GetProperty("Local");
-                return (IEnumerable)localPi.GetValue(dbSet);
+                return InternalDbSetInterop.GetLocal(dbSet);
             }
         }
 
