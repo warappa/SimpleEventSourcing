@@ -3,8 +3,6 @@ using NUnit.Framework;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.Storage;
 using System;
-using System.Collections;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.Tests.Storage
@@ -77,15 +75,49 @@ namespace SimpleEventSourcing.Tests.Storage
                 res.Count.Should().Be(1);
             }
         }
-    }
 
-    public static class ListHelper
-    {
-        public static IList ToList(this IQueryable query)
+        [Test]
+        public async Task Reset_does_not_affect_other_tables()
         {
-            var genericToList = typeof(Enumerable).GetMethod("ToList")
-                .MakeGenericMethod(new Type[] { query.ElementType });
-            return (IList)genericToList.Invoke(null, new[] { query });
+            await storageResetter.ResetAsync(new[] { entityTypeB }).ConfigureAwait(false);
+
+            var tableExistsB = config.ReadModel.IsTableInDatabase(entityTypeB);
+            tableExistsB.Should().Be(true);
+
+            var b = config.ReadModel.GetTestEntityB();
+
+            await readRepository.InsertAsync(b).ConfigureAwait(false);
+
+            using ((readRepository as IDbScopeAware).OpenScope())
+            {
+                var res = (await readRepository.QueryAsync(entityTypeB, x => true).ConfigureAwait(false)).ToList();
+                res.Count.Should().Be(1);
+            }
+
+            var tableExists = config.ReadModel.IsTableInDatabase(entityTypeA);
+            tableExists.Should().BeFalse();
+
+            await storageResetter.ResetAsync(new[] { entityTypeA }).ConfigureAwait(false);
+            using ((readRepository as IDbScopeAware).OpenScope())
+            {
+                var res = (await readRepository.QueryAsync(entityTypeA, x => true).ConfigureAwait(false)).ToList();
+                res.Count.Should().Be(0);
+            }
+
+            var entity = config.ReadModel.GetTestEntityA();
+            await readRepository.InsertAsync(entity).ConfigureAwait(false);
+
+            using ((readRepository as IDbScopeAware).OpenScope())
+            {
+                var res = (await readRepository.QueryAsync(entityTypeA, x => true).ConfigureAwait(false)).ToList();
+                res.Count.Should().Be(1);
+            }
+
+            using ((readRepository as IDbScopeAware).OpenScope())
+            {
+                var res = (await readRepository.QueryAsync(entityTypeB, x => true).ConfigureAwait(false)).ToList();
+                res.Count.Should().Be(1);
+            }
         }
     }
 }
