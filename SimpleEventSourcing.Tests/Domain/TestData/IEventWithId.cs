@@ -3,7 +3,7 @@
 namespace SimpleEventSourcing.Tests
 {
     public interface IEventWithId : IEvent
-	{
-		string Id { get; }
-	}
+    {
+        string Id { get; }
+    }
 }

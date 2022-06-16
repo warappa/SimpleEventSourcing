@@ -5,16 +5,16 @@ using System.Diagnostics;
 namespace SimpleEventSourcing.UI.ConsoleCore
 {
     public class AlternativeState : SynchronousEventSourcedState<AlternativeState>
-	{
-		public int ChangeCount { get; protected set; }
+    {
+        public int ChangeCount { get; protected set; }
 
-		public AlternativeState Apply(IEvent @event)
-		{
-			Debug.WriteLine("Apply every event");
+        public AlternativeState Apply(IEvent @event)
+        {
+            Debug.WriteLine("Apply every event");
 
-			ChangeCount++;
+            ChangeCount++;
 
-			return this;
-		}
-	}
+            return this;
+        }
+    }
 }

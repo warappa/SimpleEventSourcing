@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.ReadModel
 {
-    public class ReadRepositoryProjector<TProjector> : AsyncEventSourcedProjector<TProjector>, 
+    public class ReadRepositoryProjector<TProjector> : AsyncEventSourcedProjector<TProjector>,
         IDbScopeAware, IReadRepositoryProjector<TProjector>
         where TProjector : ReadRepositoryProjector<TProjector>, new()
     {

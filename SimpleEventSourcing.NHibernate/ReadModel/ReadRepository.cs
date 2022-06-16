@@ -47,7 +47,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
                 }
             }
         }
-        
+
         public Task UpdateAsync(params IReadModelBase[] entities)
         {
             using (OpenScope())

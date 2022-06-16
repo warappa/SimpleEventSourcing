@@ -74,7 +74,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             //await persistenceEngine.InitializeAsync().ConfigureAwait(false);
             await config.WriteModel.ResetAsync().ConfigureAwait(false);
-            
+
 
             serializer = persistenceEngine.Serializer;
         }

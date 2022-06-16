@@ -206,7 +206,7 @@ namespace Shop
             {
                 eventSourcedEntity = factory();
 
-                await repository.SaveAsync(eventSourcedEntity); 
+                await repository.SaveAsync(eventSourcedEntity);
             }
 
             return eventSourcedEntity;

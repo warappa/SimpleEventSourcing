@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.Bus;
-using SimpleEventSourcing.SQLite;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.SQLite;
+using SQLite;
 using System;
 using System.Threading.Tasks;
-using SQLite;
 
 namespace SimpleEventSourcing.UI.ConsoleCore
 {

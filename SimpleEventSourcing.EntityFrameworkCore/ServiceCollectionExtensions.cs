@@ -80,7 +80,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore
                     var engine = sp.GetRequiredService<IPersistenceEngine>();
                     var storageResetter = sp.GetRequiredService<IReadModelStorageResetter>();
                     var observerFactory = sp.GetRequiredService<IObserverFactory>();
-                    
+
                     return new CatchUpProjectionManager<TProjector>(state, checkpointPersister, engine, storageResetter, observerFactory);
 
                 });

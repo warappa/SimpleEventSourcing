@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SimpleEventSourcing.Tests;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -114,7 +113,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 .ConfigureAwait(false);
 
             var expected = testEvents
-                .Where(x => 
+                .Where(x =>
                     x.CheckpointNumber == 1 ||
                     x.CheckpointNumber == 2)
                 .ToList();

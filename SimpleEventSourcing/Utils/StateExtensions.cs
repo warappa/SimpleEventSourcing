@@ -1,5 +1,4 @@
-﻿using SimpleEventSourcing.State;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.Utils

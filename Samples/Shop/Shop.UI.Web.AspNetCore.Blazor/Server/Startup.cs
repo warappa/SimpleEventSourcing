@@ -9,7 +9,6 @@ using Microsoft.OpenApi.Models;
 using Shop.Core.BusinessRules;
 using Shop.ReadModel.Shared;
 using System.Linq;
-using System.Reflection;
 
 namespace Shop.UI.Web.AspNetCore.Blazor.Server
 {
@@ -47,7 +46,7 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
         {
             if (env.IsDevelopment())
             {
-                
+
                 app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
             }

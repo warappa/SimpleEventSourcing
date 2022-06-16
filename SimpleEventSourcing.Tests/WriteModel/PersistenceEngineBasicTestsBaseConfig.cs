@@ -53,7 +53,7 @@ namespace SimpleEventSourcing.Tests
 
             public abstract Task EnsureWriteDatabaseAsync();
             public abstract Task CleanupWriteDatabaseAsync();
-            
+
             public abstract bool IsTableInDatabase(Type type);
 
             public abstract Task ResetAsync();

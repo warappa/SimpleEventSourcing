@@ -66,10 +66,10 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             //var t = typeof(System.Data.SqlClient.SqlClientFactory);
             services.AddSimpleEventSourcing(GetBaseConfiguration(),
-                new[] 
+                new[]
                 {
-                    typeof(RawStreamEntry), 
-                    typeof(CheckpointInfo), 
+                    typeof(RawStreamEntry),
+                    typeof(CheckpointInfo),
                     typeof(PersistentEntity)
                 })
                 //.AddNewtonsoftJson()
@@ -79,7 +79,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             services.AddCatchupProjector(new TestState());
             services.AddCatchupProjector(
                 sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
-            
+
             services.AddBus();
 
             var serviceProvider = services.BuildServiceProvider();

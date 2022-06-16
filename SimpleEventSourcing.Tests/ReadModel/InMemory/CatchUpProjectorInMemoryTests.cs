@@ -11,6 +11,6 @@ namespace SimpleEventSourcing.ReadModel.InMemory.Tests
             : base(new InMemoryTestConfig())
         {
         }
-        
+
     }
 }

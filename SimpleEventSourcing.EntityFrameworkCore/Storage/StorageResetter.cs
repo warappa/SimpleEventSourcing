@@ -10,7 +10,7 @@ using System.Transactions;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 {
-    public class StorageResetter<TDbContext> : IStorageResetter, 
+    public class StorageResetter<TDbContext> : IStorageResetter,
         IReadModelStorageResetter, IWriteModelStorageResetter
         where TDbContext : DbContext
     {
@@ -37,7 +37,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                 {
                     emptyDbContext.Database.EnsureCreated();
                 }
-                 
+
                 using (var transaction = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
                 {
 

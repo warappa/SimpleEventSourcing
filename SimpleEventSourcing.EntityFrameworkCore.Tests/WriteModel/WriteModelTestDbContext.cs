@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using SimpleEventSourcing.EntityFrameworkCore.WriteModel;
-using SimpleEventSourcing.WriteModel;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 {

@@ -5,7 +5,6 @@ using SimpleEventSourcing.Utils;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;

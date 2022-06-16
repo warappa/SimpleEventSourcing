@@ -11,9 +11,9 @@ namespace Shop.Reports.Customers.Transient
     {
         public IEnumerable<string> Names { get { return names.ToList(); } }
         public string RenameHistory => string.Join(" -> ", names);
-        
+
         protected List<string> names = new List<string>();
-        
+
         public CustomerRenameHistory() { }
         public CustomerRenameHistory(CustomerRenameHistory state)
         {

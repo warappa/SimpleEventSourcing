@@ -1,6 +1,5 @@
 ﻿using SimpleEventSourcing.State;
 using System;
-using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.UI.ConsoleUI
 {

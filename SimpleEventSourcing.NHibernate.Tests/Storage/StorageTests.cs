@@ -14,7 +14,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
         {
 
         }
-        
+
         public NHibernateTestConfig NHconfig { get { return config as NHibernateTestConfig; } }
 
         private ISessionFactory writeSessionFactory;

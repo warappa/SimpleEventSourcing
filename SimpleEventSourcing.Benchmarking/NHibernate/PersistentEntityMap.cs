@@ -17,7 +17,8 @@ namespace SimpleEventSourcing.Benchmarking.NHibernate
             });
             Property(x => x.Streamname);
             Property(x => x.Name);
-            Cache(x => {
+            Cache(x =>
+            {
                 x.Usage(CacheUsage.NonstrictReadWrite);
                 x.Include(CacheInclude.All);
             });

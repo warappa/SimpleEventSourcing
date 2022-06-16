@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.WriteModel.Tests
@@ -57,7 +56,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             actual.Should().BeEquivalentTo(expected, "StreamRevision order not preserved");
         }
-        
+
         [Test]
         public virtual async Task Entities_are_in_the_same_order_as_they_were_inserted_checked_by_checkpointnumber()
         {
@@ -69,16 +68,38 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 var entry = config.WriteModel.GenerateRawStreamEntry();
                 entry.StreamRevision = i + 1;
                 entries.Add(entry);
+
+                /* Unmerged change from project 'SimpleEventSourcing.Tests (net6.0)'
+                Before:
+                            }
+
+                            Console.WriteLine("start");
+                After:
+                            }
+
+                            Console.WriteLine("start");
+                */
+
+                /* Unmerged change from project 'SimpleEventSourcing.Tests (net5.0)'
+                Before:
+                            }
+
+                            Console.WriteLine("start");
+                After:
+                            }
+
+                            Console.WriteLine("start");
+                */
             }
-            
+
             Console.WriteLine("start");
-            var stopwatch =new Stopwatch();
-            
+            var stopwatch = new Stopwatch();
+
             stopwatch.Start();
             await persistenceEngine.SaveStreamEntriesAsync(entries).ConfigureAwait(false);
             stopwatch.Stop();
             Console.WriteLine($"\nInsert Duration: {stopwatch.ElapsedMilliseconds}ms\n");
-            
+
             // patch for comparison
             for (var i = 0; i < sampleSize; i++)
             {

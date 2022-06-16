@@ -12,16 +12,16 @@ namespace SimpleEventSourcing.Tests
         {
 
         }
-		public ParentEntity(IEvent @event)
-			: base(new[] { @event })
-		{
+        public ParentEntity(IEvent @event)
+            : base(new[] { @event })
+        {
 
-		}
-		public ParentEntity(IEnumerable<IEvent> events)
-			: base(events)
-		{
+        }
+        public ParentEntity(IEnumerable<IEvent> events)
+            : base(events)
+        {
 
-		}
+        }
 
         public ParentEntity(IEnumerable<IEvent> events, ParentState initialState)
             : base(events, initialState)

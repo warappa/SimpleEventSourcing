@@ -39,7 +39,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             var readRepository = serviceProvider.GetRequiredService<IReadRepository>();
             var persistentState = serviceProvider.GetRequiredService<IProjectionManager<PersistentState>>();
             var viewModelResetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
-            
+
             await persistenceEngine.InitializeAsync().ConfigureAwait(false);
 
             // let bus subscribe to repository and publish its committed events
@@ -118,7 +118,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             agg.Rename("Hi!");
 
-            
+
             await repo.SaveAsync(agg).ConfigureAwait(false);
 
             agg = await repo.GetAsync<TestAggregate>(agg.Id).ConfigureAwait(false);

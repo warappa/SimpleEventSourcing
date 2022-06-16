@@ -97,7 +97,7 @@ namespace SimpleEventSourcing.Messaging
                             x.GetParameters().Count() == 2 &&
                             x.GetParameters()[0].ParameterType == typeof(string) &&
                             x.GetParameters()[1].ParameterType == message.Body.GetType());
-                    
+
                     startHandle.Invoke(processManager, new object[] { processIdExtractor(message), message.Body });
                 }
                 else

@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using SimpleEventSourcing.EntityFrameworkCore.Tests;
-using SimpleEventSourcing.ReadModel.Tests;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.EntityFramework.Tests

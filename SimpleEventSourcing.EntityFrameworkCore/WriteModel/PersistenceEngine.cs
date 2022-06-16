@@ -97,7 +97,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
         {
             var taken = 0;
             List<RawStreamEntry> rawStreamEntries = null;
-            
+
             var payloadValues = GetPayloadValues(payloadTypes);
 
             while (true)
@@ -195,7 +195,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
         {
             var taken = 0;
             List<RawStreamEntry> rawStreamEntries = null;
-            
+
             var payloadValues = GetPayloadValues(payloadTypes);
 
             if (!ascending &&

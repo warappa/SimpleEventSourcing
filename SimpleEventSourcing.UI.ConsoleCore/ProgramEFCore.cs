@@ -32,7 +32,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             services.AddCatchupProjector(new TestState());
             services.AddCatchupProjector(
                 sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
-            
+
             services.AddBus();
 
             var serviceProvider = services.BuildServiceProvider();

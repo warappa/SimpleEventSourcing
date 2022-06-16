@@ -3,7 +3,6 @@ using NUnit.Framework;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.State;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.Tests.States
 {
@@ -17,7 +16,7 @@ namespace SimpleEventSourcing.Tests.States
                 .Invoke(new TestEvent().ToEventMessage())
                 .Invoke(new TestEvent2());
 
-            string.Join(", ",state.CalledHandlers)
+            string.Join(", ", state.CalledHandlers)
                 .Should().Be("IMessage<TestEvent>, TestEvent, TestEvent2");
         }
 

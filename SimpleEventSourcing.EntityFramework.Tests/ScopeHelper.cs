@@ -13,18 +13,18 @@ namespace SimpleEventSourcing.EntityFramework.Tests
         {
             this.dbContextScopeFactory = dbContextScopeFactory;
         }
-        
+
         public void CreateFixtureScope()
         {
             fixtureScope = dbContextScopeFactory.Create(DbContextScopeOption.ForceCreateNew);
         }
-        
+
         public void DisposeFixtureScope()
         {
             fixtureScope?.Dispose();
             fixtureScope = null;
         }
-        
+
         public void CreateTestScope()
         {
             testScope = dbContextScopeFactory.Create(DbContextScopeOption.JoinExisting);

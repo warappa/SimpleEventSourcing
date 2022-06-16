@@ -45,7 +45,7 @@ namespace SimpleEventSourcing.Tests.Messaging
         {
             IProcessManager<TestProcessManagerState, string> processManager = null;
 
-            
+
 
             var testEvent = new TestEvent("aggregateId", "test");
             var testMessage = new DummyMessage<TestEvent>("processId", testEvent);
@@ -101,7 +101,7 @@ namespace SimpleEventSourcing.Tests.Messaging
         public void Cannot_start_process_manager_with_events_other_than_start_events()
         {
             IProcessManager<TestProcessManagerState, string> processManager = null;
-            
+
             var testMessage = new DummyMessage<TestEventEnd>("processId", new TestEventEnd("aggregateId"));
 
             A.CallTo(() => processManagerRepository.Get(typeof(TestProcessManager), "processId")).ReturnsLazily(() => processManager);

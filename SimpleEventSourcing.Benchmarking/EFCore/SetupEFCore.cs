@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SimpleEventSourcing.Benchmarking.Domain;
 using SimpleEventSourcing.Benchmarking.ReadModel;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.EntityFrameworkCore;

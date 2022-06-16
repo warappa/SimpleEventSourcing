@@ -43,7 +43,7 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
         public static PropertyInfo GetLocalProperty(object dbSet)
         {
             if (!localPropertyInfos.TryGetValue(dbSet.GetType(), out var localPi))
-{
+            {
                 localPi = dbSet.GetType().GetProperty("Local");
                 localPropertyInfos[dbSet.GetType()] = localPi;
             }

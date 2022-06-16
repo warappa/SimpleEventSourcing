@@ -31,7 +31,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
         {
             private InMemoryTestConfig parent;
 
-            public StorageInMemoryConfig(InMemoryTestConfig parent )
+            public StorageInMemoryConfig(InMemoryTestConfig parent)
             {
                 this.parent = parent;
             }

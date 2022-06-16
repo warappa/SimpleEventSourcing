@@ -4,19 +4,19 @@ using System.Web.Http;
 namespace Shop.UI.Web
 {
     public static class WebApiConfig
-	{
-		public static void Register(HttpConfiguration config)
-		{
-			// Web-API-Konfiguration und -Dienste
+    {
+        public static void Register(HttpConfiguration config)
+        {
+            // Web-API-Konfiguration und -Dienste
 
-			// Web-API-Routen
-			config.MapHttpAttributeRoutes();
+            // Web-API-Routen
+            config.MapHttpAttributeRoutes();
 
-			config.Routes.MapHttpRoute(
-				name: "DefaultApia",
-				routeTemplate: "api/{controller}/{id}",
-				defaults: new { id = RouteParameter.Optional }
-			);
+            config.Routes.MapHttpRoute(
+                name: "DefaultApia",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
 
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
@@ -24,5 +24,5 @@ namespace Shop.UI.Web
 
             formatters.Remove(formatters.XmlFormatter);
         }
-	}
+    }
 }

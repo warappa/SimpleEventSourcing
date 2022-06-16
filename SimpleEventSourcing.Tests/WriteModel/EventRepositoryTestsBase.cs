@@ -1,13 +1,8 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SimpleEventSourcing.Domain;
-using SimpleEventSourcing.Messaging;
-using SimpleEventSourcing.State;
 using SimpleEventSourcing.Tests;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;

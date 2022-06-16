@@ -25,7 +25,7 @@ namespace SimpleEventSourcing.Domain
         public EventSourcedEntity(IEnumerable<IEvent> events, TState initialState = null, int version = 0)
         {
             (this as IEventSourcedEntity<TState, TKey>).LoadEvents(events, initialState, version);
-            
+
             this.version = version + events.Count();
             committedVersion = this.version;
         }

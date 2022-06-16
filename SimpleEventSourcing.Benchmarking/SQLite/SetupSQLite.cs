@@ -1,12 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SimpleEventSourcing.Bus;
-using SimpleEventSourcing.SQLite;
-using System;
-using System.Threading.Tasks;
-using SQLite;
 using SimpleEventSourcing.Benchmarking.ReadModel;
+using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.SQLite;
+using SQLite;
 
 namespace SimpleEventSourcing.Benchmarking.SQLite
 {

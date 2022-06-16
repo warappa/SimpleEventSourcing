@@ -56,7 +56,7 @@ namespace SimpleEventSourcing.Tests
             var expected = config.WriteModel.GenerateRawStreamEntry();
 
             var number = await persistenceEngine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
-            number.Should().Be(CheckpointDefaults.NoCheckpoint) ;
+            number.Should().Be(CheckpointDefaults.NoCheckpoint);
 
             await persistenceEngine.SaveStreamEntriesAsync(new[] { expected }).ConfigureAwait(false);
             var streamEntry = await persistenceEngine.LoadStreamEntriesAsync()

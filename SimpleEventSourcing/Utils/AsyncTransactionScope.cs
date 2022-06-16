@@ -1,7 +1,4 @@
-﻿using System;
-using System.Transactions;
-
-namespace System.Transactions
+﻿namespace System.Transactions
 {
     public class AsyncTransactionScope : IDisposable
     {
@@ -15,7 +12,7 @@ namespace System.Transactions
         {
             scope = new TransactionScope(transactionToUse, TransactionScopeAsyncFlowOption.Enabled);
         }
-        
+
         public AsyncTransactionScope(TransactionScopeOption scopeOption)
         {
             scope = new TransactionScope(scopeOption, TransactionScopeAsyncFlowOption.Enabled);

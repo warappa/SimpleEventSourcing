@@ -81,7 +81,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             var cp = await engine.GetCurrentEventStoreCheckpointNumberAsync().ConfigureAwait(false);
             await checkpointPersister.WaitForCheckpointNumberAsync<CatchUpStateWithReadModel>(cp).ConfigureAwait(false);
-            
+
             model = await Load().ConfigureAwait(false);
             model.Should().NotBeNull();
             model.Count.Should().Be(1);

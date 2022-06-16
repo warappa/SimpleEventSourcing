@@ -7,7 +7,7 @@ namespace SimpleEventSourcing.Tests
     {
         public string AggregateRootId { get; private set; }
 
-		object IChildEntityEvent.AggregateRootId => AggregateRootId;
+        object IChildEntityEvent.AggregateRootId => AggregateRootId;
 
         protected ChildBaseEvent(string aggregateRootId, string id, DateTime dateTime)
             : base(id, dateTime)

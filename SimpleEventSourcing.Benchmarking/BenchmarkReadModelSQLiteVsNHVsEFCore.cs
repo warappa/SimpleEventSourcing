@@ -45,7 +45,7 @@ namespace SimpleEventSourcing.Benchmarking
             sqlitePersistenceEngine = sqliteServiceProvider.GetRequiredService<IPersistenceEngine>();
             sqliteRawStreamEntryFactory = sqliteServiceProvider.GetRequiredService<IRawStreamEntryFactory>();
             sqliteCheckpointPersister = sqliteServiceProvider.GetRequiredService<ICheckpointPersister>();
-            
+
             efCoreServiceProvider = SetupEFCore.BuildEntityFrameworkCore(config, useSystemTextJson, true);
             efCorePersistenceEngine = efCoreServiceProvider.GetRequiredService<IPersistenceEngine>();
             efCoreRawStreamEntryFactory = efCoreServiceProvider.GetRequiredService<IRawStreamEntryFactory>();
@@ -69,7 +69,7 @@ namespace SimpleEventSourcing.Benchmarking
             var nhEntries = GetRawStreamEntriesNH(Guid.NewGuid().ToString(), GetEvents(eventCount));
             nhPersistenceEngine.SaveStreamEntriesAsync(nhEntries).Wait();
         }
-        
+
         [Benchmark]
         [MaxIterationCount(18)]
         public async Task BenchmarkSQLite()

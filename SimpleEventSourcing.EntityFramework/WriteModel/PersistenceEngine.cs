@@ -376,7 +376,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                 try
                 {
                     return dbContext.Set<RawSnapshot>()
-                        .Where(x => 
+                        .Where(x =>
                             x.StreamName == streamName &&
                             x.StateIdentifier == stateIdentifier &&
                             x.StreamRevision <= maxRevision)

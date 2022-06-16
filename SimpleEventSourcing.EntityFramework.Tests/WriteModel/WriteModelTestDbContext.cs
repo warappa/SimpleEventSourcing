@@ -1,7 +1,6 @@
 ﻿using EntityFramework.DbContextScope.Interfaces;
 using SimpleEventSourcing.EntityFramework.WriteModel;
 using System.Data.Entity;
-using System.Diagnostics;
 
 namespace SimpleEventSourcing.EntityFramework.Tests
 {

@@ -36,7 +36,7 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
 
             services.AddCatchupProjector(sp => new ShoppingCartOverviewState(sp.GetRequiredService<IReadRepository>()));
             services.AddCatchupProjector(sp => new ShoppingCartReadModelState(sp.GetRequiredService<IReadRepository>()));
-            
+
             services.AddHostedService<ReadModelUpdateBackgroundService>();
         }
 

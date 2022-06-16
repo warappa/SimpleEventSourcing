@@ -4,7 +4,6 @@ using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.Tests;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Tests
@@ -14,7 +13,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
     {
         protected IReadRepository readRepository;
         protected TestsBaseConfig config;
-        
+
         protected ReadRepositoryWithCompoundKeyEntityFrameworkTestsBase(TestsBaseConfig config)
         {
             this.config = config;

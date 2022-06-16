@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using SimpleEventSourcing.ReadModel;
+﻿using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.SQLite.ReadModel;
 using SimpleEventSourcing.SQLite.Storage;
@@ -10,7 +8,6 @@ using SimpleEventSourcing.WriteModel;
 using SQLite;
 using System;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.SQLite.WriteModel.Tests
@@ -108,7 +105,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
             {
                 return new VersionedBinder();
             }
-            
+
             private ISerializer cachedSerializer;
             public ISerializer GetSerializer()
             {

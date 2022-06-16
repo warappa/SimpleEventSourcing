@@ -26,7 +26,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel.Tests
             : base(new NHibernateTestConfig())
         {
         }
-        
+
         [OneTimeSetUp]
         public void SetupReadRepositoryNHTestsFixture()
         {

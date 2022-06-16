@@ -29,7 +29,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 .Concat()
                 .Subscribe();
         }
-        
+
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T, IEventRepository> onNext, IEventRepository repo)
         {
             void a(T obj) => onNext(obj, repo);
