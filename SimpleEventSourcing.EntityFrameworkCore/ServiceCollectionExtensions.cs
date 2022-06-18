@@ -24,7 +24,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore
         public TDbContext CreateDbContext<TDbContext>()
             where TDbContext : DbContext
         {
-            return serviceProvider.GetRequiredService<TDbContext>();
+            return (TDbContext)Activator.CreateInstance(typeof(TDbContext), serviceProvider.GetRequiredService<DbContextOptions<TDbContext>>());
         }
     }
 
