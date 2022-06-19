@@ -160,9 +160,10 @@ $RECYCLE.BIN/
 *.bak
 *.db-shm
 *.db-wal
-Samples/Shop/Shop.UI.Web/Scripts/_references.js
+src/Samples/Shop/Shop.UI.Web/Scripts/_references.js
 
 *.nupkg
 .vs
 node_modules
-Samples/Shop/Shop.UI.Web.AspNet/Scripts/_references.js
+src/Samples/Shop/Shop.UI.Web.AspNet/Scripts/_references.js
+src/Samples/Shop/Shop.UI.Web.AspNet/Scripts/_references.js.map

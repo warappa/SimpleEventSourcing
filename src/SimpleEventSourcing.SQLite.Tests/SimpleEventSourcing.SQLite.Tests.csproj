@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />
+    <ProjectReference Include="..\SimpleEventSourcing.SQLite\SimpleEventSourcing.SQLite.csproj" />
+    <ProjectReference Include="..\SimpleEventSourcing.Tests\SimpleEventSourcing.Tests.csproj" />
+    <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NUnit" Version="3.13.2" />
+	<PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
+	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+    <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.0" />
+  </ItemGroup>
+</Project>
