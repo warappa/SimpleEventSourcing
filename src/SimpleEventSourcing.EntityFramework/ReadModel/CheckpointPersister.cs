@@ -1,4 +1,5 @@
-﻿using EntityFramework.DbContextScope.Interfaces;
+﻿using EntityFramework.DbContextScope;
+using EntityFramework.DbContextScope.Interfaces;
 using SimpleEventSourcing.ReadModel;
 using System.Data.Entity;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
 
         public override async Task<int> LoadLastCheckpointAsync(string projectorIdentifier)
         {
-            using (var scope = dbContextScopeFactory.Create())
+            using (var scope = dbContextScopeFactory.Create(DbContextScopeOption.ForceCreateNew))
             {
                 TCheckpointInfo checkpointInfo = null;
                 try

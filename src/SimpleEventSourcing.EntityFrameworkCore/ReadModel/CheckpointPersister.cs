@@ -18,7 +18,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
         public override async Task<int> LoadLastCheckpointAsync(string projectorIdentifier)
         {
-            using (var scope = dbContextScopeFactory.Create())
+            using (var scope = dbContextScopeFactory.Create(DbContextScopeOption.ForceCreateNew))
             {
                 TCheckpointInfo checkpointInfo = null;
                 try
