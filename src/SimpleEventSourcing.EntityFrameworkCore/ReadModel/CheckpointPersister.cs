@@ -1,6 +1,8 @@
 ﻿using EntityFrameworkCore.DbContextScope;
 using Microsoft.EntityFrameworkCore;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.WriteModel;
+using System;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
@@ -11,9 +13,10 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
     {
         private readonly IDbContextScopeFactory dbContextScopeFactory;
 
-        public CheckpointPersister(IDbContextScopeFactory dbContextScopeFactory)
+        public CheckpointPersister(IDbContextScopeFactory dbContextScopeFactory, IPersistenceEngine engine)
+            : base(engine)
         {
-            this.dbContextScopeFactory = dbContextScopeFactory;
+            this.dbContextScopeFactory = dbContextScopeFactory ?? throw new ArgumentNullException(nameof(dbContextScopeFactory));
         }
 
         public override async Task<int> LoadLastCheckpointAsync(string projectorIdentifier)

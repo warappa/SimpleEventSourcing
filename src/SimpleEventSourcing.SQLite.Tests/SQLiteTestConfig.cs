@@ -269,7 +269,7 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
 
             public override ICheckpointPersister GetCheckpointPersister()
             {
-                return new CheckpointPersister<CheckpointInfo>(GetReadConnectionFactory()());
+                return new CheckpointPersister<CheckpointInfo>(GetReadConnectionFactory()(), parent.WriteModel.GetPersistenceEngine());
             }
 
             public override Type GetCheckpointInfoType()

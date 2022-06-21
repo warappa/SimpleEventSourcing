@@ -137,7 +137,7 @@ namespace Shop
             });
 
             var viewModelResetter = new StorageResetter(readConnectionFactory());
-            checkpointPersister = new CheckpointPersister<CheckpointInfo>(readConnectionFactory());
+            checkpointPersister = new CheckpointPersister<CheckpointInfo>(readConnectionFactory(), engine);
             observerFactory = new PollingObserverFactory(engine);
 
             // nicht-persistente Projektion

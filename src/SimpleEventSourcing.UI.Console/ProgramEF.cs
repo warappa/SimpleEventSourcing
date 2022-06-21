@@ -258,7 +258,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             var viewModelResetter = new StorageResetter<ReadModelDbContext>(dbContextScopeFactory);
             // viewModelResetter.Reset(new[] { typeof(CheckpointInfo), typeof(PersistentEntity) });
-            var checkpointPersister = new CheckpointPersister<ReadModelDbContext, CheckpointInfo>(dbContextScopeFactory);
+            var checkpointPersister = new CheckpointPersister<ReadModelDbContext, CheckpointInfo>(dbContextScopeFactory, persistenceEngine);
 
             //Console.ReadKey();
 

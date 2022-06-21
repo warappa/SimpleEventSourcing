@@ -266,7 +266,7 @@ insert into hibernate_unique_key values ( 1 );";
 
             public override ICheckpointPersister GetCheckpointPersister()
             {
-                return new CheckpointPersister<CheckpointInfo>(GetSessionFactory());
+                return new CheckpointPersister<CheckpointInfo>(GetSessionFactory(), parent.WriteModel.GetPersistenceEngine());
             }
 
             public Configuration GetBaseConfiguration()

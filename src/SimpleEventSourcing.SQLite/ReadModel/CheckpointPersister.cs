@@ -1,6 +1,7 @@
 ﻿using SimpleEventSourcing.ReadModel;
 using SQLite;
 using System.Threading.Tasks;
+using SimpleEventSourcing.WriteModel;
 
 namespace SimpleEventSourcing.SQLite.ReadModel
 {
@@ -9,7 +10,8 @@ namespace SimpleEventSourcing.SQLite.ReadModel
     {
         private readonly SQLiteConnectionWithLock connection;
 
-        public CheckpointPersister(SQLiteConnectionWithLock connection)
+        public CheckpointPersister(SQLiteConnectionWithLock connection, IPersistenceEngine engine)
+            : base(engine)
         {
             this.connection = connection;
         }

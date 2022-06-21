@@ -1,6 +1,7 @@
 ﻿using NHibernate;
 using NHibernate.Context;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.WriteModel;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.NHibernate.ReadModel
@@ -10,7 +11,8 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
     {
         private readonly ISessionFactory sessionFactory;
 
-        public CheckpointPersister(ISessionFactory sessionFactory)
+        public CheckpointPersister(ISessionFactory sessionFactory, IPersistenceEngine engine)
+            : base(engine)
         {
             this.sessionFactory = sessionFactory;
         }

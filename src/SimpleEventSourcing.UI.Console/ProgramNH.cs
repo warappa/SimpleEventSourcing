@@ -286,7 +286,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 );
 
             var viewModelResetter = new StorageResetter(nHibernateResetConfigurationProvider);
-            var checkpointPersister = new CheckpointPersister<CheckpointInfo>(sessionFactory);
+            var checkpointPersister = new CheckpointPersister<CheckpointInfo>(sessionFactory, persistenceEngine);
 
             //Console.ReadKey();
 

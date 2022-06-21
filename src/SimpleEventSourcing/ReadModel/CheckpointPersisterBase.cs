@@ -1,4 +1,5 @@
 ﻿using SimpleEventSourcing.State;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +8,13 @@ namespace SimpleEventSourcing.ReadModel
 {
     public abstract class CheckpointPersisterBase : ICheckpointPersister
     {
+        private readonly IPersistenceEngine engine;
+
+        protected CheckpointPersisterBase(IPersistenceEngine engine)
+        {
+            this.engine = engine ?? throw new ArgumentNullException(nameof(engine));
+        }
+
         public virtual string GetProjectorIdentifier<T>()
         {
             return GetProjectorIdentifier(typeof(T));
@@ -90,6 +98,28 @@ namespace SimpleEventSourcing.ReadModel
                 var delay = Math.Min(delayInMs * (pow - 1) / 2, maxDelayMs);
                 await Task.Delay(delay, token).ConfigureAwait(false);
             }
+        }
+
+        public async Task WaitForCurrentCheckpointNumberAsync(Type readModelProjectorType, CancellationToken token = default)
+        {
+            var cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
+            await WaitForCheckpointNumberAsync(readModelProjectorType, cp, token);
+        }
+
+        public async Task WaitForCurrentCheckpointNumberAsync(Type readModelProjectorType, TimeSpan timeout, CancellationToken token = default)
+        {
+            var cp = await engine.GetCurrentEventStoreCheckpointNumberAsync();
+            await WaitForCheckpointNumberAsync(readModelProjectorType, cp, timeout, token);
+        }
+
+        public async Task WaitForCurrentCheckpointNumberAsync<TReadModelProjector>(CancellationToken token = default) where TReadModelProjector : IAsyncProjector
+        {
+            await WaitForCurrentCheckpointNumberAsync(typeof(TReadModelProjector), token);
+        }
+
+        public async Task WaitForCurrentCheckpointNumberAsync<TReadModelProjector>(TimeSpan timeout, CancellationToken token = default) where TReadModelProjector : IAsyncProjector
+        {
+            await WaitForCurrentCheckpointNumberAsync(typeof(TReadModelProjector), timeout, token);
         }
     }
 }

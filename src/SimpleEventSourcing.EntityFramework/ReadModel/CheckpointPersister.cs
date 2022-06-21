@@ -1,6 +1,7 @@
 ﻿using EntityFramework.DbContextScope;
 using EntityFramework.DbContextScope.Interfaces;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.WriteModel;
 using System.Data.Entity;
 using System.Threading.Tasks;
 
@@ -12,7 +13,8 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
     {
         private readonly IDbContextScopeFactory dbContextScopeFactory;
 
-        public CheckpointPersister(IDbContextScopeFactory dbContextScopeFactory)
+        public CheckpointPersister(IDbContextScopeFactory dbContextScopeFactory, IPersistenceEngine engine)
+            : base(engine)
         {
             this.dbContextScopeFactory = dbContextScopeFactory;
         }

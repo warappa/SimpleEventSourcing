@@ -263,7 +263,7 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
             });
 
             var viewModelResetter = new StorageResetter(readConnectionFactory());
-            var checkpointPersister = new CheckpointPersister<CheckpointInfo>(readConnectionFactory());
+            var checkpointPersister = new CheckpointPersister<CheckpointInfo>(readConnectionFactory(), engine);
 
             //Console.ReadKey();
 

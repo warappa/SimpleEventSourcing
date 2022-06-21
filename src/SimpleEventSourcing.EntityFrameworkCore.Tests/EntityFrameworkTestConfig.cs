@@ -188,7 +188,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
             public override ICheckpointPersister GetCheckpointPersister()
             {
-                return new CheckpointPersister<ReadModelTestDbContext, CheckpointInfo>(new DbContextScopeFactory(new DbContextFactory()));
+                return new CheckpointPersister<ReadModelTestDbContext, CheckpointInfo>(new DbContextScopeFactory(new DbContextFactory()), parent.WriteModel.GetPersistenceEngine());
             }
 
             public override async Task CleanupReadDatabaseAsync()

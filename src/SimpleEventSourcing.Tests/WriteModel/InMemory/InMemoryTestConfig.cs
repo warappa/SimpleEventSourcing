@@ -157,7 +157,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
 
             public override ICheckpointPersister GetCheckpointPersister()
             {
-                return new CheckpointPersister();
+                return new CheckpointPersister(parent.WriteModel.GetPersistenceEngine());
             }
 
             public override Type GetCheckpointInfoType()

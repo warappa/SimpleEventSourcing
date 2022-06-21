@@ -35,7 +35,7 @@ namespace SimpleEventSourcing.SQLite
 
             services.AddScoped<ICheckpointPersister>(sp =>
             {
-                return new CheckpointPersister<CheckpointInfo>(readConnectionFactory());
+                return new CheckpointPersister<CheckpointInfo>(readConnectionFactory(), sp.GetRequiredService<IPersistenceEngine>());
             });
             services.AddScoped<IReadModelStorageResetter>(sp =>
             {
