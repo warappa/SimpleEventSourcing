@@ -65,7 +65,7 @@
     <PackageReference Include="Microsoft.Owin.Security" Version="4.1.1" />
     <PackageReference Include="Microsoft.Owin.Security.Cookies" Version="4.1.1" />
     <PackageReference Include="Microsoft.Web.Infrastructure" Version="1.0.0.0" />
-    <PackageReference Include="Moment.js" Version="2.29.2" />
+    <PackageReference Include="Moment.js" Version="2.29.4" />
     <PackageReference Include="moment.TypeScript.DefinitelyTyped" Version="1.8.3" />
 
     <PackageReference Include="Owin" Version="1.0" />
