@@ -296,7 +296,7 @@ insert into hibernate_unique_key values ( 1 );";
             {
                 var p = GetNHibernateResetConfigurationProvider(baseConfiguration);
 
-                var cfg = p.GetConfigurationForTypes(typeof(TestEntityA), typeof(TestEntityB), typeof(CheckpointInfo), typeof(CatchUpReadModel));
+                var cfg = p.GetConfigurationForTypes(typeof(TestEntityA), typeof(TestEntityASubEntity), typeof(TestEntityB), typeof(CheckpointInfo), typeof(CatchUpReadModel));
                 if (IsLoggingEnabled)
                 {
                     cfg.SetInterceptor(new SqlStatementInterceptor());
@@ -311,7 +311,7 @@ insert into hibernate_unique_key values ( 1 );";
 
             public override async Task CleanupReadDatabaseAsync()
             {
-                await GetStorageResetter().ResetAsync(new[] { typeof(CheckpointInfo), typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel) }, true).ConfigureAwait(false);
+                await GetStorageResetter().ResetAsync(new[] { typeof(CheckpointInfo), typeof(TestEntityA), typeof(TestEntityASubEntity), typeof(TestEntityB), typeof(CatchUpReadModel) }, true).ConfigureAwait(false);
             }
 
             public override async Task EnsureReadDatabaseAsync()

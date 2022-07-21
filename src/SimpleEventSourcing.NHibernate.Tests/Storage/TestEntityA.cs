@@ -11,5 +11,17 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
 
         public virtual string Value { get; set; }
         public virtual string Streamname { get; set; }
+        public virtual TestEntityASubEntity SubEntity { get; set; } = new TestEntityASubEntity
+        {
+            SubValue = "sub value"
+        };
+        ITestEntityASubEntity ITestEntityA.SubEntity { get => SubEntity; }
+    }
+
+    public class TestEntityASubEntity : ITestEntityASubEntity
+    {
+        public virtual int Id { get; set; }
+        object IReadModelBase.Id { get => Id; set => Id = (int)value; }
+        public virtual string SubValue { get; set; }
     }
 }

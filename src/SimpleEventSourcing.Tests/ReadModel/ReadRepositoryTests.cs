@@ -36,7 +36,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
             readRepository = config.ReadModel.GetReadRepository();
 
             var readResetter = config.ReadModel.GetStorageResetter();
-            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType() }).ConfigureAwait(false);
+            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetTestEntityA().SubEntity.GetType() }).ConfigureAwait(false);
         }
 
         [Test]

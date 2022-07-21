@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.EntityFrameworkCore.Internal;
 using System;
@@ -67,21 +68,18 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 #else
             var modelBuilder = new ModelBuilder(conventionSet);
 #endif
-            InvokeOnModelCreating(dbContext, modelBuilder);
-
-            foreach (var type in typesOfModel)
+            
+            using (((Model)modelBuilder.Model).Builder.Metadata.ConventionDispatcher.DelayConventions())
             {
-                modelBuilder.Entity(type);
-            }
+                InvokeOnModelCreating(dbContext, modelBuilder);
 
-            foreach (var t in modelBuilder.Model.GetEntityTypes().ToList())
-            {
-                if (!typesOfModel.Contains(t.ClrType))
+                foreach (var type in typesOfModel)
                 {
-                    // workaround return-type change between 3.1.11 and 5.0.2
-                    dynamic modelDynamic = modelBuilder.Model;
-                    modelDynamic.RemoveEntityType(t.ClrType);
+                    modelBuilder.Entity(type);
                 }
+
+                RemoveForeignKeysToExcludedEntities(typesOfModel, modelBuilder);
+                RemoveExcludedEntities(typesOfModel, modelBuilder);
             }
 
             modelBuilder.BuildIndexesFromAnnotations();
@@ -99,6 +97,54 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                 );
 
             return newDbContext;
+        }
+
+        private static void RemoveExcludedEntities(Type[] typesOfModel, ModelBuilder modelBuilder)
+        {
+            foreach (var t in modelBuilder.Model.GetEntityTypes().ToList())
+            {
+                if (!typesOfModel.Contains(t.ClrType))
+                {
+                    // workaround return-type change between 3.1.11 and 5.0.2
+                    dynamic modelDynamic = modelBuilder.Model;
+                    modelDynamic.RemoveEntityType(t.ClrType);
+                }
+            }
+        }
+
+        private static void RemoveForeignKeysToExcludedEntities(Type[] typesOfModel, ModelBuilder modelBuilder)
+        {
+            foreach (var t in modelBuilder.Model.GetEntityTypes().ToList())
+            {
+                if (!typesOfModel.Contains(t.ClrType))
+                {
+                    Fix(t);
+                }
+            }
+        }
+
+        private static void Fix(IMutableEntityType entity)
+        {
+            var references = entity.GetDeclaredReferencingForeignKeys()
+                .ToList();
+
+
+            foreach (var reference in references)
+            {
+                var element = reference.DeclaringEntityType;
+                foreach (var prop in reference.Properties)
+                    element.IsIgnored(prop.Name);
+
+                if (reference.DependentToPrincipal != null)
+                    element.IsIgnored(reference.DependentToPrincipal.Name);
+
+                if (reference.PrincipalToDependent != null)
+                    entity.IsIgnored(reference.PrincipalToDependent.Name);
+
+                reference.DeclaringEntityType.RemoveForeignKey(reference);
+                //reference.DeclaringEntityType.AddForeignKey(currentProps, pk, entity);
+            }
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

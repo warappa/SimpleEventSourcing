@@ -30,6 +30,10 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                 var originalDbContext = scope.DbContexts.Get<TDbContext>();
 
                 var connection = originalDbContext.Database.GetDbConnection();
+                if (connection.State != System.Data.ConnectionState.Open)
+                {
+                    connection.Open();
+                }
                 var dbContext = DynamicDbContext.Create(originalDbContext, options, connection, entityTypes);
                 var emptyDbContext = DynamicDbContext.Create(originalDbContext, options, connection, Array.Empty<Type>());
 
@@ -38,9 +42,8 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                     emptyDbContext.Database.EnsureCreated();
                 }
 
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
+                using (var transaction = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
                 {
-
                     try
                     {
                         var tablenames = entityTypes
@@ -97,7 +100,6 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                     }
                     catch
                     {
-                        // transaction.Rollback();
                     }
                 }
             }

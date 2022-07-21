@@ -10,5 +10,17 @@ namespace SimpleEventSourcing.ReadModel.InMemory.Tests
 
         public virtual string Value { get; set; }
         public string Streamname { get; set; }
+        public TestEntityASubEntity SubEntity { get; } = new TestEntityASubEntity
+        {
+            SubValue = "sub value"
+        };
+        ITestEntityASubEntity ITestEntityA.SubEntity { get => SubEntity; }
+    }
+
+    public class TestEntityASubEntity : ITestEntityASubEntity
+    {
+        public int Id { get; set; }
+        public string SubValue { get; set; }
+        object IReadModelBase.Id { get => Id; set => Id = (int)value; }
     }
 }

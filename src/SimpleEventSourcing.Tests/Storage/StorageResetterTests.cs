@@ -12,6 +12,7 @@ namespace SimpleEventSourcing.Tests.Storage
     {
         protected IStorageResetter storageResetter;
         protected Type entityTypeA;
+        protected Type entityTypeASubEntity;
         protected Type entityTypeB;
         protected IReadRepository readRepository;
         protected TestsBaseConfig config;
@@ -21,6 +22,7 @@ namespace SimpleEventSourcing.Tests.Storage
             this.config = config;
 
             entityTypeA = config.ReadModel.GetTestEntityA().GetType();
+            entityTypeASubEntity = config.ReadModel.GetTestEntityA().SubEntity.GetType();
             entityTypeB = config.ReadModel.GetTestEntityB().GetType();
         }
 
@@ -45,10 +47,11 @@ namespace SimpleEventSourcing.Tests.Storage
 
             tableExists.Should().BeFalse();
 
-            await storageResetter.ResetAsync(new[] { entityTypeA }).ConfigureAwait(false);
+            await storageResetter.ResetAsync(new[] { entityTypeA, entityTypeASubEntity }).ConfigureAwait(false);
 
             tableExists = config.ReadModel.IsTableInDatabase(entityTypeA);
-
+            tableExists.Should().BeTrue();
+            tableExists = config.ReadModel.IsTableInDatabase(entityTypeASubEntity);
             tableExists.Should().BeTrue();
         }
 
@@ -59,7 +62,7 @@ namespace SimpleEventSourcing.Tests.Storage
 
             tableExists.Should().BeFalse();
 
-            await storageResetter.ResetAsync(new[] { entityTypeA }).ConfigureAwait(false);
+            await storageResetter.ResetAsync(new[] { entityTypeA, entityTypeASubEntity }).ConfigureAwait(false);
             using ((readRepository as IDbScopeAware).OpenScope())
             {
                 var res = (await readRepository.QueryAsync(entityTypeA, x => true).ConfigureAwait(false)).ToList();
@@ -97,7 +100,7 @@ namespace SimpleEventSourcing.Tests.Storage
             var tableExists = config.ReadModel.IsTableInDatabase(entityTypeA);
             tableExists.Should().BeFalse();
 
-            await storageResetter.ResetAsync(new[] { entityTypeA }).ConfigureAwait(false);
+            await storageResetter.ResetAsync(new[] { entityTypeA, entityTypeASubEntity }).ConfigureAwait(false);
             using ((readRepository as IDbScopeAware).OpenScope())
             {
                 var res = (await readRepository.QueryAsync(entityTypeA, x => true).ConfigureAwait(false)).ToList();

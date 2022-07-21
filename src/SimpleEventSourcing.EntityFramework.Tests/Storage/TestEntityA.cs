@@ -25,6 +25,12 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
         public string Value { get; set; }
         public string Streamname { get; set; }
 
+        public TestEntityASubEntity SubEntity { get; set; } = new TestEntityASubEntity
+        {
+            SubValue = "sub value"
+        };
+        ITestEntityASubEntity ITestEntityA.SubEntity { get => SubEntity; }
+
         public override bool Equals(object obj)
         {
             var other = obj as TestEntityA;
@@ -41,5 +47,16 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
         {
             return Id.GetHashCode();
         }
+    }
+
+    [Table("TestEntityASubEntity")]
+    public class TestEntityASubEntity : ITestEntityASubEntity
+    {
+        [Key]
+        [Column("Id")]
+        public int Id { get; set; }
+        object IReadModelBase.Id { get => Id; set => Id = (int)value; }
+
+        public string SubValue { get; set; }
     }
 }
