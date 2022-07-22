@@ -17,10 +17,12 @@ namespace Shop.Core.Domain.ShoppingCarts
         public bool Active { get; private set; }
         public ShoppingCartStatus ShoppingCartStatus { get; private set; }
 
-        public ShoppingCartState()
+        static ShoppingCartState()
         {
             childStateCreationMap.Add(typeof(ShoppingCartArticlePlaced), evt => new ShoppingCartArticleState((ShoppingCartArticlePlaced)evt));
         }
+
+        public ShoppingCartState() : base() { }
 
         public ShoppingCartState(ShoppingCartState state)
             : base(state)

@@ -167,3 +167,5 @@ src/Samples/Shop/Shop.UI.Web/Scripts/_references.js
 node_modules
 src/Samples/Shop/Shop.UI.Web.AspNet/Scripts/_references.js
 src/Samples/Shop/Shop.UI.Web.AspNet/Scripts/_references.js.map
+src/Samples/Shop/Shop.UI.Web.AspNet/readDatabase.db
+src/Samples/Shop/Shop.UI.Web.AspNet/writeDatabase.db
