@@ -35,6 +35,7 @@ namespace SimpleEventSourcing.EntityFramework.Storage
                     try
                     {
                         var tablenames = entityTypes
+                            .Reverse()
                             .Select(x => GetTablenameForType(dbContext, x))
                             .ToList();
 

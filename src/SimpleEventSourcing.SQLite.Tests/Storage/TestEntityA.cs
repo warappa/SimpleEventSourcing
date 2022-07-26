@@ -2,6 +2,8 @@
 using SimpleEventSourcing.ReadModel.Tests;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
+using System.Collections.Generic;
+using System.Security.Principal;
 
 namespace SimpleEventSourcing.SQLite.WriteModel.Tests
 {
@@ -31,6 +33,8 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
             SubValue = "sub value"
         };
         ITestEntityASubEntity ITestEntityA.SubEntity { get => SubEntity; }
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
+        public virtual List<TestEntityASubItem> SubItems { get; set; } = new List<TestEntityASubItem>();
     }
 
     [Table("TestEntityASubEntity")]
@@ -42,6 +46,20 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
         [Ignore]
         object IReadModelBase.Id { get => Id; set => Id = (int)value; }
         public string SubValue { get; set; }
+    }
+
+    [Table("TestEntityASubItem")]
+    public class TestEntityASubItem : ITestEntityASubItem
+    {
+        [PrimaryKey]
+        [Column("Id")]
+        public int Id { get; set; }
+        [Ignore]
+        object IReadModelBase.Id { get => Id; set => Id = (int)value; }
+        [ForeignKey(typeof(TestEntityA))]
+        public int ParentId { get; set; }
+
+        public string SubItemValue { get; set; }
     }
 
     public class SubData

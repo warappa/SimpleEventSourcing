@@ -1,4 +1,5 @@
 ﻿using SimpleEventSourcing.ReadModel.Tests;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SimpleEventSourcing.ReadModel.InMemory.Tests
 {
@@ -22,5 +23,14 @@ namespace SimpleEventSourcing.ReadModel.InMemory.Tests
         public int Id { get; set; }
         public string SubValue { get; set; }
         object IReadModelBase.Id { get => Id; set => Id = (int)value; }
+    }
+
+    public class TestEntityASubItem : ITestEntityASubItem
+    {
+        public int Id { get; set; }
+        object IReadModelBase.Id { get => Id; set => Id = (int)value; }
+        public int ParentId { get; set; }
+
+        public string SubItemValue { get; set; }
     }
 }

@@ -52,7 +52,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
             await engine.InitializeAsync().ConfigureAwait(false);
 
             var readResetter = config.ReadModel.GetStorageResetter();
-            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetTestEntityA().SubEntity.GetType(), config.ReadModel.GetCheckpointInfoType() }).ConfigureAwait(false);
+            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().SubEntity.GetType(), config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetTestEntityASubItem().GetType(), config.ReadModel.GetCheckpointInfoType() }).ConfigureAwait(false);
         }
 
         private async Task<CatchUpReadModel> Load()

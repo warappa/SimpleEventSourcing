@@ -30,6 +30,7 @@ namespace SimpleEventSourcing.Tests
             public abstract Task CleanupReadDatabaseAsync();
 
             public abstract ITestEntityA GetTestEntityA();
+            public abstract ITestEntityASubItem GetTestEntityASubItem();
             public abstract ITestEntityB GetTestEntityB();
             public abstract ICompoundKeyTestEntity GetCompoundKeyTestEntity();
 

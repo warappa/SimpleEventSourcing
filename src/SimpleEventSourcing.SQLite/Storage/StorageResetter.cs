@@ -1,6 +1,7 @@
 ﻿using SimpleEventSourcing.Storage;
 using SQLite;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SimpleEventSourcing.SQLite.Storage
@@ -18,7 +19,7 @@ namespace SimpleEventSourcing.SQLite.Storage
         {
             connection.RunInLock((SQLiteConnection c) =>
             {
-                foreach (var type in entityTypes)
+                foreach (var type in entityTypes.Reverse().ToList())
                 {
                     try
                     {

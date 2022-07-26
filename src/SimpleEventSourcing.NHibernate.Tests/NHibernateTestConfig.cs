@@ -380,6 +380,14 @@ insert into hibernate_unique_key values ( 1 );";
                 };
             }
 
+            public override ITestEntityASubItem GetTestEntityASubItem()
+            {
+                return new TestEntityASubItem()
+                {
+                    SubItemValue = Guid.NewGuid().ToString()
+                };
+            }
+
             public override ITestEntityB GetTestEntityB()
             {
                 return new TestEntityB()

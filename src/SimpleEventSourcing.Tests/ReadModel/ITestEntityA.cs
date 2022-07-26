@@ -9,4 +9,8 @@
     {
         string SubValue { get; set; }
     }
+    public interface ITestEntityASubItem : IReadModelBase
+    {
+        string SubItemValue { get; set; }
+    }
 }

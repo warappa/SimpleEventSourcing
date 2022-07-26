@@ -137,6 +137,14 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
                 };
             }
 
+            public override ITestEntityASubItem GetTestEntityASubItem()
+            {
+                return new TestEntityASubItem()
+                {
+                    SubItemValue = Guid.NewGuid().ToString()
+                };
+            }
+
             public override ITestEntityB GetTestEntityB()
             {
                 return new TestEntityB()

@@ -33,6 +33,12 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
             modelBuilder.Entity<CompoundKeyTestEntity>()
                 .HasKey(x => new { x.Key1, x.Key2 });
+
+            modelBuilder.Entity<TestEntityA>()
+                .HasMany(x => x.SubItems)
+                .WithOne()
+                .HasForeignKey(x => x.ParentId)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

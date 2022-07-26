@@ -237,6 +237,14 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
                 };
             }
 
+            public override ITestEntityASubItem GetTestEntityASubItem()
+            {
+                return new TestEntityASubItem()
+                {
+                    SubItemValue = Guid.NewGuid().ToString()
+                };
+            }
+
             public override ICompoundKeyTestEntity GetCompoundKeyTestEntity()
             {
                 throw new NotImplementedException();

@@ -1,5 +1,6 @@
 ﻿using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.ReadModel.Tests;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -31,6 +32,8 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
         };
         ITestEntityASubEntity ITestEntityA.SubEntity { get => SubEntity; }
 
+        public virtual ICollection<TestEntityASubItem> SubItems { get; set; } = new List<TestEntityASubItem>();
+
         public override bool Equals(object obj)
         {
             var other = obj as TestEntityA;
@@ -58,5 +61,17 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
         object IReadModelBase.Id { get => Id; set => Id = (int)value; }
 
         public string SubValue { get; set; }
+    }
+
+    [Table("TestEntityASubItem")]
+    public class TestEntityASubItem : ITestEntityASubItem
+    {
+        [Key]
+        [Column("Id")]
+        public int Id { get; set; }
+        object IReadModelBase.Id { get => Id; set => Id = (int)value; }
+        public int ParentId { get; set; }
+
+        public string SubItemValue { get; set; }
     }
 }

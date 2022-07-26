@@ -36,7 +36,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
             readRepository = config.ReadModel.GetReadRepository();
 
             var readResetter = config.ReadModel.GetStorageResetter();
-            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetTestEntityA().SubEntity.GetType() }).ConfigureAwait(false);
+            await readResetter.ResetAsync(new[] { config.ReadModel.GetTestEntityA().SubEntity.GetType(), config.ReadModel.GetTestEntityA().GetType(), config.ReadModel.GetTestEntityASubItem().GetType() }).ConfigureAwait(false);
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             var getAsyncGeneric = readRepository.GetType().GetMethod("GetAsync", new[] { expected.Id.GetType() });
 
-            var getAsync = getAsyncGeneric.MakeGenericMethod(loaded.GetType());
+            var getAsync = getAsyncGeneric.MakeGenericMethod(expected.GetType());
 
             var loaded2 = ((dynamic)(Task)getAsync.Invoke(readRepository, new object[] { expected.Id })).Result;
             loaded.Id.Should().Be(loaded2.Id);
@@ -95,7 +95,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             var getAsyncGeneric = readRepository.GetType().GetMethod("GetByStreamnameAsync", new[] { expected.Streamname.GetType() });
 
-            var getAsync = getAsyncGeneric.MakeGenericMethod(loaded.GetType());
+            var getAsync = getAsyncGeneric.MakeGenericMethod(expected.GetType());
 
             var loaded2 = ((dynamic)(Task)getAsync.Invoke(readRepository, new object[] { expected.Streamname })).Result;
             loaded.Streamname.Should().Be(loaded2.Streamname);

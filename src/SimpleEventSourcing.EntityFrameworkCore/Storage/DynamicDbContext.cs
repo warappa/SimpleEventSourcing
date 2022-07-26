@@ -68,16 +68,14 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 #else
             var modelBuilder = new ModelBuilder(conventionSet);
 #endif
-            
+
             using (((Model)modelBuilder.Model).Builder.Metadata.ConventionDispatcher.DelayConventions())
             {
                 InvokeOnModelCreating(dbContext, modelBuilder);
+            }
 
-                foreach (var type in typesOfModel)
-                {
-                    modelBuilder.Entity(type);
-                }
-
+            _ = (((Model)modelBuilder.Model).Builder.Metadata.ConventionDispatcher.DelayConventions());
+            {
                 RemoveForeignKeysToExcludedEntities(typesOfModel, modelBuilder);
                 RemoveExcludedEntities(typesOfModel, modelBuilder);
             }
@@ -106,6 +104,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                 if (!typesOfModel.Contains(t.ClrType))
                 {
                     // workaround return-type change between 3.1.11 and 5.0.2
+                    //modelBuilder.Ignore(t.ClrType);
                     dynamic modelDynamic = modelBuilder.Model;
                     modelDynamic.RemoveEntityType(t.ClrType);
                 }

@@ -186,7 +186,7 @@ namespace SimpleEventSourcing.EntityFramework.Tests
 
             public override async Task CleanupReadDatabaseAsync()
             {
-                await GetStorageResetter().ResetAsync(new[] { typeof(TestEntityA), typeof(TestEntityB), typeof(CatchUpReadModel), typeof(CheckpointInfo) }, true).ConfigureAwait(false);
+                await GetStorageResetter().ResetAsync(new[] { typeof(TestEntityASubEntity), typeof(TestEntityA), typeof(TestEntityASubItem), typeof(TestEntityB), typeof(CatchUpReadModel), typeof(CheckpointInfo) }, true).ConfigureAwait(false);
             }
 
             public override IReadRepository GetReadRepository()
@@ -206,6 +206,14 @@ namespace SimpleEventSourcing.EntityFramework.Tests
                 return new TestEntityA()
                 {
                     Value = Guid.NewGuid().ToString()
+                };
+            }
+
+            public override ITestEntityASubItem GetTestEntityASubItem()
+            {
+                return new TestEntityASubItem()
+                {
+                    SubItemValue = Guid.NewGuid().ToString()
                 };
             }
 
