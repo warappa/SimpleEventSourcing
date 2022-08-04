@@ -30,7 +30,7 @@ namespace SimpleEventSourcing.EntityFramework.Storage
 
                 var dbContext = DynamicDbContext.Create(originalDbContext, originalDbContext.Database.Connection, false, entityTypes);
 
-                using (var transaction = new TransactionScope(TransactionScopeOption.Required, TransactionScopeAsyncFlowOption.Enabled))
+                using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required))
                 {
                     try
                     {

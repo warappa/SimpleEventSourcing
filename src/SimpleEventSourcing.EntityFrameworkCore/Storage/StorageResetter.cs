@@ -42,7 +42,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                     emptyDbContext.Database.EnsureCreated();
                 }
 
-                using (var transaction = new TransactionScope(TransactionScopeOption.RequiresNew, TransactionScopeAsyncFlowOption.Enabled))
+                using (var transaction = new AsyncTransactionScope(TransactionScopeOption.RequiresNew))
                 {
                     try
                     {
