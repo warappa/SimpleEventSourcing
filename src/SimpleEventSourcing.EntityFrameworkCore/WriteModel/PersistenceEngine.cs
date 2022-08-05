@@ -37,10 +37,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 
         public async Task InitializeAsync()
         {
-            using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required, new TransactionOptions
-            {
-                IsolationLevel = IsolationLevel.ReadCommitted
-            }))
+            using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required))
             using (var scope = dbContextScopeFactory.Create())
             {
                 try
@@ -102,10 +99,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 
             while (true)
             {
-                using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required, new TransactionOptions
-                {
-                    IsolationLevel = IsolationLevel.RepeatableRead
-                }))
+                using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required))
                 using (var scope = dbContextScopeFactory.Create())
                 {
                     var dbContext = scope.DbContexts.Get<TDbContext>();
@@ -206,10 +200,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
 
             while (true)
             {
-                using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required, new TransactionOptions
-                {
-                    IsolationLevel = IsolationLevel.RepeatableRead
-                }))
+                using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required))
                 using (var scope = dbContextScopeFactory.Create())
                 {
                     var dbContext = scope.DbContexts.Get<TDbContext>();
@@ -292,10 +283,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
         {
             int result;
 
-            using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required, new TransactionOptions
-            {
-                IsolationLevel = IsolationLevel.ReadUncommitted
-            }))
+            using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required))
             using (var scope = dbContextScopeFactory.Create())
             {
                 var dbContext = scope.DbContexts.Get<TDbContext>();
