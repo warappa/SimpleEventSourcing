@@ -71,4 +71,19 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             Bla = bla;
         }
     }
+
+    [Versioned("EventNotHandledByPersistentState", 0)]
+    public class EventNotHandledByPersistentState : IEvent
+    {
+        public string Id { get; set; }
+        public bool NotHandled { get; set; }
+
+        public EventNotHandledByPersistentState(
+            string id,
+            bool notHandled)
+        {
+            Id = id;
+            NotHandled = notHandled;
+        }
+    }
 }

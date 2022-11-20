@@ -39,6 +39,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             var readRepository = serviceProvider.GetRequiredService<IReadRepository>();
             var persistentState = serviceProvider.GetRequiredService<IProjectionManager<PersistentState>>();
             var viewModelResetter = serviceProvider.GetRequiredService<IReadModelStorageResetter>();
+            var rawStreamEntryFactory = serviceProvider.GetRequiredService<IRawStreamEntryFactory>();
 
             await persistenceEngine.InitializeAsync().ConfigureAwait(false);
 
@@ -174,6 +175,8 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             list.Clear();
 
+            await InsertEventThatIsNotHandledInPersistentState(persistenceEngine, rawStreamEntryFactory);
+
             var loadedEntity = await repository.GetAsync<TestAggregate>(entityId).ConfigureAwait(false);
 
             //Console.WriteLine("Commits: " + await engine.LoadStreamEntriesAsync().CountAsync());
@@ -272,6 +275,14 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
 
             WaitForInput();
+        }
+
+        private static async Task InsertEventThatIsNotHandledInPersistentState(IPersistenceEngine persistenceEngine, IRawStreamEntryFactory rawStreamEntryFactory)
+        {
+            var notHandledEvent = new EventNotHandledByPersistentState(Guid.NewGuid().ToString(), true);
+            var notHandledMessage = notHandledEvent.ToTypedMessage(Guid.NewGuid().ToString(), new Dictionary<string, object>(), null, null, DateTime.UtcNow, 0);
+            var rawStreamEntry = rawStreamEntryFactory.CreateRawStreamEntry(persistenceEngine.Serializer, notHandledEvent.Id, Guid.NewGuid().ToString(), 0, notHandledMessage);
+            await persistenceEngine.SaveStreamEntriesAsync(new[] { rawStreamEntry });
         }
 
         private static void WaitForInput()

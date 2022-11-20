@@ -20,6 +20,7 @@ namespace SimpleEventSourcing.ReadModel
         private readonly ICheckpointPersister checkpointPersister;
         private readonly IStorageResetter storageResetter;
         private IObserveRawStreamEntries observer;
+        private List<string> payloadValues;
         private IDisposable subscription;
 
         public CatchUpProjectionManager(
@@ -37,6 +38,8 @@ namespace SimpleEventSourcing.ReadModel
             this.observerFactory = observerFactory ?? throw new ArgumentNullException(nameof(observerFactory));
 
             projectorIdentifier = checkpointPersister.GetProjectorIdentifier(typeof(TProjector));
+
+            payloadValues = GetPayloadValues(Projector.PayloadTypes);
         }
 
         public override async Task ResetAsync()
@@ -54,7 +57,9 @@ namespace SimpleEventSourcing.ReadModel
                 await storageResetter.ResetAsync(ControlsReadModelsAttribute.GetControlledReadModels(typeof(TProjector))).ConfigureAwait(false);
             }
 
-            observer = await observerFactory.CreateObserverAsync(lastKnownCheckpointNumber, Projector.PayloadTypes).ConfigureAwait(false);
+            // TODO: Maybe optimize for rebuilding again by setting payloadTypes only to null, if the last read didn't yield any results
+            //       Still, top checkpoint number must be available in CheckpointInfos table after all events are processed.
+            observer = await observerFactory.CreateObserverAsync(lastKnownCheckpointNumber, payloadTypes: null).ConfigureAwait(false);
 
             subscription = observer
                 .Buffer(TimeSpan.FromSeconds(0.1))
@@ -85,7 +90,9 @@ namespace SimpleEventSourcing.ReadModel
             //var stopwatch = new Stopwatch();
             //stopwatch.Start();
 
-            var requiredMessages = streamEntries.ToTypedMessages(engine.Serializer)
+            var requiredMessages = streamEntries
+                .Where(x => payloadValues.Contains(x.PayloadType))
+                .ToTypedMessages(engine.Serializer)
                 .ToList();
 
             //stopwatch.Stop();
@@ -104,18 +111,16 @@ namespace SimpleEventSourcing.ReadModel
                 await ApplyMessagesAsync(requiredMessages).ConfigureAwait(false);
             }
 
-            if (requiredMessages.Count > 0)
+            if (streamEntries.Count > 0)
             {
                 await checkpointPersister.SaveCurrentCheckpointAsync(
                     projectorIdentifier,
-                    requiredMessages[requiredMessages.Count - 1].CheckpointNumber)
+                    streamEntries[streamEntries.Count - 1].CheckpointNumber)
                     .ConfigureAwait(false);
             }
 
             //stopwatch.Stop();
             //Debug.WriteLine($"{typeof(TState).Name} {requiredMessages.Count}x ({streamEntries.Count}): {stopwatch.ElapsedMilliseconds}ms");
-
-            requiredMessages.Clear();
         }
 
         private async Task ApplyMessagesAsync(List<IMessage> requiredMessages)
@@ -125,6 +130,17 @@ namespace SimpleEventSourcing.ReadModel
                 var result = Projector.UntypedApply(message) ?? Projector;
                 Projector = await StateExtensions.ExtractStateAsync<TProjector>(result).ConfigureAwait(false);
             }
+        }
+
+        private List<string> GetPayloadValues(Type[] payloadTypes)
+        {
+            if (payloadTypes != null &&
+                payloadTypes.Length > 0)
+            {
+                return payloadTypes.Select(x => engine.Serializer.Binder.BindToName(x)).ToList();
+            }
+
+            return null;
         }
 
         protected override void Dispose(bool disposing)
