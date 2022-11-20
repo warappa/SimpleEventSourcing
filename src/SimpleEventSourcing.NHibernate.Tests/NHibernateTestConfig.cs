@@ -47,9 +47,9 @@ namespace SimpleEventSourcing.NHibernate.Tests
 
         public class WriteModelNHConfig : WriteModelConfig
         {
-            private NHibernateTestConfig parent;
+            private readonly NHibernateTestConfig parent;
 
-            private Dictionary<int, ISessionFactory> sessionFactoryMap = new Dictionary<int, ISessionFactory>();
+            private readonly Dictionary<int, ISessionFactory> sessionFactoryMap = new Dictionary<int, ISessionFactory>();
 
             public WriteModelNHConfig(NHibernateTestConfig parent)
             {
@@ -250,9 +250,9 @@ insert into hibernate_unique_key values ( 1 );";
 
         public class ReadModelNHConfig : ReadModelConfig
         {
-            private NHibernateTestConfig parent;
+            private readonly NHibernateTestConfig parent;
 
-            private Dictionary<int, ISessionFactory> sessionFactoryMap = new Dictionary<int, ISessionFactory>();
+            private readonly Dictionary<int, ISessionFactory> sessionFactoryMap = new Dictionary<int, ISessionFactory>();
 
             public ReadModelNHConfig(NHibernateTestConfig parent)
             {
@@ -435,7 +435,7 @@ insert into hibernate_unique_key values ( 1 );";
 
         public class StorageNHConfig : StorageConfig
         {
-            private NHibernateTestConfig parent;
+            private readonly NHibernateTestConfig parent;
 
             public StorageNHConfig(NHibernateTestConfig parent)
             {

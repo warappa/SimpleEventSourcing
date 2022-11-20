@@ -38,7 +38,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
 
         public override int GetHashCode()
         {
-            int hashCode = 365011897;
+            var hashCode = 365011897;
             hashCode = hashCode * -1521134295 + Key1.GetHashCode();
             hashCode = hashCode * -1521134295 + Key2.GetHashCode();
             return hashCode;

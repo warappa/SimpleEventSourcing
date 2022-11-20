@@ -35,7 +35,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
 
         public class StorageSQLiteConfig : StorageConfig
         {
-            private SQLiteTestConfig parent;
+            private readonly SQLiteTestConfig parent;
 
             public StorageSQLiteConfig(SQLiteTestConfig parent)
             {
@@ -46,7 +46,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
         public class WriteModelSQLiteConfig : WriteModelConfig
         {
             protected SQLiteConnectionWithLock writeConnection;
-            private SQLiteTestConfig parent;
+            private readonly SQLiteTestConfig parent;
 
             public WriteModelSQLiteConfig(SQLiteTestConfig parent)
             {
@@ -168,7 +168,7 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
         public class ReadModelSQLiteConfig : ReadModelConfig
         {
             protected SQLiteConnectionWithLock readConnection;
-            private SQLiteTestConfig parent;
+            private readonly SQLiteTestConfig parent;
 
             public ReadModelSQLiteConfig(SQLiteTestConfig parent)
             {

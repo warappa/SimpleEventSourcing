@@ -6,7 +6,7 @@ namespace SimpleEventSourcing.ReadModel.InMemory
 {
     public class CheckpointPersister : CheckpointPersisterBase
     {
-        private Dictionary<string, int> checkpoints = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> checkpoints = new Dictionary<string, int>();
 
         public CheckpointPersister(IPersistenceEngine engine)
             : base(engine)

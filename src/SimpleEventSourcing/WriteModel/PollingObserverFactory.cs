@@ -9,7 +9,7 @@ namespace SimpleEventSourcing.WriteModel
     {
         private readonly IPersistenceEngine persistenceEngine;
 
-        private TimeSpan defaultInterval;
+        private readonly TimeSpan defaultInterval;
 
         public PollingObserverFactory(IPersistenceEngine persistenceEngine, TimeSpan defaultInterval = default)
         {

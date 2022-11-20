@@ -10,7 +10,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
     {
         public NHibernateTestConfig NHconfig { get { return config as NHibernateTestConfig; } }
 
-        private ISessionFactory sessionFactory;
+        private readonly ISessionFactory sessionFactory;
 
         public PersistenceEngineCheckpointNumberTests()
             : base(new NHibernateTestConfig())

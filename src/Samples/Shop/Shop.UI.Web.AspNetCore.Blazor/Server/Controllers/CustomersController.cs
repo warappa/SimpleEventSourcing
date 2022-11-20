@@ -18,9 +18,9 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
     [Route("api/customers")]
     public class CustomersController : ControllerBase
     {
-        private IReadRepository readRepository;
-        private IEventRepository repository;
-        private ICheckpointPersister checkpointPersister;
+        private readonly IReadRepository readRepository;
+        private readonly IEventRepository repository;
+        private readonly ICheckpointPersister checkpointPersister;
 
         public CustomersController(IReadRepository readRepository, IEventRepository repository,
             ICheckpointPersister checkpointPersister)

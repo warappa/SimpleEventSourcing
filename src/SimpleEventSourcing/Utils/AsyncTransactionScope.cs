@@ -2,7 +2,7 @@
 {
     public class AsyncTransactionScope : IDisposable
     {
-        private TransactionScope scope;
+        private readonly TransactionScope scope;
 
         public AsyncTransactionScope()
         {

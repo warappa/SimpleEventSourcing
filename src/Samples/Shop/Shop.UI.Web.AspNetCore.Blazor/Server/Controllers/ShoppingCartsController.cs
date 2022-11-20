@@ -18,9 +18,9 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server.Controllers
     [Route("api/shoppingcarts")]
     public class ShoppingCartsController : ControllerBase
     {
-        private IReadRepository readRepository;
-        private IEventRepository repository;
-        private ICheckpointPersister checkpointPersister;
+        private readonly IReadRepository readRepository;
+        private readonly IEventRepository repository;
+        private readonly ICheckpointPersister checkpointPersister;
         private readonly IPersistenceEngine engine;
 
         public ShoppingCartsController(IReadRepository readRepository, IEventRepository repository,

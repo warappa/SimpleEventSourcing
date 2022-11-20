@@ -6,7 +6,7 @@ namespace SimpleEventSourcing.Messaging
 {
     public static class MessageExtensions
     {
-        private static TypeInfo typedMessageTypeInfo = typeof(TypedMessage<>).GetTypeInfo();
+        private static readonly TypeInfo typedMessageTypeInfo = typeof(TypedMessage<>).GetTypeInfo();
 
         public static IMessage ToTypedMessage(this object body, string messageId, IDictionary<string, object> headers, string correlationId, string causationId, DateTime dateTime, int checkpointNumber)
         {

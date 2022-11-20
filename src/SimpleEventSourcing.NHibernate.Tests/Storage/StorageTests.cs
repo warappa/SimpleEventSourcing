@@ -17,8 +17,8 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
 
         public NHibernateTestConfig NHconfig { get { return config as NHibernateTestConfig; } }
 
-        private ISessionFactory writeSessionFactory;
-        private ISessionFactory readSessionFactory;
+        private readonly ISessionFactory writeSessionFactory;
+        private readonly ISessionFactory readSessionFactory;
 
         protected override async Task BeforeFixtureTransactionAsync()
         {

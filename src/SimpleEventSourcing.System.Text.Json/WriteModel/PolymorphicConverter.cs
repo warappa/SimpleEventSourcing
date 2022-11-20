@@ -23,7 +23,7 @@ namespace SimpleEventSourcing.WriteModel
             if (!reader.Read() || reader.TokenType != JsonTokenType.String)
                 throw new JsonException("Value at $type is invalid.");
 
-            string assemblyQualifiedName = reader.GetString();
+            var assemblyQualifiedName = reader.GetString();
 
             var type = Type.GetType(assemblyQualifiedName);
             using (var output = new MemoryStream())

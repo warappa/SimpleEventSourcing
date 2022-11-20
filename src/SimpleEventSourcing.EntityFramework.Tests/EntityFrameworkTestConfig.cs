@@ -167,7 +167,7 @@ namespace SimpleEventSourcing.EntityFramework.Tests
 
         public class ReadModelEntityFrameworkConfig : ReadModelConfig
         {
-            private EntityFrameworkTestConfig parent;
+            private readonly EntityFrameworkTestConfig parent;
 
             public ReadModelEntityFrameworkConfig(EntityFrameworkTestConfig parent)
             {
@@ -289,7 +289,7 @@ namespace SimpleEventSourcing.EntityFramework.Tests
 
         public class StorageEntityFrameworkConfig : StorageConfig
         {
-            private EntityFrameworkTestConfig parent;
+            private readonly EntityFrameworkTestConfig parent;
 
             public StorageEntityFrameworkConfig(EntityFrameworkTestConfig parent)
             {

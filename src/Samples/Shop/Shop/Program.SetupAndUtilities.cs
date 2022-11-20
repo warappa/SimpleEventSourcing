@@ -30,7 +30,7 @@ namespace Shop
         private static PersistenceEngine engine;
         public static IEventRepository repository;
         public static JsonNetSerializer serializer;
-        private static List<IDisposable> disposeables = new();
+        private static readonly List<IDisposable> disposeables = new();
         private static Func<SQLiteConnectionWithLock> connectionFactory;
         private static Func<SQLiteConnectionWithLock> readConnectionFactory;
 

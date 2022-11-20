@@ -15,7 +15,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
     {
         private static readonly MethodInfo getGenericMethodInfo;
         private static readonly MethodInfo tableGenericMethodInfo;
-        private static MethodInfo getAllWithChildrenGenericMethodInfo;
+        private static readonly MethodInfo getAllWithChildrenGenericMethodInfo;
         private readonly Func<SQLiteConnectionWithLock> connectionFactory;
 
         static ReadRepository()

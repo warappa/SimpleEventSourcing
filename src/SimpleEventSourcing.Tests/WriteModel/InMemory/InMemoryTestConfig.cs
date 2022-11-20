@@ -29,7 +29,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
 
         public class StorageInMemoryConfig : StorageConfig
         {
-            private InMemoryTestConfig parent;
+            private readonly InMemoryTestConfig parent;
 
             public StorageInMemoryConfig(InMemoryTestConfig parent)
             {
@@ -40,7 +40,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
         public class WriteModelInMemoryConfig : WriteModelConfig
         {
             private IPersistenceEngine persistenceEngine;
-            private InMemoryTestConfig parent;
+            private readonly InMemoryTestConfig parent;
 
             public WriteModelInMemoryConfig(InMemoryTestConfig parent)
             {
@@ -112,7 +112,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
         public class ReadModelInMemoryConfig : ReadModelConfig
         {
             private IReadRepository readRepository;
-            private InMemoryTestConfig parent;
+            private readonly InMemoryTestConfig parent;
 
             public ReadModelInMemoryConfig(InMemoryTestConfig parent)
             {

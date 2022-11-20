@@ -12,7 +12,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel.Tests
     {
         public NHibernateTestConfig NHconfig { get { return config as NHibernateTestConfig; } }
 
-        private ISessionFactory sessionFactory;
+        private readonly ISessionFactory sessionFactory;
 
         protected override async Task BeforeFixtureTransactionAsync()
         {

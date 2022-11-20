@@ -8,8 +8,8 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
 {
     internal static class InternalDbSetInterop
     {
-        private static ConcurrentDictionary<Type, MethodInfo> findMethodInfos = new ConcurrentDictionary<Type, MethodInfo>();
-        private static ConcurrentDictionary<Type, PropertyInfo> localPropertyInfos = new ConcurrentDictionary<Type, PropertyInfo>();
+        private static readonly ConcurrentDictionary<Type, MethodInfo> findMethodInfos = new ConcurrentDictionary<Type, MethodInfo>();
+        private static readonly ConcurrentDictionary<Type, PropertyInfo> localPropertyInfos = new ConcurrentDictionary<Type, PropertyInfo>();
 
         public static T Find<T>(DbSet set, object id)
         {

@@ -66,7 +66,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
             loadedEntity.State.Children.First().Name.Should().Be("child new name4");
         }
 
-        class MagicConverter : JsonConverterFactory
+        private class MagicConverter : JsonConverterFactory
         {
 
             public override bool CanConvert(Type typeToConvert) =>
@@ -86,9 +86,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) => (JsonConverter)Activator.CreateInstance(typeof(SuperMagicConverter<>).MakeGenericType(typeToConvert))!;
 
-            class SuperMagicConverter<T> : JsonConverter<T> where T : new()
+            private class SuperMagicConverter<T> : JsonConverter<T> where T : new()
             {
-                readonly Dictionary<string, (Type PropertyType, Action<T, object>? Setter, Action<T, object>? Adder)> PropertyHandlers;
+                private readonly Dictionary<string, (Type PropertyType, Action<T, object>? Setter, Action<T, object>? Adder)> PropertyHandlers;
                 public SuperMagicConverter()
                 {
                     PropertyHandlers = typeof(T)

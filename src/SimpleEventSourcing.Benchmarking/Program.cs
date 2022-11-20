@@ -4,7 +4,7 @@ namespace SimpleEventSourcing.Benchmarking
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             var summary = BenchmarkRunner.Run<BenchmarkWriteModelSQLiteVsNHVsEFCore>();
             //var summary = BenchmarkRunner.Run<BenchmarkReadModelSQLiteVsNHVsEFCore>();

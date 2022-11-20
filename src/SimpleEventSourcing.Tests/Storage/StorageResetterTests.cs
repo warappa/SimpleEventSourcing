@@ -13,7 +13,7 @@ namespace SimpleEventSourcing.Tests.Storage
         protected IStorageResetter storageResetter;
         protected Type entityTypeA;
         protected Type entityTypeASubEntity;
-        private Type entityTypeASubItem;
+        private readonly Type entityTypeASubItem;
         protected Type entityTypeB;
         protected IReadRepository readRepository;
         protected TestsBaseConfig config;

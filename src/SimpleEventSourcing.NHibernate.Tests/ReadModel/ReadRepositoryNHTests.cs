@@ -9,7 +9,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel.Tests
     [TestFixture]
     public class ReadRepositoryNHTests : ReadRepositoryTests
     {
-        private ISessionFactory sessionFactory;
+        private readonly ISessionFactory sessionFactory;
 
         public ReadRepositoryNHTests()
             : base(new NHibernateTestConfig())

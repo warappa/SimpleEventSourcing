@@ -20,7 +20,7 @@ namespace SimpleEventSourcing.ReadModel
         private readonly ICheckpointPersister checkpointPersister;
         private readonly IStorageResetter storageResetter;
         private IObserveRawStreamEntries observer;
-        private List<string> payloadValues;
+        private readonly List<string> payloadValues;
         private IDisposable subscription;
 
         public CatchUpProjectionManager(

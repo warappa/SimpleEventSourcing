@@ -9,7 +9,7 @@ namespace SimpleEventSourcing.WriteModel
 {
     public static class IRawStreamEntryExtensions
     {
-        private static TypeInfo typedMessageTypeInfo = typeof(TypedMessage<>).GetTypeInfo();
+        private static readonly TypeInfo typedMessageTypeInfo = typeof(TypedMessage<>).GetTypeInfo();
 
         public static IMessage ToMessage(this IRawStreamEntry streamDTO, ISerializer serializer)
         {

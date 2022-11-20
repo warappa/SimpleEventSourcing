@@ -1,7 +1,7 @@
 ﻿using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.WriteModel;
 using SQLite;
 using System.Threading.Tasks;
-using SimpleEventSourcing.WriteModel;
 
 namespace SimpleEventSourcing.SQLite.ReadModel
 {

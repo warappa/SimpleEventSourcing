@@ -4,7 +4,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 {
     public class ScopeHelper
     {
-        private IDbContextScopeFactory dbContextScopeFactory;
+        private readonly IDbContextScopeFactory dbContextScopeFactory;
         private IDbContextScope fixtureScope;
         private IDbContextScope testScope;
 
