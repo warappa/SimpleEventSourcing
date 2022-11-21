@@ -26,7 +26,7 @@
 	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
     <PackageReference Include="Remotion.Linq" Version="2.2.0" />
     <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.2.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
     <PackageReference Include="FluentAssertions" Version="6.7.0" />
     <!--<PackageReference Include="NHibernateProfiler" Version="6.0.6028" />-->
   </ItemGroup>
