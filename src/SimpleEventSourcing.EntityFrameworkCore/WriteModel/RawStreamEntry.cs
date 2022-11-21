@@ -43,7 +43,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel
         public string Headers { get; set; }
 
         [NotMapped]
-        public DateTime DateTime { get { return DateTime2.Value; } set { DateTime2 = value; } }
+        public DateTime DateTime { get => DateTime2.Value; set => DateTime2 = value; }
 
         // workaround EF datetime precision problem
         [Column("DateTime", TypeName = "datetime2")]

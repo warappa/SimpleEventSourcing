@@ -1,16 +1,15 @@
 ﻿using NHibernate;
 using NUnit.Framework;
-using SimpleEventSourcing.NHibernate.Tests;
-using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.NHibernate.ReadModel.Tests
+namespace SimpleEventSourcing.NHibernate.Tests.ReadModel
 {
 
     [TestFixture]
     public class CatchUpProjectorNHibernateTests : CatchUpProjectorTests
     {
-        public NHibernateTestConfig NHconfig { get { return config as NHibernateTestConfig; } }
+        public NHibernateTestConfig NHconfig => config as NHibernateTestConfig;
 
         private readonly ISessionFactory sessionFactory;
 

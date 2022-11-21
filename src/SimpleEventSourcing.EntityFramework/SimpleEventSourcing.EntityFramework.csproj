@@ -10,21 +10,37 @@
       <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="EntityFramework" Version="6.4.4" />
-      
-      <PackageReference Include="EntityFramework.DbContextScope" Version="1.0.0" ExcludeAssets="All">
-        <IncludeAssets>none</IncludeAssets>
-      </PackageReference>
-      
-      <PackageReference Include="EntityFramework6.BulkInsert" Version="6.0.3.10" />
-      <Reference Include="EntityFramework.DbContextScope">
-         <!--Workaround: EntityFramework.DbContextScope uses EF Core in netstandard1.3--> 
-        <HintPath>$(NuGetPackageRoot)EntityFramework.DbContextScope\1.0.0\lib\net46\EntityFramework.DbContextScope.dll</HintPath>
-      </Reference>
+	<ItemGroup>
+		<PackageReference Include="EntityFramework" Version="6.4.4" />
+		<PackageReference Include="EntityFramework6.BulkInsert" Version="6.0.3.10" />
+  
+    <PackageReference Include="EntityFramework.DbContextScope" Version="1.0.0" ExcludeAssets="All">
+			<IncludeAssets>none</IncludeAssets>
+		</PackageReference>
+	  <Reference Include="EntityFramework.DbContextScope">
+	  	<!--Workaround: EntityFramework.DbContextScope uses EF Core in netstandard1.3-->
+	  	<HintPath>$(NuGetPackageRoot)EntityFramework.DbContextScope\1.0.0\lib\net46\EntityFramework.DbContextScope.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net462' ">
+		<!--<PackageReference Include="EntityFramework.DbContextScope" Version="1.0.0" />-->
+  </ItemGroup>
 
-      <Reference Include="System.Transactions" Condition=" '$(TargetFramework)' == 'net462' "></Reference>
-    </ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net462'">
+	  <PackageReference Include="Contrib.Bcl.Ranges" Version="1.0.0" />
+
+    
+		
+	  <Reference Include="System.Transactions" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1'">
+		<!--<Reference Include="EntityFramework.DbContextScope">
+			--><!--Workaround: EntityFramework.DbContextScope uses EF Core in netstandard1.3--><!--
+			<HintPath>$(NuGetPackageRoot)EntityFramework.DbContextScope\1.0.0\lib\net46\EntityFramework.DbContextScope.dll</HintPath>
+		</Reference>-->
+	</ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />

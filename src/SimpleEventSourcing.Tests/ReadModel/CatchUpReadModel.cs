@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using SimpleEventSourcing.ReadModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SimpleEventSourcing.ReadModel.Tests
+namespace SimpleEventSourcing.Tests.ReadModel
 {
     public class CatchUpReadModel : IReadModel<int>
     {

@@ -1,19 +1,21 @@
 ﻿using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
+using SimpleEventSourcing.Newtonsoft.WriteModel;
 using SimpleEventSourcing.NHibernate.Context;
 using SimpleEventSourcing.NHibernate.ReadModel;
 using SimpleEventSourcing.NHibernate.Storage;
+using SimpleEventSourcing.NHibernate.Tests.Storage;
 using SimpleEventSourcing.NHibernate.WriteModel;
-using SimpleEventSourcing.NHibernate.WriteModel.Tests;
 using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.Storage;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
+using SimpleEventSourcing.Tests.WriteModel;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TestEvent = SimpleEventSourcing.NHibernate.Tests.WriteModel.TestEvent;
 
 namespace SimpleEventSourcing.NHibernate.Tests
 {
@@ -83,36 +85,34 @@ namespace SimpleEventSourcing.NHibernate.Tests
             {
                 var cfg = GetDbCreationConfiguration();
 
-                using (var sessionFactory = GetSessionFactory(cfg))
-                using (var session = sessionFactory.OpenSession())
+                using var sessionFactory = GetSessionFactory(cfg);
+                using var session = sessionFactory.OpenSession();
+                var conn = session.Connection;
+
+                using var cmd = conn.CreateCommand();
+
+                cmd.CommandText = "create database integrationDatabaseNHWriteModel";
+
+                try
                 {
-                    var conn = session.Connection;
+                    cmd.ExecuteNonQuery();
+                }
+                catch { }
 
-                    using var cmd = conn.CreateCommand();
-
-                    cmd.CommandText = "create database integrationDatabaseNHWriteModel";
-
-                    try
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch { }
-
-                    try
-                    {
-                        cmd.CommandText = @"use integrationDatabaseNHWriteModel;
+                try
+                {
+                    cmd.CommandText = @"use integrationDatabaseNHWriteModel;
 
 create table hibernate_unique_key (
          next_hi INT
     );
 
 insert into hibernate_unique_key values ( 1 );";
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch (Exception e)
-                    {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
 
-                    }
                 }
             }
 
@@ -165,6 +165,7 @@ insert into hibernate_unique_key values ( 1 );";
                 {
                     cfg.SetInterceptor(new SqlStatementInterceptor());
                 }
+
                 return cfg;
             }
 
@@ -219,12 +220,10 @@ insert into hibernate_unique_key values ( 1 );";
             {
                 var name = type.Name;
 
-                using (var session = GetSessionFactory().OpenSession())
-                {
-                    var meta = new DatabaseMetadata(session.Connection, new global::NHibernate.Dialect.MsSql2012Dialect());
+                using var session = GetSessionFactory().OpenSession();
+                var meta = new DatabaseMetadata(session.Connection, new global::NHibernate.Dialect.MsSql2012Dialect());
 
-                    return meta.IsTable(name);
-                }
+                return meta.IsTable(name);
             }
 
             public ISessionFactory GetSessionFactory(Configuration configuration = null)
@@ -240,7 +239,6 @@ insert into hibernate_unique_key values ( 1 );";
                 sessionFactoryMap[configuration.GetHashCode()] = sessionFactory;
                 return sessionFactory;
             }
-
 
             public override IRawStreamEntryFactory GetRawStreamEntryFactory()
             {
@@ -301,6 +299,7 @@ insert into hibernate_unique_key values ( 1 );";
                 {
                     cfg.SetInterceptor(new SqlStatementInterceptor());
                 }
+
                 return cfg;
             }
 
@@ -334,31 +333,30 @@ insert into hibernate_unique_key values ( 1 );";
                     cfg.SetInterceptor(new SqlStatementInterceptor());
                 }
 
-                using (var sessionFactory = GetSessionFactory(cfg))
-                using (var session = sessionFactory.OpenSession())
+                using var sessionFactory = GetSessionFactory(cfg);
+                using var session = sessionFactory.OpenSession();
+                var conn = session.Connection;
+                using var cmd = conn.CreateCommand();
+
+                cmd.CommandText = "create database integrationDatabaseNHReadModel";
+
+                try
                 {
-                    var conn = session.Connection;
-                    using var cmd = conn.CreateCommand();
+                    cmd.ExecuteNonQuery();
+                }
+                catch { }
 
-                    cmd.CommandText = "create database integrationDatabaseNHReadModel";
-
-                    try
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch { }
-                    try
-                    {
-                        cmd.CommandText = @"use integrationDatabaseNHReadModel;
+                try
+                {
+                    cmd.CommandText = @"use integrationDatabaseNHReadModel;
 create table hibernate_unique_key (
          next_hi INT
     );
 
 insert into hibernate_unique_key values ( 1 );";
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch { }
+                    cmd.ExecuteNonQuery();
                 }
+                catch { }
             }
 
             public override IReadRepository GetReadRepository()
@@ -419,12 +417,10 @@ insert into hibernate_unique_key values ( 1 );";
             {
                 var name = type.Name;
 
-                using (var session = GetSessionFactory().OpenSession())
-                {
-                    var meta = new DatabaseMetadata(session.Connection, new global::NHibernate.Dialect.MsSql2012Dialect());
-                    //TABLE_NAME e.g. "hibernate_unique_key"
-                    return meta.IsTable(name);
-                }
+                using var session = GetSessionFactory().OpenSession();
+                var meta = new DatabaseMetadata(session.Connection, new global::NHibernate.Dialect.MsSql2012Dialect());
+                //TABLE_NAME e.g. "hibernate_unique_key"
+                return meta.IsTable(name);
             }
 
             public override IPollingObserverFactory GetPollingObserverFactory(TimeSpan interval)

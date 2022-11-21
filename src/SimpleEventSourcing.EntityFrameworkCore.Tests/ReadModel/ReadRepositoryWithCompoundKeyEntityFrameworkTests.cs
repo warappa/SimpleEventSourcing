@@ -1,7 +1,8 @@
 ﻿using NUnit.Framework;
+using SimpleEventSourcing.Tests.ReadModel;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.EntityFrameworkCore.Tests
+namespace SimpleEventSourcing.EntityFrameworkCore.Tests.ReadModel
 {
     [TestFixture]
     public class ReadRepositoryWithCompoundKeyEntityFrameworkTests : ReadRepositoryWithCompoundKeyEntityFrameworkTestsBase

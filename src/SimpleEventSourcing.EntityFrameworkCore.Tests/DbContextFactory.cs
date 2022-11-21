@@ -1,4 +1,6 @@
 ﻿using EntityFrameworkCore.DbContextScope;
+using SimpleEventSourcing.EntityFrameworkCore.Tests.ReadModel;
+using SimpleEventSourcing.EntityFrameworkCore.Tests.WriteModel;
 using System;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Tests

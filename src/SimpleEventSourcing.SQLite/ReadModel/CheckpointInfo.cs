@@ -11,7 +11,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel
         [Indexed]
         public int CheckpointNumber { get; set; }
 
-        object IReadModelBase.Id { get { return ProjectorIdentifier; } set { ProjectorIdentifier = (string)value; } }
+        object IReadModelBase.Id { get => ProjectorIdentifier; set => ProjectorIdentifier = (string)value; }
         string IReadModel<string>.Id { get => ProjectorIdentifier; set => ProjectorIdentifier = value; }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using SimpleEventSourcing.Domain;
-using SimpleEventSourcing.Tests.Domain.TestData;
+using System;
 
-namespace SimpleEventSourcing.Tests
+namespace SimpleEventSourcing.Tests.Domain.TestData
 {
     public class TestProcessManager : ProcessManager<TestProcessManagerState, string>,
         IProcessManagerStartsWith<TestEvent>,
         IProcessManagerHandles<TestEventEnd>
     {
         public TestProcessManager()
-            : base(global::System.Array.Empty<IProcessManagerHandledEvent>())
+            : base(Array.Empty<IProcessManagerHandledEvent>())
         {
 
         }

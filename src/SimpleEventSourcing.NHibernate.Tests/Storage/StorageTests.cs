@@ -1,10 +1,9 @@
 ﻿using NHibernate;
 using NUnit.Framework;
-using SimpleEventSourcing.NHibernate.Tests;
 using SimpleEventSourcing.Tests.Storage;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
+namespace SimpleEventSourcing.NHibernate.Tests.Storage
 {
     [TestFixture]
     public class StorageTests : StorageResetterTests
@@ -15,7 +14,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
 
         }
 
-        public NHibernateTestConfig NHconfig { get { return config as NHibernateTestConfig; } }
+        public NHibernateTestConfig NHconfig => config as NHibernateTestConfig;
 
         private readonly ISessionFactory writeSessionFactory;
         private readonly ISessionFactory readSessionFactory;

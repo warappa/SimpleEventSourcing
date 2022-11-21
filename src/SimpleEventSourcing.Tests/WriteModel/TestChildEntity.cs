@@ -1,6 +1,6 @@
 ﻿using SimpleEventSourcing.Domain;
 
-namespace SimpleEventSourcing.WriteModel.Tests
+namespace SimpleEventSourcing.Tests.WriteModel
 {
     public class TestChildEntity : ChildEntity<TestChildEntityState, string, string>
     {

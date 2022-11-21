@@ -4,6 +4,7 @@ using NUnit.Framework;
 using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.State;
+using SimpleEventSourcing.Tests.Domain.TestData;
 using SimpleEventSourcing.WriteModel;
 using System;
 
@@ -44,8 +45,6 @@ namespace SimpleEventSourcing.Tests.Messaging
         public void Router_can_route_message_to_start_processmanager()
         {
             IProcessManager<TestProcessManagerState, string> processManager = null;
-
-
 
             var testEvent = new TestEvent("aggregateId", "test");
             var testMessage = new DummyMessage<TestEvent>("processId", testEvent);

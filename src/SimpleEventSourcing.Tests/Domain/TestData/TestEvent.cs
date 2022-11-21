@@ -1,4 +1,4 @@
-﻿namespace SimpleEventSourcing.Tests
+﻿namespace SimpleEventSourcing.Tests.Domain.TestData
 {
     public class TestEvent : IEventWithId
     {

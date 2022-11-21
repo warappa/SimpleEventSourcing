@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Serialization;
 using System.Web.Http;
 
-namespace Shop.UI.Web
+namespace Shop.UI.Web.AspNet.App_Start
 {
     public static class WebApiConfig
     {

@@ -1,10 +1,9 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.ReadModel.Tests;
-using SimpleEventSourcing.SQLite.WriteModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 using SQLite;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.SQLite.Tests
+namespace SimpleEventSourcing.SQLite.Tests.ReadModel
 {
     [TestFixture]
     public class CatchUpProjectorWithAutoReadModelResetEntityFrameworkTests : CatchUpProjectorWithAutoReadModelResetTests

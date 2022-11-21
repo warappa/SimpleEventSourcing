@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using SimpleEventSourcing.Storage;
+using SimpleEventSourcing.Utils;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,85 +26,82 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
 
         public async Task ResetAsync(Type[] entityTypes, bool justDrop = false)
         {
-            using (var scope = dbContextScopeFactory.Create())
+            using var scope = dbContextScopeFactory.Create();
+            var originalDbContext = scope.DbContexts.Get<TDbContext>();
+
+            var connection = originalDbContext.Database.GetDbConnection();
+            if (connection.State != System.Data.ConnectionState.Open)
             {
-                var originalDbContext = scope.DbContexts.Get<TDbContext>();
+                connection.Open();
+            }
 
-                var connection = originalDbContext.Database.GetDbConnection();
-                if (connection.State != System.Data.ConnectionState.Open)
+            var dbContext = DynamicDbContext.Create(originalDbContext, options, connection, entityTypes);
+            var emptyDbContext = DynamicDbContext.Create(originalDbContext, options, connection, Array.Empty<Type>());
+
+            if (!justDrop)
+            {
+                emptyDbContext.Database.EnsureCreated();
+            }
+
+            using var transaction = new AsyncTransactionScope(TransactionScopeOption.RequiresNew);
+            try
+            {
+                var tablenames = entityTypes
+                    .Reverse()
+                    .Select(x => GetTablenameForType(dbContext, x))
+                    .ToList();
+
+                var tablenames2 = entityTypes
+                    .Reverse()
+                    .Select(x => GetTablenameForType(originalDbContext, x))
+                    .ToList();
+
+                if (!tablenames.SequenceEqual(tablenames2))
                 {
-                    connection.Open();
-                }
-                var dbContext = DynamicDbContext.Create(originalDbContext, options, connection, entityTypes);
-                var emptyDbContext = DynamicDbContext.Create(originalDbContext, options, connection, Array.Empty<Type>());
-
-                if (!justDrop)
-                {
-                    emptyDbContext.Database.EnsureCreated();
+                    throw new Exception("not equal");
                 }
 
-                using (var transaction = new AsyncTransactionScope(TransactionScopeOption.RequiresNew))
+                foreach (var tablename in tablenames)
                 {
                     try
                     {
-                        var tablenames = entityTypes
-                            .Reverse()
-                            .Select(x => GetTablenameForType(dbContext, x))
-                            .ToList();
-
-                        var tablenames2 = entityTypes
-                            .Reverse()
-                            .Select(x => GetTablenameForType(originalDbContext, x))
-                            .ToList();
-
-                        if (!tablenames.SequenceEqual(tablenames2))
-                        {
-                            throw new Exception("not equal");
-                        }
-
-                        foreach (var tablename in tablenames)
-                        {
-                            try
-                            {
-                                var cmd = $"drop table [{tablename}]";
-                                originalDbContext.Database.ExecuteSqlRaw(cmd);
-                            }
-                            catch
-                            {
-                                // TODO: error handling
-                            }
-                        }
-
-                        if (!justDrop)
-                        {
-                            var creationScript = dbContext.GetService<IRelationalDatabaseCreator>().GenerateCreateScript();
-
-                            var creationSteps = creationScript.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
-
-                            foreach (var step in creationSteps)
-                            {
-                                if (string.IsNullOrWhiteSpace(step))
-                                {
-                                    continue;
-                                }
-
-                                try
-                                {
-                                    originalDbContext.Database.ExecuteSqlRaw(step);
-                                }
-                                catch
-                                {
-                                    // TODO: error handling
-                                }
-                            }
-                        }
-
-                        transaction.Complete();
+                        var cmd = $"drop table [{tablename}]";
+                        originalDbContext.Database.ExecuteSqlRaw(cmd);
                     }
                     catch
                     {
+                        // TODO: error handling
                     }
                 }
+
+                if (!justDrop)
+                {
+                    var creationScript = dbContext.GetService<IRelationalDatabaseCreator>().GenerateCreateScript();
+
+                    var creationSteps = creationScript.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (var step in creationSteps)
+                    {
+                        if (string.IsNullOrWhiteSpace(step))
+                        {
+                            continue;
+                        }
+
+                        try
+                        {
+                            originalDbContext.Database.ExecuteSqlRaw(step);
+                        }
+                        catch
+                        {
+                            // TODO: error handling
+                        }
+                    }
+                }
+
+                transaction.Complete();
+            }
+            catch
+            {
             }
         }
 

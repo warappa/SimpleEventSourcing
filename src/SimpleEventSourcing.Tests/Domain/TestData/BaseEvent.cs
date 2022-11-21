@@ -2,7 +2,7 @@
 using SimpleEventSourcing.Utils;
 using System;
 
-namespace SimpleEventSourcing.Tests
+namespace SimpleEventSourcing.Tests.Domain.TestData
 {
     public abstract class BaseEvent : IBaseEvent, IEventSourcedEntityEvent
     {

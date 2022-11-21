@@ -1,4 +1,4 @@
-﻿namespace Shop.Web.UI.Commands.ShoppingCarts
+﻿namespace Shop.UI.Web.AspNet.Commands.ShoppingCarts
 {
     public class RemoveArticleFromShoppingCart
     {

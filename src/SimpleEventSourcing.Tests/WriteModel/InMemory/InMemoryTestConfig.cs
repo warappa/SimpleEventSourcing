@@ -1,13 +1,15 @@
-﻿using SimpleEventSourcing.ReadModel;
+﻿using SimpleEventSourcing.Newtonsoft.WriteModel;
+using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.ReadModel.InMemory;
-using SimpleEventSourcing.ReadModel.InMemory.Tests;
-using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.Storage;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
+using SimpleEventSourcing.Tests.ReadModel.InMemory;
+using SimpleEventSourcing.WriteModel;
+using SimpleEventSourcing.WriteModel.InMemory;
 using System;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.WriteModel.InMemory.Tests
+namespace SimpleEventSourcing.Tests.WriteModel.InMemory
 {
     public class InMemoryTestConfig : TestsBaseConfig
     {
@@ -22,9 +24,9 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
             base.Storage = new StorageInMemoryConfig(this);
         }
 
-        public TestEvent GetTestEvent()
+        public SimpleEventSourcing.Tests.Domain.TestData.TestEvent GetTestEvent()
         {
-            return new TestEvent(RawStreamEntryStreamname, TesteventValue);
+            return new SimpleEventSourcing.Tests.Domain.TestData.TestEvent(RawStreamEntryStreamname, TesteventValue);
         }
 
         public class StorageInMemoryConfig : StorageConfig
@@ -126,7 +128,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory.Tests
 
             public override IReadRepository GetReadRepository()
             {
-                return readRepository ?? (readRepository = new ReadRepository());
+                return readRepository ??= new ReadRepository();
             }
 
             public override ITestEntityA GetTestEntityA()

@@ -1,16 +1,19 @@
-﻿using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
+﻿using SimpleEventSourcing.Newtonsoft.WriteModel;
+using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.SQLite.ReadModel;
 using SimpleEventSourcing.SQLite.Storage;
+using SimpleEventSourcing.SQLite.Tests.Storage;
+using SimpleEventSourcing.SQLite.WriteModel;
 using SimpleEventSourcing.Storage;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
+using SimpleEventSourcing.Tests.WriteModel;
 using SimpleEventSourcing.WriteModel;
 using SQLite;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.SQLite.WriteModel.Tests
+namespace SimpleEventSourcing.SQLite.Tests
 {
     public class SQLiteTestConfig : TestsBaseConfig
     {
@@ -101,7 +104,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
                 };
             }
 
-            public SimpleEventSourcing.WriteModel.ISerializationBinder GetBinder()
+            public ISerializationBinder GetBinder()
             {
                 return new VersionedBinder();
             }

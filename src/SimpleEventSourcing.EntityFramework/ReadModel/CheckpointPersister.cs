@@ -21,54 +21,50 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
 
         public override async Task<int> LoadLastCheckpointAsync(string projectorIdentifier)
         {
-            using (var scope = dbContextScopeFactory.Create(DbContextScopeOption.ForceCreateNew))
+            using var scope = dbContextScopeFactory.Create(DbContextScopeOption.ForceCreateNew);
+            TCheckpointInfo checkpointInfo = null;
+            try
             {
-                TCheckpointInfo checkpointInfo = null;
-                try
-                {
-                    checkpointInfo = await scope.DbContexts.Get<TDbContext>()
-                        .Set<TCheckpointInfo>()
-                        .FindAsync(projectorIdentifier)
-                        .ConfigureAwait(false);
-                }
-                catch
-                {
-                    // TODO: error handling
-                }
-
-                if (checkpointInfo == null)
-                {
-                    return CheckpointDefaults.NoCheckpoint;
-                }
-
-                return checkpointInfo.CheckpointNumber;
+                checkpointInfo = await scope.DbContexts.Get<TDbContext>()
+                    .Set<TCheckpointInfo>()
+                    .FindAsync(projectorIdentifier)
+                    .ConfigureAwait(false);
             }
+            catch
+            {
+                // TODO: error handling
+            }
+
+            if (checkpointInfo == null)
+            {
+                return CheckpointDefaults.NoCheckpoint;
+            }
+
+            return checkpointInfo.CheckpointNumber;
         }
 
         public override async Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint)
         {
-            using (var scope = dbContextScopeFactory.Create())
+            using var scope = dbContextScopeFactory.Create();
+            var set = scope.DbContexts.Get<TDbContext>()
+                .Set<TCheckpointInfo>();
+            var checkpointInfo = await set.FindAsync(projectorIdentifier).ConfigureAwait(false);
+
+            if (checkpointInfo == null)
             {
-                var set = scope.DbContexts.Get<TDbContext>()
-                    .Set<TCheckpointInfo>();
-                var checkpointInfo = await set.FindAsync(projectorIdentifier).ConfigureAwait(false);
-
-                if (checkpointInfo == null)
+                checkpointInfo = new TCheckpointInfo
                 {
-                    checkpointInfo = new TCheckpointInfo
-                    {
-                        ProjectorIdentifier = projectorIdentifier,
-                        CheckpointNumber = checkpoint
-                    };
-                    set.Add(checkpointInfo);
-                }
-                else
-                {
-                    checkpointInfo.CheckpointNumber = checkpoint;
-                }
-
-                await scope.SaveChangesAsync().ConfigureAwait(false);
+                    ProjectorIdentifier = projectorIdentifier,
+                    CheckpointNumber = checkpoint
+                };
+                set.Add(checkpointInfo);
             }
+            else
+            {
+                checkpointInfo.CheckpointNumber = checkpoint;
+            }
+
+            await scope.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

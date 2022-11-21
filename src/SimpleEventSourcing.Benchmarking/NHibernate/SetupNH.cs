@@ -3,12 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using NHibernate.Cfg;
 using SimpleEventSourcing.Benchmarking.ReadModel;
 using SimpleEventSourcing.Bus;
+using SimpleEventSourcing.Newtonsoft;
 using SimpleEventSourcing.NHibernate;
 using SimpleEventSourcing.NHibernate.Context;
 using SimpleEventSourcing.NHibernate.ReadModel;
 using SimpleEventSourcing.NHibernate.WriteModel;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.Storage;
+using SimpleEventSourcing.System.Text.Json;
 
 namespace SimpleEventSourcing.Benchmarking.NHibernate
 {

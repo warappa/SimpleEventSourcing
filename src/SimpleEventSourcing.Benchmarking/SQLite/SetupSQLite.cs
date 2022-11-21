@@ -2,16 +2,18 @@
 using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.Benchmarking.ReadModel;
 using SimpleEventSourcing.Bus;
+using SimpleEventSourcing.Newtonsoft;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.SQLite;
+using SimpleEventSourcing.System.Text.Json;
 using SQLite;
 
 namespace SimpleEventSourcing.Benchmarking.SQLite
 {
     internal class SetupSQLite
     {
-        private static SQLiteConnectionWithLock writeConn;
-        private static SQLiteConnectionWithLock readConn;
+        private static SQLiteConnectionWithLock? writeConn;
+        private static SQLiteConnectionWithLock? readConn;
 
         public static IServiceProvider BuildSQLite(IConfigurationRoot configuration, bool systemTextJson, bool readModel = false)
         {
@@ -19,6 +21,7 @@ namespace SimpleEventSourcing.Benchmarking.SQLite
             {
                 File.Delete("writeDatabase.db");
             }
+
             if (File.Exists("readDatabase.db"))
             {
                 File.Delete("readDatabase.db");

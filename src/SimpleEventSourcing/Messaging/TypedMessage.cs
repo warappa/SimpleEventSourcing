@@ -12,9 +12,6 @@ namespace SimpleEventSourcing.Messaging
 
         }
 
-        TEvent IMessage<TEvent>.Body
-        {
-            get { return (TEvent)Body; }
-        }
+        TEvent IMessage<TEvent>.Body => (TEvent)Body;
     }
 }

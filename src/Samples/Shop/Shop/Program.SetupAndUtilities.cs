@@ -2,8 +2,11 @@
 using Shop.ReadModel.Articles;
 using Shop.ReadModel.Customers;
 using Shop.ReadModel.ShoppingCarts;
+using Shop.UI.Web.Shared.ReadModels.Customers;
 using SimpleEventSourcing.Domain;
+using SimpleEventSourcing.Newtonsoft.WriteModel;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.SQLite;
 using SimpleEventSourcing.SQLite.ReadModel;
 using SimpleEventSourcing.SQLite.Storage;
 using SimpleEventSourcing.SQLite.WriteModel;
@@ -53,7 +56,7 @@ namespace Shop
 
             if (path.EndsWith("bin", StringComparison.Ordinal))
             {
-                path = path.Substring(0, path.Length - 4);
+                path = path[..^4];
             }
 
             return path;
@@ -76,6 +79,7 @@ namespace Shop
 
                     ConfigureConnection(writeConn);
                 }
+
                 return writeConn;
             };
 
@@ -126,6 +130,7 @@ namespace Shop
 
                     ConfigureConnection(readConn);
                 }
+
                 return readConn;
             };
 

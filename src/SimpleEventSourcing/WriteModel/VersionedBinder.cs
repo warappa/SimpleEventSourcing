@@ -40,10 +40,7 @@ namespace SimpleEventSourcing.WriteModel
                         name = bindToNameFallback(type);
                     }
 
-                    if (name == null)
-                    {
-                        name = type.FullName;
-                    }
+                    name ??= type.FullName;
 
                     bindTypeToNameDict[type] = name;
                 }

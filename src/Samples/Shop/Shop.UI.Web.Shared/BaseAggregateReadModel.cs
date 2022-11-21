@@ -1,7 +1,7 @@
 ﻿using SimpleEventSourcing.ReadModel;
 using SQLite;
 
-namespace Shop.ReadModel.Shared
+namespace Shop.UI.Web.Shared
 {
     public abstract class BaseAggregateReadModel : BaseReadModel, IStreamReadModel
     {

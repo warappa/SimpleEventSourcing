@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Shop.Core.Reports.ShoppingCarts.Transient
+namespace Shop.Reports.ShoppingCarts.Transient
 {
     /// <summary>
     /// in-memory projection
@@ -47,9 +47,11 @@ namespace Shop.Core.Reports.ShoppingCarts.Transient
             var orderedAt = shoppingCartOrdered.DateTime;
             var fiveMinutesUntilPlacingOrder = orderedAt.AddMinutes(-5);
 
-            bool notRelevant(ShoppingCartArticleRemovedInfo removed) =>
-                removed.ShoppingCartId == shoppingCartOrdered.Id &&
+            bool notRelevant(ShoppingCartArticleRemovedInfo removed)
+            {
+                return removed.ShoppingCartId == shoppingCartOrdered.Id &&
                 removed.RemovedAt < fiveMinutesUntilPlacingOrder;
+            }
 
             RemovedShoppingCartArticles.RemoveAll(notRelevant);
 

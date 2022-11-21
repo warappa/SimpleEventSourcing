@@ -1,4 +1,5 @@
 ﻿using Shop.Core.Domain.Articles;
+using Shop.UI.Web.Shared.ReadModels.Articles;
 using SimpleEventSourcing.ReadModel;
 using System;
 using System.Threading.Tasks;

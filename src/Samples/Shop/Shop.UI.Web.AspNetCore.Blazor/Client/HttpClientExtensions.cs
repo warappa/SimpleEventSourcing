@@ -1,5 +1,5 @@
 ﻿using Shop.Core.BusinessRules;
-using Shop.ReadModel.Shared;
+using Shop.UI.Web.Shared;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;

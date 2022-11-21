@@ -1,8 +1,7 @@
-﻿using Shop.ReadModel.Shared;
-using SQLite;
+﻿using SQLite;
 using System;
 
-namespace Shop.ReadModel.Articles
+namespace Shop.UI.Web.Shared.ReadModels.Articles
 {
     [Table(nameof(ArticleActivationHistoryViewModel))]
     public class ArticleActivationHistoryViewModel : BaseAggregateReadModel

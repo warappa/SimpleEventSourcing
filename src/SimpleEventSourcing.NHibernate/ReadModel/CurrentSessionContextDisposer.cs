@@ -33,6 +33,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
                 {
                     session.GetCurrentTransaction().Commit();
                 }
+
                 session.Dispose();
             }
         }

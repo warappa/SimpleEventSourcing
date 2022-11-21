@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace Shop.UI.Web
+namespace Shop.UI.Web.AspNet.App_Start
 {
     public class RouteConfig
     {

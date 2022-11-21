@@ -1,19 +1,17 @@
-﻿using System;
+﻿using SimpleEventSourcing.WriteModel;
+using System;
 using System.Text.Json;
 
-namespace SimpleEventSourcing.WriteModel
+namespace SimpleEventSourcing.System.Text.Json.WriteModel
 {
     public class SystemTextJsonSerializer : ISerializer
     {
         private readonly JsonSerializerOptions settings;
-        private readonly ISerializationBinder binder;
-
-        public ISerializationBinder Binder => binder;
 
         public SystemTextJsonSerializer(JsonSerializerOptions settings, ISerializationBinder binder)
         {
             this.settings = settings;
-            this.binder = binder;
+            Binder = binder;
         }
 
         public SystemTextJsonSerializer(ISerializationBinder binder)
@@ -21,6 +19,8 @@ namespace SimpleEventSourcing.WriteModel
         {
 
         }
+
+        public ISerializationBinder Binder { get; private set; }
 
         public string Serialize(Type type, object obj)
         {
@@ -49,7 +49,7 @@ namespace SimpleEventSourcing.WriteModel
                 return null;
             }
 
-            return JsonSerializer.Serialize<object>(obj, settings);
+            return JsonSerializer.Serialize(obj, settings);
         }
 
         public object Deserialize(Type type, string value)

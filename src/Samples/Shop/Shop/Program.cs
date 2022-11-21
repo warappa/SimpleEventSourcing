@@ -3,9 +3,9 @@ using Shop.Core.Domain.Customers;
 using Shop.Core.Domain.Shared;
 using Shop.Core.Domain.ShoppingCarts;
 using Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles;
-using Shop.Core.Reports.ShoppingCarts.Transient;
-using Shop.ReadModel.Articles;
 using Shop.Reports.Customers.Transient;
+using Shop.Reports.ShoppingCarts.Transient;
+using Shop.UI.Web.Shared.ReadModels.Articles;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
@@ -148,7 +148,7 @@ namespace Shop
 
         public static async IAsyncEnumerable<AlmostOrderedArticlesState.ShoppingCartArticleRemovedInfo> AnalyseAlmostOrderedWithState(IPersistenceEngine engine = null)
         {
-            engine = engine ?? Program.engine;
+            engine ??= Program.engine;
 
             var loadedMessages = await engine.LoadStreamEntriesAsync(
                 0,
@@ -190,6 +190,7 @@ namespace Shop
             {
                 Console.WriteLine($"{item.CustomerName}: {string.Join(", ", item.Articlenumbers.Select(x => "" + x.Count + "x " + x.Articlenumber))} ");
             }
+
             Console.WriteLine();
 
             foreach (var item in removedArticles)
@@ -268,6 +269,7 @@ namespace Shop
             {
                 Console.WriteLine($"{entry.CustomerName}: {string.Join(", ", entry.Articlenumber)} - {entry.Timespan} before placing order");
             }
+
             Console.WriteLine();
         }
     }

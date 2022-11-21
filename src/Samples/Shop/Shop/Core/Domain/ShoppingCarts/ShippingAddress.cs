@@ -34,7 +34,7 @@ namespace Shop.Core.Domain.ShoppingCarts
         {
             var other = obj as ShippingAddress;
 
-            if (ReferenceEquals(other, null))
+            if (other is null)
             {
                 return false;
             }

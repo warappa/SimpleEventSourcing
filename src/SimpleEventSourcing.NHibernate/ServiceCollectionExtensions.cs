@@ -17,7 +17,7 @@ namespace SimpleEventSourcing.NHibernate
     {
         public static ISimpleEventSourcingBuilder AddSimpleEventSourcing(this IServiceCollection services, Configuration baseConfiguration, Type[] entityTypes)
         {
-            services.AddSingleton<ISessionFactory>(sp =>
+            services.AddSingleton(sp =>
             {
                 var nHibernateResetConfigurationProvider = sp.GetRequiredService<INHibernateResetConfigurationProvider>();
 
@@ -26,7 +26,6 @@ namespace SimpleEventSourcing.NHibernate
 
                 return configuration.BuildSessionFactory();
             });
-
 
             services.AddSingleton<INHibernateResetConfigurationProvider>(sp =>
             {

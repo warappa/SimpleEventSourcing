@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 
-namespace Shop.UI.Web
+namespace Shop.UI.Web.AspNet
 {
     // https://stackoverflow.com/questions/43811731/unable-to-load-dll-e-sqlite3-the-specified-module-could-not-be-found
     public class NativeLibraryHack
@@ -11,7 +11,10 @@ namespace Shop.UI.Web
 
         public static bool DoHack()
         {
-            if (Hacked) return true;
+            if (Hacked)
+            {
+                return true;
+            }
 
             try
             {
@@ -20,15 +23,17 @@ namespace Shop.UI.Web
                 var destinationPath = typeof(SQLitePCL.raw).Assembly.Location
                     .Replace("\\", "/");
                 var destinationLength = destinationPath.LastIndexOf("/", StringComparison.OrdinalIgnoreCase);
-                var destinationDirectory = destinationPath.Substring(0, destinationLength) + runtimeFolderName;
+                var destinationDirectory = destinationPath[..destinationLength] + runtimeFolderName;
 
                 var sourcePath = new Uri(typeof(SQLitePCL.raw).Assembly.CodeBase)
                     .AbsolutePath;
                 var sourceLength = sourcePath.LastIndexOf("/", StringComparison.OrdinalIgnoreCase);
-                var sourceDirectory = sourcePath.Substring(0, sourceLength) + runtimeFolderName;
+                var sourceDirectory = sourcePath[..sourceLength] + runtimeFolderName;
 
                 if (Directory.Exists(sourceDirectory))
+                {
                     CopyFilesRecursively(new DirectoryInfo(sourceDirectory), new DirectoryInfo(destinationDirectory));
+                }
             }
             catch (Exception ex)
             {
@@ -37,7 +42,7 @@ namespace Shop.UI.Web
                 return false;
             }
 
-            return (Hacked = true);
+            return Hacked = true;
         }
 
         private static void CopyFilesRecursively(
@@ -46,7 +51,9 @@ namespace Shop.UI.Web
         )
         {
             foreach (var dir in source.GetDirectories())
+            {
                 CopyFilesRecursively(dir, target.CreateSubdirectory(dir.Name));
+            }
 
             foreach (var file in source.GetFiles())
             {
@@ -54,7 +61,9 @@ namespace Shop.UI.Web
                 {
                     var destinationFile = Path.Combine(target.FullName, file.Name);
                     if (!File.Exists(destinationFile))
+                    {
                         file.CopyTo(destinationFile);
+                    }
                 }
                 catch (Exception ex)
                 {

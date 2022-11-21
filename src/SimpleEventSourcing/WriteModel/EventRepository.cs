@@ -89,7 +89,7 @@ namespace SimpleEventSourcing.WriteModel
             var allMessages = new List<IMessage>();
             var allStreamEntries = new List<IRawStreamEntry>();
 
-            commitHeaders = commitHeaders ?? new Dictionary<string, object>();
+            commitHeaders ??= new Dictionary<string, object>();
 
             var distinctEntitiesList = entities
                 .GroupBy(x => new { x.Id, x.GetType().Name })
@@ -167,9 +167,9 @@ namespace SimpleEventSourcing.WriteModel
             return
                 committedMessagesSubject
                 .Where(m =>
-                    (
+
                         m is T || m.Body is T
-                    ))
+                    )
                     .Select(m =>
                         typeof(IMessage).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo()) ? (T)m : (T)m.Body
                         );

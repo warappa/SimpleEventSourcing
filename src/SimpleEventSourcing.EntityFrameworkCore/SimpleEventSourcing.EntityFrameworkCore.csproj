@@ -18,12 +18,14 @@
 		<PackageReference Include="EFCore.BulkExtensions" Version="3.6.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.25" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.25" />
+		<PackageReference Include="Contrib.Bcl.Ranges" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
 		<PackageReference Include="EFCore.BulkExtensions" Version="3.6.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.25" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.25" />
+		<PackageReference Include="Contrib.Bcl.Ranges" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">

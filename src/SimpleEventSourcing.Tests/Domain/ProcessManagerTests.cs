@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SimpleEventSourcing.Domain;
+using SimpleEventSourcing.Tests.Domain.TestData;
 using System.Linq;
 
 namespace SimpleEventSourcing.Tests.Domain

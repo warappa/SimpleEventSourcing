@@ -1,7 +1,7 @@
-﻿using Shop.ReadModel.ShoppingCarts;
+﻿using Shop.UI.Web.Shared.ReadModels.ShoppingCarts;
 using System.Collections.Generic;
 
-namespace Shop.Web.UI.Controllers
+namespace Shop.UI.Web.AspNet.Controllers
 {
     public class ShoppingCartViewModelExt : ShoppingCartViewModel
     {

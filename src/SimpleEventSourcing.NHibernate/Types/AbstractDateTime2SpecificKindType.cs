@@ -1,4 +1,4 @@
-﻿namespace SimpleEventSourcing.NHibernate.WriteModel.Types
+﻿namespace SimpleEventSourcing.NHibernate.Types
 {/*
     [Serializable]
     public abstract class AbstractDateTime2SpecificKindType : DateTimeType

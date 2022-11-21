@@ -114,10 +114,7 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
                 var set = dbContext.Set<T>();
                 res = set.Local.FirstOrDefault(x => x.Id.Equals(id));
 
-                if (res == null)
-                {
-                    res = InternalDbSetInterop.Find<T>(set, id);
-                }
+                res ??= InternalDbSetInterop.Find<T>(set, id);
 
                 scope.SaveChanges();
             }
@@ -135,10 +132,7 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
                 var set = dbContext.Set(type);
                 res = set.Local.Cast<IReadModelBase>().FirstOrDefault(x => x.Id.Equals(id));
 
-                if (res == null)
-                {
-                    res = InternalDbSetInterop.Find<object>(set, id);
-                }
+                res ??= InternalDbSetInterop.Find<object>(set, id);
 
                 scope.SaveChanges();
             }
@@ -160,9 +154,7 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
                         x.Streamname != null &&
                         x.Streamname.Equals(streamname));
 
-                if (res == null)
-                {
-                    res = scope.DbContexts.Get<TDbContext>()
+                res ??= scope.DbContexts.Get<TDbContext>()
                     .Set<T>()
                     .Where(x =>
                         x.Streamname != null &&
@@ -170,7 +162,6 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
                         x.Streamname == streamname)
 #pragma warning restore CS0253 // Möglicher unbeabsichtigter Referenzvergleich; rechte Seite muss umgewandelt werden
                     .FirstOrDefault();
-                }
 
                 scope.SaveChanges();
             }
@@ -188,7 +179,7 @@ namespace SimpleEventSourcing.EntityFramework.ReadModel
             var getByStreamnameAsyncMethodGeneric = GetType().GetRuntimeMethod(nameof(IReadRepository.GetByStreamnameAsync), new[] { typeof(object) });
             var getByStreamnameAsyncMethod = getByStreamnameAsyncMethodGeneric.MakeGenericMethod(type);
 
-            var task = (Task)(getByStreamnameAsyncMethod.Invoke(this, new object[] { streamname }));
+            var task = (Task)getByStreamnameAsyncMethod.Invoke(this, new object[] { streamname });
             await task.ConfigureAwait(false);
 
             return ((dynamic)task).Result;

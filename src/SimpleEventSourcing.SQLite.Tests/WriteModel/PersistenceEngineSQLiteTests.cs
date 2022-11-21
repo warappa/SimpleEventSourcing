@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.SQLite.WriteModel.Tests;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.Tests.WriteModel;
 
-namespace SimpleEventSourcing.SQLite.Tests
+namespace SimpleEventSourcing.SQLite.Tests.WriteModel
 {
     [TestFixture]
     public class PersistenceEngineSQLiteTests : PersistenceEngineTests

@@ -1,4 +1,4 @@
-﻿namespace Shop.Web.UI.Commands.Articles
+﻿namespace Shop.UI.Web.AspNet.Commands.Articles
 {
     public class ActivateArticle
     {

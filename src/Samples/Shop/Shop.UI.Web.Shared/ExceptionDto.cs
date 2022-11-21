@@ -1,4 +1,4 @@
-﻿namespace Shop.ReadModel.Shared
+﻿namespace Shop.UI.Web.Shared
 {
     public class ExceptionDto
     {

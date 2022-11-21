@@ -11,7 +11,6 @@ namespace SimpleEventSourcing.State
     public abstract class AsyncEventSourcedProjector<TProjector> : IEventSourcedState<TProjector>
         where TProjector : class, IEventSourcedState<TProjector>, new()
     {
-#pragma warning disable S2743 // Static fields should not be used in generic types
         public static Type[] HandledEventTypes { get; protected set; }
         public static Type[] HandledMessageTypes { get; protected set; }
         public static Type[] PayloadTypesStatic { get; protected set; }
@@ -20,7 +19,6 @@ namespace SimpleEventSourcing.State
         private static readonly TypeInfo iMessageTypeInfo = typeof(IMessage).GetTypeInfo();
         private static readonly IDictionary<Type, MethodInfo> methodForEventType = new Dictionary<Type, MethodInfo>();
         private static readonly IDictionary<Type, MethodInfo> methodForMessageType = new Dictionary<Type, MethodInfo>();
-#pragma warning restore S2743 // Static fields should not be used in generic types
 
         static AsyncEventSourcedProjector()
         {
@@ -33,8 +31,8 @@ namespace SimpleEventSourcing.State
 
             var methodInfos = type
                 .GetRuntimeMethods()
-                .Where(x => x.Name == "Apply" ||
-                    x.Name == "ApplyAsync")
+                .Where(x => x.Name is "Apply" or
+                    "ApplyAsync")
                 .ToList();
 
             foreach (var methodInfo in methodInfos)
@@ -131,9 +129,9 @@ namespace SimpleEventSourcing.State
 
         public static async Task<TProjector> LoadStateAsync(TProjector state, IEnumerable<object> eventsOrMessages = null)
         {
-            state = state ?? new TProjector();
+            state ??= new TProjector();
 
-            eventsOrMessages = eventsOrMessages ?? Array.Empty<object>();
+            eventsOrMessages ??= Array.Empty<object>();
 
             foreach (var eventOrMessage in eventsOrMessages)
             {
@@ -147,7 +145,7 @@ namespace SimpleEventSourcing.State
         {
             var state = stateFactory.CreateState<TProjector>();
 
-            eventsOrMessages = eventsOrMessages ?? Array.Empty<object>();
+            eventsOrMessages ??= Array.Empty<object>();
 
             foreach (var eventOrMessage in eventsOrMessages)
             {

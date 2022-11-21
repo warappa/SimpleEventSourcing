@@ -1,6 +1,7 @@
 ﻿using SimpleEventSourcing.Messaging;
+using SimpleEventSourcing.WriteModel;
 
-namespace SimpleEventSourcing.WriteModel.Tests
+namespace SimpleEventSourcing.Tests.WriteModel
 {
     [Versioned("TestEvent", 0)]
     public class TestEvent : IEvent

@@ -1,12 +1,11 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.Tests.WriteModel;
 using System;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.EntityFrameworkCore.Tests
+namespace SimpleEventSourcing.Tests.ReadModel
 {
     [TestFixture]
     public abstract class ReadRepositoryWithCompoundKeyEntityFrameworkTestsBase : TransactedTest
@@ -94,7 +93,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
             await readRepository.InsertAsync(expected).ConfigureAwait(false);
 
-            var loaded = (ICompoundKeyTestEntity)(await readRepository.GetByStreamnameAsync(expected.GetType(), expected.Streamname).ConfigureAwait(false));
+            var loaded = (ICompoundKeyTestEntity)await readRepository.GetByStreamnameAsync(expected.GetType(), expected.Streamname).ConfigureAwait(false);
 
             await readRepository.DeleteAsync(loaded).ConfigureAwait(false);
 
@@ -102,5 +101,4 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
                 .Should().Be(null);
         }
     }
-
 }

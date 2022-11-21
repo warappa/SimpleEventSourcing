@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.Tests.WriteModel;
 
-namespace SimpleEventSourcing.NHibernate.Tests
+namespace SimpleEventSourcing.NHibernate.Tests.WriteModel
 {
     [TestFixture]
     public class PersistenceEngineNHibernateTests : PersistenceEngineTests

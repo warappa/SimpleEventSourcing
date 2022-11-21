@@ -3,6 +3,7 @@ using Shop.Core.Domain.Articles;
 using Shop.Core.Domain.Shared;
 using Shop.ReadModel.Articles;
 using Shop.UI.Web.Shared.Commands.Articles;
+using Shop.UI.Web.Shared.ReadModels.Articles;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.State;
 using SimpleEventSourcing.WriteModel;

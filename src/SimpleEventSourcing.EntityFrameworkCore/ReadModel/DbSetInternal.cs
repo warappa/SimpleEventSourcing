@@ -45,13 +45,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
             return InternalDbSetInterop.Find<object>(dbSet, id);
         }
 
-        public IEnumerable Local
-        {
-            get
-            {
-                return InternalDbSetInterop.GetLocal(dbSet);
-            }
-        }
+        public IEnumerable Local => InternalDbSetInterop.GetLocal(dbSet);
 
         private Array ConvertToEntityArray<T>(IEnumerable<T> entities) where T : class
         {

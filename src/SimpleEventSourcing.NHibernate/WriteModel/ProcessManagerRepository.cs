@@ -2,7 +2,7 @@
 using SimpleEventSourcing.WriteModel;
 using System;
 
-namespace SimpleEventSourcing.SQLite.NHibernate
+namespace SimpleEventSourcing.NHibernate.WriteModel
 {
     public class ProcessManagerRepository : IProcessManagerRepository
     {

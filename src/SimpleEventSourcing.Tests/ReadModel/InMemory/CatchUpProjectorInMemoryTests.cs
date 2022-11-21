@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.ReadModel.Tests;
-using SimpleEventSourcing.WriteModel.InMemory.Tests;
+using SimpleEventSourcing.Tests.WriteModel.InMemory;
 
-namespace SimpleEventSourcing.ReadModel.InMemory.Tests
+namespace SimpleEventSourcing.Tests.ReadModel.InMemory
 {
     [TestFixture]
     public abstract class CatchUpProjectorInMemoryTests : CatchUpProjectorTests
@@ -11,6 +10,5 @@ namespace SimpleEventSourcing.ReadModel.InMemory.Tests
             : base(new InMemoryTestConfig())
         {
         }
-
     }
 }

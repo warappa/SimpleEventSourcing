@@ -1,9 +1,9 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
+namespace SimpleEventSourcing.EntityFrameworkCore.Tests.Storage
 {
     [Table("TestEntityB")]
     public class TestEntityB : ITestEntityB

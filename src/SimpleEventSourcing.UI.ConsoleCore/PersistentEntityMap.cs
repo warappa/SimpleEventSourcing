@@ -12,7 +12,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             Id(x => x.Id, config =>
             {
                 //config.Generator(global::NHibernate.Mapping.ByCode.Generators.HighLow);
-                config.Generator(global::NHibernate.Mapping.ByCode.Generators.Assigned);
+                config.Generator(Generators.Assigned);
             });
             Property(x => x.Streamname);
             Property(x => x.Name);

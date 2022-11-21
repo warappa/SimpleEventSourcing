@@ -4,18 +4,21 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using SimpleEventSourcing.EntityFrameworkCore.ReadModel;
 using SimpleEventSourcing.EntityFrameworkCore.Storage;
+using SimpleEventSourcing.EntityFrameworkCore.Tests.ReadModel;
 using SimpleEventSourcing.EntityFrameworkCore.Tests.Storage;
+using SimpleEventSourcing.EntityFrameworkCore.Tests.WriteModel;
 using SimpleEventSourcing.EntityFrameworkCore.WriteModel;
-using SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests;
+using SimpleEventSourcing.Newtonsoft.WriteModel;
 using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.Storage;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
+using SimpleEventSourcing.Tests.WriteModel;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using TestEvent = SimpleEventSourcing.EntityFrameworkCore.Tests.WriteModel.TestEvent;
 
 namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 {
@@ -61,12 +64,10 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
             public override async Task EnsureWriteDatabaseAsync()
             {
-                using (var dbContext = new EmptyDbContext("integrationtest"))
-                {
-                    dbContext.Database.EnsureCreated();
+                using var dbContext = new EmptyDbContext("integrationtest");
+                dbContext.Database.EnsureCreated();
 
-                    // dbContext.Database.Connection.Close();
-                }
+                // dbContext.Database.Connection.Close();
             }
 
             public override async Task ResetAsync()
@@ -127,7 +128,6 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
                 var options = optionsBuilder.Options;
                 return new StorageResetter<WriteModelTestDbContext>(parent.GetDbContextScopeFactory(), options);
             }
-
 
             public static WriteModelTestDbContext GetDbContext()
             {
@@ -243,19 +243,16 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests
 
             public override async Task EnsureReadDatabaseAsync()
             {
-                using (var dbContext = new EmptyDbContext("integrationtest"))
-                {
-                    dbContext.Database.EnsureCreated();
+                using var dbContext = new EmptyDbContext("integrationtest");
+                dbContext.Database.EnsureCreated();
 
-                    //dbContext.Database.Connection.Close();
-                }
+                //dbContext.Database.Connection.Close();
             }
 
             public static ReadModelTestDbContext GetDbContext()
             {
                 return new ReadModelTestDbContext();
             }
-
 
             public override bool IsTableInDatabase(Type type)
             {

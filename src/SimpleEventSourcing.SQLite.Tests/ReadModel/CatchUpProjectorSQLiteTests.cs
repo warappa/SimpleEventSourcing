@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.ReadModel.Tests;
-using SimpleEventSourcing.SQLite.WriteModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 
-namespace SimpleEventSourcing.SQLite.ReadModel.Tests
+namespace SimpleEventSourcing.SQLite.Tests.ReadModel
 {
     [TestFixture]
     public class CatchUpProjectorSQLiteTests : CatchUpProjectorTests

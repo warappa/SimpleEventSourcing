@@ -1,13 +1,13 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SimpleEventSourcing.State;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.WriteModel.Tests
+namespace SimpleEventSourcing.Tests.WriteModel
 {
     [TestFixture]
     public abstract class PersistenceEngineBasicTestsBase : PersistenceEngineTestsBase
@@ -80,6 +80,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
                 entries.Add(entry);
             }
+
             return entries;
         }
 

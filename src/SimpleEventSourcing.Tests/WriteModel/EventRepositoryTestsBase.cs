@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.Newtonsoft.WriteModel;
+using SimpleEventSourcing.System.Text.Json.WriteModel;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.WriteModel.Tests
+namespace SimpleEventSourcing.Tests.WriteModel
 {
     [TestFixture]
     public abstract class EventRepositoryTestsBase
@@ -69,8 +71,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
         private class MagicConverter : JsonConverterFactory
         {
 
-            public override bool CanConvert(Type typeToConvert) =>
-                !typeToConvert.IsAbstract &&
+            public override bool CanConvert(Type typeToConvert)
+            {
+                return !typeToConvert.IsAbstract &&
                 typeToConvert.GetConstructor(Type.EmptyTypes) != null &&
                 typeToConvert
                     .GetProperties()
@@ -83,12 +86,16 @@ namespace SimpleEventSourcing.WriteModel.Tests
                     })
                     .Where(x => x.CollectionInterface != null)
                     .Any();
+            }
 
-            public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) => (JsonConverter)Activator.CreateInstance(typeof(SuperMagicConverter<>).MakeGenericType(typeToConvert))!;
+            public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+            {
+                return (JsonConverter)Activator.CreateInstance(typeof(SuperMagicConverter<>).MakeGenericType(typeToConvert))!;
+            }
 
             private class SuperMagicConverter<T> : JsonConverter<T> where T : new()
             {
-                private readonly Dictionary<string, (Type PropertyType, Action<T, object>? Setter, Action<T, object>? Adder)> PropertyHandlers;
+                private readonly Dictionary<string, (Type PropertyType, Action<T, object> Setter, Action<T, object> Adder)> PropertyHandlers;
                 public SuperMagicConverter()
                 {
                     PropertyHandlers = typeof(T)
@@ -102,9 +109,9 @@ namespace SimpleEventSourcing.WriteModel.Tests
                         {
                             var tParam = Expression.Parameter(typeof(T));
                             var objParam = Expression.Parameter(typeof(object));
-                            Action<T, object>? setter = null;
-                            Action<T, object>? adder = null;
-                            Type? propertyType = null;
+                            Action<T, object> setter = null;
+                            Action<T, object> adder = null;
+                            Type propertyType = null;
                             if (x.Property.CanWrite)
                             {
                                 propertyType = x.Property.PropertyType;
@@ -131,6 +138,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                                         .Compile();
                                 }
                             }
+
                             return new
                             {
                                 x.Property.Name,
@@ -142,7 +150,11 @@ namespace SimpleEventSourcing.WriteModel.Tests
                         .Where(x => x.propertyType != null)
                         .ToDictionary(x => x.Name, x => (x.propertyType!, x.setter, x.adder));
                 }
-                public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options) => throw new NotImplementedException();
+                public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+                {
+                    throw new NotImplementedException();
+                }
+
                 public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
                 {
                     var item = new T();
@@ -152,6 +164,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                         {
                             break;
                         }
+
                         if (reader.TokenType == JsonTokenType.PropertyName)
                         {
                             if (PropertyHandlers.TryGetValue(reader.GetString(), out var handler))
@@ -160,6 +173,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                                 {
                                     throw new JsonException($"Bad JSON");
                                 }
+
                                 if (handler.Setter != null)
                                 {
                                     handler.Setter(item, JsonSerializer.Deserialize(ref reader, handler.PropertyType, options));
@@ -174,10 +188,12 @@ namespace SimpleEventSourcing.WriteModel.Tests
                                             {
                                                 throw new JsonException($"Bad JSON");
                                             }
+
                                             if (reader.TokenType == JsonTokenType.EndArray)
                                             {
                                                 break;
                                             }
+
                                             handler.Adder!(item, JsonSerializer.Deserialize(ref reader, handler.PropertyType, options));
                                         }
                                     }
@@ -193,6 +209,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
                             }
                         }
                     }
+
                     return item;
                 }
             }
@@ -211,7 +228,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             var binder = persistenceEngine.Serializer.Binder;
             var serializer = new JsonNetSerializer(binder);
-            var json = serializer.Serialize(entity.State.GetType(), (object)entity.State);
+            var json = serializer.Serialize(entity.State.GetType(), entity.State);
             Console.WriteLine(json);
             var deserialized = (TestEntityState)serializer.Deserialize(entity.State.GetType(), json);
 
@@ -232,7 +249,7 @@ namespace SimpleEventSourcing.WriteModel.Tests
             var binder = persistenceEngine.Serializer.Binder;
             var serializer = new SystemTextJsonSerializer(binder);
 
-            var json = serializer.Serialize(entity.State.GetType(), (object)entity.State);
+            var json = serializer.Serialize(entity.State.GetType(), entity.State);
             Console.WriteLine(json);
             var deserialized = (TestEntityState)serializer.Deserialize(entity.State.GetType(), json);
 

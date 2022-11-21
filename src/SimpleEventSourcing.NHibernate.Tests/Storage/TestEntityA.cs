@@ -1,9 +1,8 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
+namespace SimpleEventSourcing.NHibernate.Tests.Storage
 {
     public class TestEntityA : ITestEntityA
     {
@@ -17,7 +16,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
         {
             SubValue = "sub value"
         };
-        ITestEntityASubEntity ITestEntityA.SubEntity { get => SubEntity; }
+        ITestEntityASubEntity ITestEntityA.SubEntity => SubEntity;
 
         public virtual ICollection<TestEntityASubItem> SubItems { get; set; } = new List<TestEntityASubItem>();
     }

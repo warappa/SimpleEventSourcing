@@ -1,14 +1,13 @@
 ﻿using NHibernate;
 using NUnit.Framework;
-using SimpleEventSourcing.NHibernate.Tests;
-using SimpleEventSourcing.WriteModel.Tests;
+using SimpleEventSourcing.Tests.WriteModel;
 
-namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
+namespace SimpleEventSourcing.NHibernate.Tests.WriteModel
 {
     [TestFixture]
     public class PersistenceEngineCheckpointNumberTests : PersistenceEngineCheckpointNumberTestsBase
     {
-        public NHibernateTestConfig NHconfig { get { return config as NHibernateTestConfig; } }
+        public NHibernateTestConfig NHconfig => config as NHibernateTestConfig;
 
         private readonly ISessionFactory sessionFactory;
 

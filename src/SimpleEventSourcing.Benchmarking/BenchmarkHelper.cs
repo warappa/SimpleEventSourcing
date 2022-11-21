@@ -87,26 +87,55 @@ namespace SimpleEventSourcing.Benchmarking
                 {
                     IEvent e;
                     if (i % 10 == 0)
+                    {
                         e = new SomethingSpecialDone(id, "bla");
+                    }
+
                     if (i % 10 == 1)
+                    {
                         e = new SomethingDone(id, "bla");
+                    }
+
                     if (i % 10 == 2)
+                    {
                         e = new Renamed(id, "renamed");
+                    }
+
                     if (i % 10 == 3)
+                    {
                         e = new SomethingDone(id, "bla");
+                    }
+
                     if (i % 10 == 4)
+                    {
                         e = new SomethingSpecialDone(id, "bla");
+                    }
+
                     if (i % 10 == 5)
+                    {
                         e = new Renamed(id, "renamed");
+                    }
+
                     if (i % 10 == 6)
+                    {
                         e = new SomethingDone(id, "bla");
+                    }
+
                     if (i % 10 == 7)
+                    {
                         e = new Renamed(id, "renamed");
+                    }
+
                     if (i % 10 == 8)
+                    {
                         e = new SomethingDone(id, "bla");
+                    }
                     //if (i % 10 == 9)
                     else
+                    {
                         e = new Renamed(id, "renamed");
+                    }
+
                     list.Add(e);
                 }
             }

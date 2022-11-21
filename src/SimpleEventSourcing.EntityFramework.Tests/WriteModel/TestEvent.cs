@@ -1,7 +1,7 @@
 ﻿using SimpleEventSourcing.Messaging;
 using System;
 
-namespace SimpleEventSourcing.EntityFramework.Tests
+namespace SimpleEventSourcing.EntityFramework.Tests.WriteModel
 {
     public class TestEvent : IEvent
     {

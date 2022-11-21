@@ -119,7 +119,6 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
             agg.Rename("Hi!");
 
-
             await repo.SaveAsync(agg).ConfigureAwait(false);
 
             agg = await repo.GetAsync<TestAggregate>(agg.Id).ConfigureAwait(false);
@@ -272,7 +271,6 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             Console.WriteLine("o: " + live2.State.OCount);
             Console.WriteLine("u: " + live2.State.UCount);
             */
-
 
             WaitForInput();
         }

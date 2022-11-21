@@ -74,7 +74,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
                 InvokeOnModelCreating(dbContext, modelBuilder);
             }
 
-            _ = (((Model)modelBuilder.Model).Builder.Metadata.ConventionDispatcher.DelayConventions());
+            _ = ((Model)modelBuilder.Model).Builder.Metadata.ConventionDispatcher.DelayConventions();
             {
                 RemoveForeignKeysToExcludedEntities(typesOfModel, modelBuilder);
                 RemoveExcludedEntities(typesOfModel, modelBuilder);
@@ -127,23 +127,27 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
             var references = entity.GetDeclaredReferencingForeignKeys()
                 .ToList();
 
-
             foreach (var reference in references)
             {
                 var element = reference.DeclaringEntityType;
                 foreach (var prop in reference.Properties)
+                {
                     element.IsIgnored(prop.Name);
+                }
 
                 if (reference.DependentToPrincipal != null)
+                {
                     element.IsIgnored(reference.DependentToPrincipal.Name);
+                }
 
                 if (reference.PrincipalToDependent != null)
+                {
                     entity.IsIgnored(reference.PrincipalToDependent.Name);
+                }
 
                 reference.DeclaringEntityType.RemoveForeignKey(reference);
                 //reference.DeclaringEntityType.AddForeignKey(currentProps, pk, entity);
             }
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

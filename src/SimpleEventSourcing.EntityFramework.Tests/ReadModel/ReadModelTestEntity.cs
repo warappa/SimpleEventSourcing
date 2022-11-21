@@ -1,7 +1,7 @@
 ﻿using SimpleEventSourcing.ReadModel;
 using System;
 
-namespace SimpleEventSourcing.EntityFramework.Tests
+namespace SimpleEventSourcing.EntityFramework.Tests.ReadModel
 {
 
     public class ReadModelTestEntity : IReadModel<Guid>
@@ -9,6 +9,6 @@ namespace SimpleEventSourcing.EntityFramework.Tests
         public Guid Id { get; set; }
         public string Value { get; set; }
 
-        object IReadModelBase.Id { get { return Id; } set { Id = (Guid)value; } }
+        object IReadModelBase.Id { get => Id; set => Id = (Guid)value; }
     }
 }

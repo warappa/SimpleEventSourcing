@@ -1,11 +1,12 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SimpleEventSourcing.ReadModel.Tests;
-using SimpleEventSourcing.WriteModel.InMemory.Tests;
+using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.ReadModel.InMemory;
+using SimpleEventSourcing.Tests.WriteModel.InMemory;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.ReadModel.InMemory.Tests
+namespace SimpleEventSourcing.Tests.ReadModel.InMemory
 {
     [TestFixture]
     public class ReadRepositoryInMemoryTests : ReadRepositoryTests

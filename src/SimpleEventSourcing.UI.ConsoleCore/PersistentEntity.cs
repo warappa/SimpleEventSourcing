@@ -10,7 +10,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
         [global::SQLite.PrimaryKey]
         public virtual string Id { get; set; }
 
-        object IReadModelBase.Id { get { return Id; } set { Id = (string)value; } }
+        object IReadModelBase.Id { get => Id; set => Id = (string)value; }
 
         public virtual string Streamname { get => Id; set => Id = value; }// { get { return Id.ToString(); } set { Id = int.Parse(value); } }
 

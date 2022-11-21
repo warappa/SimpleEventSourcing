@@ -23,50 +23,6 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                 config.NotNullable(true);
                 config.Index("LoadSnapshots");
                 config.UniqueKey("LoadSnapshots");
-
-                /* Unmerged change from project 'SimpleEventSourcing.NHibernate (netcoreapp2.1)'
-                Before:
-                            });
-
-                            Property(x => x.StreamRevision, config =>
-                After:
-                            });
-
-                            Property(x => x.StreamRevision, config =>
-                */
-
-                /* Unmerged change from project 'SimpleEventSourcing.NHibernate (net5.0)'
-                Before:
-                            });
-
-                            Property(x => x.StreamRevision, config =>
-                After:
-                            });
-
-                            Property(x => x.StreamRevision, config =>
-                */
-
-                /* Unmerged change from project 'SimpleEventSourcing.NHibernate (net6.0)'
-                Before:
-                            });
-
-                            Property(x => x.StreamRevision, config =>
-                After:
-                            });
-
-                            Property(x => x.StreamRevision, config =>
-                */
-
-                /* Unmerged change from project 'SimpleEventSourcing.NHibernate (netcoreapp3.1)'
-                Before:
-                            });
-
-                            Property(x => x.StreamRevision, config =>
-                After:
-                            });
-
-                            Property(x => x.StreamRevision, config =>
-                */
             });
 
             Property(x => x.StreamRevision, config =>

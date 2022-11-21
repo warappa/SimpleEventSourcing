@@ -1,9 +1,8 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.NHibernate.Tests;
-using SimpleEventSourcing.WriteModel.Tests;
+using SimpleEventSourcing.Tests.WriteModel;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
+namespace SimpleEventSourcing.NHibernate.Tests.WriteModel
 {
     [TestFixture]
     public class PersistenceEngineBulkCheckpointNumberTests : PersistenceEngineBulkCheckpointNumberTestsBase

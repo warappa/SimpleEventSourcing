@@ -48,7 +48,7 @@ namespace SimpleEventSourcing.NHibernate.Context
                 throw new InvalidOperationException("Cannot close scope - no scope found!");
             }
 
-            var last = entries[entries.Length - 1];
+            var last = entries[^1];
 
             scopes.TryRemove(last, out var dummy);
 

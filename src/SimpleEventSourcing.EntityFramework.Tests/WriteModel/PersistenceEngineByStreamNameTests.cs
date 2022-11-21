@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.EntityFramework.Tests;
-using SimpleEventSourcing.WriteModel.Tests;
+using SimpleEventSourcing.Tests.WriteModel;
 
-namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
+namespace SimpleEventSourcing.EntityFramework.Tests.WriteModel
 {
     [TestFixture]
     public class PersistenceEngineByStreamNameTestsEntityFramework : PersistenceEngineByStreamNameTestsBase

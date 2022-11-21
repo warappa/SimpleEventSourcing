@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.EntityFrameworkCore;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.System.Text.Json;
 using System;
 using System.Threading.Tasks;
 

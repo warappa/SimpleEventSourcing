@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.WriteModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.WriteModel.Tests
+namespace SimpleEventSourcing.Tests.WriteModel
 {
     [TestFixture]
     public abstract class PersistenceEngineCheckpointNumberTestsBase : PersistenceEngineTestsBase
@@ -114,8 +114,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             var expected = testEvents
                 .Where(x =>
-                    x.CheckpointNumber == 1 ||
-                    x.CheckpointNumber == 2)
+                    x.CheckpointNumber is 1 or
+                    2)
                 .ToList();
 
             loaded.Should().BeEquivalentTo(expected);
@@ -130,8 +130,8 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             var expected = testEvents
                 .Where(x =>
-                    x.CheckpointNumber == 1 ||
-                    x.CheckpointNumber == 2)
+                    x.CheckpointNumber is 1 or
+                    2)
                 .ToList();
 
             loaded.Should().BeEquivalentTo(expected);

@@ -1,10 +1,11 @@
-﻿using System.Web;
+﻿using Shop.UI.Web.AspNet.App_Start;
+using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 
-namespace Shop.UI.Web
+namespace Shop.UI.Web.AspNet
 {
     public class WebApiApplication : HttpApplication
     {

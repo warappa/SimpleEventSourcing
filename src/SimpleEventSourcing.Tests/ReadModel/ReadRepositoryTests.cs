@@ -1,10 +1,11 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.Tests.WriteModel;
 using System;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.ReadModel.Tests
+namespace SimpleEventSourcing.Tests.ReadModel
 {
     [TestFixture]
     public abstract class ReadRepositoryTests : TransactedTest
@@ -68,7 +69,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             await readRepository.InsertAsync(expected).ConfigureAwait(false);
 
-            var loaded = (ITestEntityA)(await readRepository.GetAsync(expected.GetType(), expected.Id).ConfigureAwait(false));
+            var loaded = (ITestEntityA)await readRepository.GetAsync(expected.GetType(), expected.Id).ConfigureAwait(false);
 
             loaded.Id.Should().Be(expected.Id);
 
@@ -110,7 +111,7 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
             await readRepository.InsertAsync(expected).ConfigureAwait(false);
 
-            var loaded = (ITestEntityA)(await readRepository.GetByStreamnameAsync(expected.GetType(), expected.Streamname).ConfigureAwait(false));
+            var loaded = (ITestEntityA)await readRepository.GetByStreamnameAsync(expected.GetType(), expected.Streamname).ConfigureAwait(false);
 
             await readRepository.DeleteAsync(loaded).ConfigureAwait(false);
 

@@ -1,14 +1,15 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SimpleEventSourcing.Messaging;
+using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.State;
 using SimpleEventSourcing.Storage;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.Tests.WriteModel;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.ReadModel.Tests
+namespace SimpleEventSourcing.Tests.ReadModel
 {
     [TestFixture]
     public abstract class CatchUpProjectorTests : TransactedTest

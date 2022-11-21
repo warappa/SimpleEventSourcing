@@ -1,4 +1,5 @@
 ﻿using Shop.Core.Domain.Customers;
+using Shop.UI.Web.Shared.ReadModels.Customers;
 using SimpleEventSourcing.ReadModel;
 using System;
 using System.Threading.Tasks;

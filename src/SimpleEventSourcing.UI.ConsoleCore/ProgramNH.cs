@@ -7,6 +7,7 @@ using SimpleEventSourcing.NHibernate.Context;
 using SimpleEventSourcing.NHibernate.ReadModel;
 using SimpleEventSourcing.NHibernate.WriteModel;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.System.Text.Json;
 using System;
 using System.Threading.Tasks;
 

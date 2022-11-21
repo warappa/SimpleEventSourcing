@@ -1,4 +1,5 @@
 ﻿using Shop.Core.Domain.ShoppingCarts;
+using Shop.UI.Web.Shared.ReadModels.ShoppingCarts;
 using SimpleEventSourcing.ReadModel;
 using System;
 using System.Threading.Tasks;

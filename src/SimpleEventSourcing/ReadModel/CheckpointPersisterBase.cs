@@ -64,10 +64,7 @@ namespace SimpleEventSourcing.ReadModel
             var delayInMs = 16;
             var maxDelayMs = 1000;
 
-            if (timeout is null)
-            {
-                timeout = TimeSpan.FromSeconds(10);
-            }
+            timeout ??= TimeSpan.FromSeconds(10);
 
             var endTime = DateTime.UtcNow + timeout;
 

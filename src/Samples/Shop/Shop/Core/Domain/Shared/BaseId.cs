@@ -42,7 +42,7 @@ namespace Shop.Core.Domain.Shared
         public override int GetHashCode()
         {
             var hashCode = -1951975302;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Value);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Value);
             return hashCode;
         }
 

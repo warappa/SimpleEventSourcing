@@ -21,6 +21,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                     count++;
                 }
             }
+
             return count;
         }
 

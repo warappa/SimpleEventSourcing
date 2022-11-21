@@ -17,10 +17,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             Name = name;
         }
 
-        string INameChangeEvent.Name
-        {
-            get { return Name; }
-        }
+        string INameChangeEvent.Name => Name;
     }
 
     [Versioned("Renamed", 0)]
@@ -37,10 +34,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
             NewName = newName;
         }
 
-        public string Name
-        {
-            get { return NewName; }
-        }
+        public string Name => NewName;
     }
 
     [Versioned("SomethingDone", 0)]

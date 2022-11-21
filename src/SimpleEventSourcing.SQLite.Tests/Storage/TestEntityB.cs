@@ -1,8 +1,8 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 using SQLite;
 
-namespace SimpleEventSourcing.SQLite.WriteModel.Tests
+namespace SimpleEventSourcing.SQLite.Tests.Storage
 {
     [Table("TestEntityB")]
     public class TestEntityB : ITestEntityB

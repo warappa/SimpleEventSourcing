@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.Storage;
+using SimpleEventSourcing.Tests.WriteModel;
 using System;
 using System.Threading.Tasks;
 

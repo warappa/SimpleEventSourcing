@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using SimpleEventSourcing;
+using SimpleEventSourcing.Newtonsoft.WriteModel;
 using SimpleEventSourcing.WriteModel;
 
 namespace Microsoft.Extensions.DependencyInjection

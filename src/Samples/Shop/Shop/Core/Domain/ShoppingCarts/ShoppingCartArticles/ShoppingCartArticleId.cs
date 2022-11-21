@@ -47,7 +47,7 @@ namespace Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles
 
             var other = obj as ShoppingCartArticleId;
 
-            if (ReferenceEquals(other, null))
+            if (other is null)
             {
                 return false;
             }
@@ -59,9 +59,9 @@ namespace Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles
         public override int GetHashCode()
         {
             var hashCode = 1389681877;
-            hashCode = hashCode * -1521134295 + base.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<ShoppingCartId>.Default.GetHashCode(AggregateRootId);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Value);
+            hashCode = (hashCode * -1521134295) + base.GetHashCode();
+            hashCode = (hashCode * -1521134295) + EqualityComparer<ShoppingCartId>.Default.GetHashCode(AggregateRootId);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Value);
             return hashCode;
         }
     }

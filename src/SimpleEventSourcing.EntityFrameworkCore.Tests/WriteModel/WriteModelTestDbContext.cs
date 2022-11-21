@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using SimpleEventSourcing.EntityFrameworkCore.WriteModel;
 
-namespace SimpleEventSourcing.EntityFrameworkCore.Tests
+namespace SimpleEventSourcing.EntityFrameworkCore.Tests.WriteModel
 {
     public class WriteModelTestDbContext : DbContext
     {

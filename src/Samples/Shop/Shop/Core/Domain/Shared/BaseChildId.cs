@@ -97,8 +97,8 @@ namespace Shop.Core.Domain.Shared
         public override int GetHashCode()
         {
             var hashCode = -1937772220;
-            hashCode = hashCode * -1521134295 + EqualityComparer<TAggregateRootId>.Default.GetHashCode(AggregateRootId);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Value);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<TAggregateRootId>.Default.GetHashCode(AggregateRootId);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Value);
             return hashCode;
         }
 

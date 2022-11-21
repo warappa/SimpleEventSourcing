@@ -1,9 +1,10 @@
 ﻿using SimpleEventSourcing.State;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace SimpleEventSourcing.WriteModel.Tests
+namespace SimpleEventSourcing.Tests.WriteModel
 {
     [Versioned("TestChildEntityState", 0)]
     public class TestChildEntityState : ChildEntityState<TestChildEntityState, string, string>
@@ -49,12 +50,12 @@ namespace SimpleEventSourcing.WriteModel.Tests
         public override int GetHashCode()
         {
             var hashCode = 530994897;
-            hashCode = hashCode * -1521134295 + base.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<Type[]>.Default.GetHashCode(((IProjector)this).PayloadTypes);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(StreamName);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Id);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AggregateRootId);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = (hashCode * -1521134295) + base.GetHashCode();
+            hashCode = (hashCode * -1521134295) + EqualityComparer<Type[]>.Default.GetHashCode(((IProjector)this).PayloadTypes);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(StreamName);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Id);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(AggregateRootId);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Name);
             return hashCode;
         }
 

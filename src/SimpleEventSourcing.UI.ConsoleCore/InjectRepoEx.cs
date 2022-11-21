@@ -23,7 +23,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 await repo.SaveAsync(ent).ConfigureAwait(false);
             }
 
-            return BusExtensions.SubscribeTo<TMessage>(source)
+            return source.SubscribeTo<TMessage>()
                 .Select(x => Observable.FromAsync(() => a(x)))
                 .Concat()
                 .Subscribe();
@@ -31,7 +31,11 @@ namespace SimpleEventSourcing.UI.ConsoleCore
 
         public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T, IEventRepository> onNext, IEventRepository repo)
         {
-            void a(T obj) => onNext(obj, repo);
+            void a(T obj)
+            {
+                onNext(obj, repo);
+            }
+
             return source.Subscribe(a);
         }
 

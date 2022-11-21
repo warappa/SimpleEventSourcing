@@ -13,7 +13,7 @@ namespace SimpleEventSourcing.Domain
         public TAggregateRootkey AggregateRootId => aggregateRootId;
         public TState State => (TState)(aggregateRoot.UntypedState as IAggregateRootState).ChildStates.First(x => x.Id?.Equals(Id) == true && x.GetType() == typeof(TState));
 
-        protected TAggregateRootkey aggregateRootId { get => (TAggregateRootkey)aggregateRoot.Id; }
+        protected TAggregateRootkey aggregateRootId => (TAggregateRootkey)aggregateRoot.Id;
 
         private IAggregateRoot aggregateRoot;
 
@@ -23,16 +23,12 @@ namespace SimpleEventSourcing.Domain
 
         protected ChildEntity(IAggregateRoot aggregateRoot, IEnumerable<IChildEntityEvent> events)
         {
-            if (aggregateRoot == null)
-            {
-                throw new ArgumentNullException(nameof(aggregateRoot));
-            }
             if (events == null)
             {
                 throw new ArgumentNullException(nameof(events));
             }
 
-            this.aggregateRoot = aggregateRoot;
+            this.aggregateRoot = aggregateRoot ?? throw new ArgumentNullException(nameof(aggregateRoot));
 
             Id = (TChildKey)new TState().ConvertFromStreamName(typeof(TChildKey), events.First().Id.ToString());
 
@@ -61,7 +57,7 @@ namespace SimpleEventSourcing.Domain
                 otherState = state;
             }
 
-            if (ReferenceEquals(otherState, null))
+            if (otherState is null)
             {
                 return false;
             }
@@ -81,11 +77,6 @@ namespace SimpleEventSourcing.Domain
 
         void IChildEntityInternal.SetAggregateRoot(IAggregateRoot aggregateRoot, object id)
         {
-            if (aggregateRoot == null)
-            {
-                throw new ArgumentNullException(nameof(aggregateRoot));
-            }
-
             if (this.aggregateRoot != null)
             {
                 throw new InvalidOperationException("AggregateRoot cannot be reassigned in ChildEntity!");
@@ -96,7 +87,7 @@ namespace SimpleEventSourcing.Domain
                 id = new TState().ConvertFromStreamName(typeof(TChildKey), (string)id);
             }
 
-            this.aggregateRoot = aggregateRoot;
+            this.aggregateRoot = aggregateRoot ?? throw new ArgumentNullException(nameof(aggregateRoot));
             Id = (TChildKey)id;
         }
     }

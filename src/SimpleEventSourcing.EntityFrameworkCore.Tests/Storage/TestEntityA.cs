@@ -1,10 +1,10 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
+namespace SimpleEventSourcing.EntityFrameworkCore.Tests.Storage
 {
     [Table("TestEntityA")]
     public class TestEntityA : ITestEntityA
@@ -30,7 +30,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
         {
             SubValue = "sub value"
         };
-        ITestEntityASubEntity ITestEntityA.SubEntity { get => SubEntity; }
+        ITestEntityASubEntity ITestEntityA.SubEntity => SubEntity;
 
         public virtual ICollection<TestEntityASubItem> SubItems { get; set; } = new List<TestEntityASubItem>();
 
@@ -38,7 +38,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
         {
             var other = obj as TestEntityA;
 
-            if (ReferenceEquals(other, null))
+            if (other is null)
             {
                 return false;
             }
@@ -51,7 +51,6 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
             return Id.GetHashCode();
         }
     }
-
 
     [Table("TestEntityASubEntity")]
     public class TestEntityASubEntity : ITestEntityASubEntity

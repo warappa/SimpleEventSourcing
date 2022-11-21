@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Shop.Core.BusinessRules;
-using Shop.ReadModel.Shared;
+using Shop.UI.Web.Shared;
 using System.Linq;
 
 namespace Shop.UI.Web.AspNetCore.Blazor.Server
@@ -72,13 +72,11 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
                             .ToArray()
                     });
                 }
-
             }));
 
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));

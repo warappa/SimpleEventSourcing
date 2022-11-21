@@ -22,14 +22,14 @@ namespace SimpleEventSourcing.WriteModel
 
         public static IEnumerable<IRawStreamEntry> WithPayloadType<T>(this IEnumerable<IRawStreamEntry> entries, ISerializationBinder binder = null)
         {
-            binder = binder ?? new VersionedBinder();
+            binder ??= new VersionedBinder();
 
             return entries.Where(x => x.PayloadType == binder.BindToName(typeof(T)));
         }
 
         public static IEnumerable<IRawStreamEntry> WithPayloadTypes<T1, T2>(this IEnumerable<IRawStreamEntry> entries, ISerializationBinder binder = null)
         {
-            binder = binder ?? new VersionedBinder();
+            binder ??= new VersionedBinder();
 
             var allNames = new[] {
                 binder.BindToName(typeof(T1)),
@@ -41,7 +41,7 @@ namespace SimpleEventSourcing.WriteModel
 
         public static IEnumerable<IRawStreamEntry> WithPayloadTypes<T1, T2, T3>(this IEnumerable<IRawStreamEntry> entries, ISerializationBinder binder = null)
         {
-            binder = binder ?? new VersionedBinder();
+            binder ??= new VersionedBinder();
 
             var allNames = new[] {
                 binder.BindToName(typeof(T1)),

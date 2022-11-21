@@ -19,17 +19,15 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
 
         public override async Task<int> LoadLastCheckpointAsync(string projectorIdentifier)
         {
-            using (var session = sessionFactory.OpenSession())
+            using var session = sessionFactory.OpenSession();
+            var checkpointInfo = await session.GetAsync<TCheckpointInfo>(projectorIdentifier).ConfigureAwait(false);
+
+            if (checkpointInfo == null)
             {
-                var checkpointInfo = await session.GetAsync<TCheckpointInfo>(projectorIdentifier).ConfigureAwait(false);
-
-                if (checkpointInfo == null)
-                {
-                    return CheckpointDefaults.NoCheckpoint;
-                }
-
-                return checkpointInfo.CheckpointNumber;
+                return CheckpointDefaults.NoCheckpoint;
             }
+
+            return checkpointInfo.CheckpointNumber;
         }
 
         public override async Task SaveCurrentCheckpointAsync(string projectorIdentifier, int checkpoint)

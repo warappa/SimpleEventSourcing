@@ -1,11 +1,11 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.WriteModel.Tests
+namespace SimpleEventSourcing.Tests.WriteModel
 {
     public abstract class PersistenceEngineTestsBase : TransactedTest
     {
@@ -75,7 +75,6 @@ namespace SimpleEventSourcing.WriteModel.Tests
             //await persistenceEngine.InitializeAsync().ConfigureAwait(false);
             await config.WriteModel.ResetAsync().ConfigureAwait(false);
 
-
             serializer = persistenceEngine.Serializer;
         }
 
@@ -91,7 +90,6 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             return prefix;
         }
-
 
         protected IEnumerable<IRawStreamEntry> CreateTestData(string group, string category)
         {
@@ -116,7 +114,6 @@ namespace SimpleEventSourcing.WriteModel.Tests
             entries[0].PayloadType = serializer.Binder.BindToName(typeof(TestEvent));
             entries[0].StreamRevision = 1;
             entries[0].DateTime = DateTime.UtcNow;
-
 
             entries[1].Group = group;
             entries[1].Category = category;

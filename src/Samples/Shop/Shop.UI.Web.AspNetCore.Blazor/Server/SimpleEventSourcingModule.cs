@@ -2,6 +2,7 @@
 using Shop.ReadModel.Articles;
 using Shop.ReadModel.Customers;
 using Shop.ReadModel.ShoppingCarts;
+using SimpleEventSourcing.Newtonsoft;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.SQLite;
 using SQLite;
@@ -92,7 +93,7 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
 
             if (path.EndsWith("bin", StringComparison.Ordinal))
             {
-                path = path.Substring(0, path.Length - 4);
+                path = path[..^4];
             }
 
             return path;

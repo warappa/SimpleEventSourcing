@@ -1,11 +1,11 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SimpleEventSourcing.ReadModel.Tests;
-using SimpleEventSourcing.SQLite.WriteModel.Tests;
+using SimpleEventSourcing.SQLite.Tests.Storage;
+using SimpleEventSourcing.Tests.ReadModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.SQLite.ReadModel.Tests
+namespace SimpleEventSourcing.SQLite.Tests.ReadModel
 {
     [TestFixture]
     public class ReadRepositorySQLiteTests : ReadRepositoryTests
@@ -22,7 +22,7 @@ namespace SimpleEventSourcing.SQLite.ReadModel.Tests
 
             await readRepository.InsertAsync(expected).ConfigureAwait(false);
 
-            var loaded = (TestEntityA)(await readRepository.GetAsync(expected.GetType(), expected.Id).ConfigureAwait(false));
+            var loaded = (TestEntityA)await readRepository.GetAsync(expected.GetType(), expected.Id).ConfigureAwait(false);
 
             loaded.Id.Should().Be(expected.Id);
             loaded.SubData.Should().NotBeNull();

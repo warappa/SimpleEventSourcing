@@ -14,9 +14,6 @@ namespace SimpleEventSourcing.Tests
 
         }
 
-        TCommand IMessage<TCommand>.Body
-        {
-            get { return (TCommand)base.Body; }
-        }
+        TCommand IMessage<TCommand>.Body => (TCommand)base.Body;
     }
 }

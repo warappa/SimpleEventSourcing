@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using SimpleEventSourcing.Tests.Storage;
 
-namespace SimpleEventSourcing.SQLite.WriteModel.Tests
+namespace SimpleEventSourcing.SQLite.Tests.Storage
 {
     [TestFixture]
     public class StorageTests : StorageResetterTests

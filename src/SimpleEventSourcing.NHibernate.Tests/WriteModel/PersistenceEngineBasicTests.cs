@@ -1,15 +1,14 @@
 ﻿using NHibernate;
 using NUnit.Framework;
-using SimpleEventSourcing.NHibernate.Tests;
-using SimpleEventSourcing.WriteModel.Tests;
+using SimpleEventSourcing.Tests.WriteModel;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
+namespace SimpleEventSourcing.NHibernate.Tests.WriteModel
 {
     [TestFixture]
     public class PersistenceEngineBasicTests : PersistenceEngineBasicTestsBase
     {
-        public NHibernateTestConfig NHconfig { get { return config as NHibernateTestConfig; } }
+        public NHibernateTestConfig NHconfig => config as NHibernateTestConfig;
 
         private readonly ISessionFactory readSessionFactory;
         private readonly ISessionFactory writeSessionFactory;
@@ -21,19 +20,18 @@ namespace SimpleEventSourcing.NHibernate.WriteModel.Tests
         }
 
         [Test]
-        public async Task Can_initializeAsync()
+        public new async Task Can_initializeAsync()
         {
             await InitializeAsync().ConfigureAwait(false);
         }
 
         [Test]
-        public async Task Can_save_streamEntriesAsync()
+        public new async Task Can_save_streamEntriesAsync()
         {
             await InitializeAsync().ConfigureAwait(false);
 
             await SaveStreamEntryAsync().ConfigureAwait(false);
         }
-
 
         [OneTimeSetUp]
         public void SetupStorageTestsFixture()

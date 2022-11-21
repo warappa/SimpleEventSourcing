@@ -1,7 +1,7 @@
 ﻿using SimpleEventSourcing.State;
 using System;
 
-namespace SimpleEventSourcing.Tests
+namespace SimpleEventSourcing.Tests.Domain.TestData
 {
 
     public class ParentState : AggregateRootState<ParentState, ParentEntityId>, IStreamState<ParentState>

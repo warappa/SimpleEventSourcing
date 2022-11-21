@@ -1,7 +1,7 @@
 ﻿using SimpleEventSourcing.Messaging;
 using System;
 
-namespace SimpleEventSourcing.Tests
+namespace SimpleEventSourcing.Tests.Domain.TestData
 {
     public interface IBaseEvent : IEvent
     {

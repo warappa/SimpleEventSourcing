@@ -7,7 +7,7 @@ namespace SimpleEventSourcing.NHibernate.ReadModel
         public virtual string ProjectorIdentifier { get; set; }
         public virtual int CheckpointNumber { get; set; }
 
-        object IReadModelBase.Id { get { return ProjectorIdentifier; } set { ProjectorIdentifier = (string)value; } }
+        object IReadModelBase.Id { get => ProjectorIdentifier; set => ProjectorIdentifier = (string)value; }
         string IReadModel<string>.Id { get => ProjectorIdentifier; set => ProjectorIdentifier = value; }
     }
 }

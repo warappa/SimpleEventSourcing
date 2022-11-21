@@ -3,7 +3,7 @@ using System.Collections;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace SimpleEventSourcing.WriteModel
+namespace SimpleEventSourcing.System.Text.Json.WriteModel
 {
     internal class PolymorphicJsonConverterFactory : JsonConverterFactory
     {

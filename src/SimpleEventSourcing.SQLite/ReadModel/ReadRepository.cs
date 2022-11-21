@@ -154,7 +154,6 @@ namespace SimpleEventSourcing.SQLite.ReadModel
             //var tableMethodInfo = tableGenericMethodInfo.MakeGenericMethod(type);
             //var tableQuery = tableMethodInfo.Invoke(conn, new object[0]);
 
-
             //var whereMethodInfo2 = getAll.GetType().GetTypeInfo().GetDeclaredMethods(nameof(TableQuery<object>.Where))
             //    .First(x => x.GetGenericArguments().Length == 0);
 

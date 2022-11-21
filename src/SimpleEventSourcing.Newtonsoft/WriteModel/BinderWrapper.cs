@@ -1,6 +1,7 @@
-﻿using System;
+﻿using SimpleEventSourcing.WriteModel;
+using System;
 
-namespace SimpleEventSourcing.WriteModel
+namespace SimpleEventSourcing.Newtonsoft.WriteModel
 {
     public class BinderWrapper : global::Newtonsoft.Json.Serialization.ISerializationBinder
     {

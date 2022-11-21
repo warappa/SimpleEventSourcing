@@ -1,9 +1,9 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
+namespace SimpleEventSourcing.EntityFramework.Tests.Storage
 {
     [Table("CompoundKeyTestEntity")]
     public class CompoundKeyTestEntity : ICompoundKeyTestEntity
@@ -27,7 +27,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
         {
             var other = obj as CompoundKeyTestEntity;
 
-            if (ReferenceEquals(other, null))
+            if (other is null)
             {
                 return false;
             }
@@ -39,8 +39,8 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel.Tests
         public override int GetHashCode()
         {
             var hashCode = 365011897;
-            hashCode = hashCode * -1521134295 + Key1.GetHashCode();
-            hashCode = hashCode * -1521134295 + Key2.GetHashCode();
+            hashCode = (hashCode * -1521134295) + Key1.GetHashCode();
+            hashCode = (hashCode * -1521134295) + Key2.GetHashCode();
             return hashCode;
         }
     }

@@ -1,6 +1,6 @@
-﻿using SimpleEventSourcing.ReadModel.Tests;
+﻿using SimpleEventSourcing.ReadModel;
 
-namespace SimpleEventSourcing.ReadModel.InMemory.Tests
+namespace SimpleEventSourcing.Tests.ReadModel.InMemory
 {
     public class TestEntityB : ITestEntityB
     {

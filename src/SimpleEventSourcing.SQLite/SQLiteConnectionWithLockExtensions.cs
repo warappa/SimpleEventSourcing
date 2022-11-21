@@ -1,6 +1,7 @@
-﻿using System;
+﻿using SQLite;
+using System;
 
-namespace SQLite
+namespace SimpleEventSourcing.SQLite
 {
     public static class SQLiteConnectionWithLockExtensions
     {

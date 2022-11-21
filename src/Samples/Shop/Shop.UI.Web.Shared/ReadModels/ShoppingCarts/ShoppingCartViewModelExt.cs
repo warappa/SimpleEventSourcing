@@ -1,5 +1,4 @@
-﻿using Shop.ReadModel.ShoppingCarts;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Shop.UI.Web.Shared.ReadModels.ShoppingCarts
 {

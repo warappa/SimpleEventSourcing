@@ -22,26 +22,22 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
         public async Task UpdateAsync(params IReadModelBase[] entities)
         {
-            using (var scope = dbContextScopeFactory.Create())
-            {
-                var dbContext = scope.DbContexts.Get<TDbContext>();
+            using var scope = dbContextScopeFactory.Create();
+            var dbContext = scope.DbContexts.Get<TDbContext>();
 
-                UpdateInternal(dbContext, entities);
+            UpdateInternal(dbContext, entities);
 
-                await scope.SaveChangesAsync().ConfigureAwait(false);
-            }
+            await scope.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task InsertAsync(params IReadModelBase[] entities)
         {
-            using (var scope = dbContextScopeFactory.Create())
-            {
-                var dbContext = scope.DbContexts.Get<TDbContext>();
+            using var scope = dbContextScopeFactory.Create();
+            var dbContext = scope.DbContexts.Get<TDbContext>();
 
-                InsertInternal(dbContext, entities);
+            InsertInternal(dbContext, entities);
 
-                await scope.SaveChangesAsync().ConfigureAwait(false);
-            }
+            await scope.SaveChangesAsync().ConfigureAwait(false);
         }
 
         protected void UpdateInternal(DbContext dbContext, IEnumerable<IReadModelBase> allEntities)
@@ -71,29 +67,27 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
 
         public async Task DeleteAsync(params IReadModelBase[] entities)
         {
-            using (var scope = dbContextScopeFactory.Create())
+            using var scope = dbContextScopeFactory.Create();
+            var groups = entities
+                .GroupBy(x => x.GetType())
+                .ToList();
+
+            var dbContext = scope.DbContexts.Get<TDbContext>();
+
+            foreach (var group in groups)
             {
-                var groups = entities
-                    .GroupBy(x => x.GetType())
-                    .ToList();
-
-                var dbContext = scope.DbContexts.Get<TDbContext>();
-
-                foreach (var group in groups)
+                foreach (var entity in group)
                 {
-                    foreach (var entity in group)
+                    if (dbContext.Entry(entity).State == EntityState.Detached)
                     {
-                        if (dbContext.Entry(entity).State == EntityState.Detached)
-                        {
-                            dbContext.Set(group.Key).Attach(entity);
-                        }
+                        dbContext.Set(group.Key).Attach(entity);
                     }
-
-                    dbContext.Set(group.Key).RemoveRange(group.ToList());
                 }
 
-                await scope.SaveChangesAsync().ConfigureAwait(false);
+                dbContext.Set(group.Key).RemoveRange(group.ToList());
             }
+
+            await scope.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task<T> GetAsync<T>(object id)
@@ -107,10 +101,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                 var set = dbContext.Set<T>();
                 res = set.Local.FirstOrDefault(x => x.Id.Equals(id));
 
-                if (res == null)
-                {
-                    res = set.Find(id);
-                }
+                res ??= set.Find(id);
 
                 await scope.SaveChangesAsync().ConfigureAwait(false);
             }
@@ -128,10 +119,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                 var set = dbContext.Set(type);
                 res = set.Local.Cast<IReadModelBase>().FirstOrDefault(x => x.Id.Equals(id));
 
-                if (res == null)
-                {
-                    res = set.Find(id);
-                }
+                res ??= set.Find(id);
 
                 await scope.SaveChangesAsync().ConfigureAwait(false);
             }
@@ -155,16 +143,13 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
                         x.Streamname != null &&
                         x.Streamname.Equals(streamname));
 
-                if (res == null)
-                {
-                    res = scope.DbContexts.Get<TDbContext>()
+                res ??= scope.DbContexts.Get<TDbContext>()
                         .Set<T>()
                         .AsQueryable()
                         .Where(x =>
                             x.Streamname != null &&
                             x.Streamname == (string)streamname)
                         .FirstOrDefault();
-                }
 
                 await scope.SaveChangesAsync().ConfigureAwait(false);
             }
@@ -182,7 +167,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.ReadModel
             var getByStreamnameAsyncMethodGeneric = GetType().GetRuntimeMethod(nameof(IReadRepository.GetByStreamnameAsync), new[] { typeof(object) });
             var getByStreamnameAsyncMethod = getByStreamnameAsyncMethodGeneric.MakeGenericMethod(type);
 
-            var task = (Task)(getByStreamnameAsyncMethod.Invoke(this, new object[] { streamname }));
+            var task = (Task)getByStreamnameAsyncMethod.Invoke(this, new object[] { streamname });
             await task.ConfigureAwait(false);
 
             return ((dynamic)task).Result;

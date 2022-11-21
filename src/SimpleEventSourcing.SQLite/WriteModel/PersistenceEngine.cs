@@ -52,7 +52,6 @@ namespace SimpleEventSourcing.SQLite.WriteModel
             return Task.CompletedTask;
         }
 
-
         public IAsyncEnumerable<IRawStreamEntry> LoadStreamEntriesByStreamAsync(string streamName, int minRevision = 0, int maxRevision = int.MaxValue, Type[] payloadTypes = null, bool ascending = true, int take = int.MaxValue)
         {
             return LoadStreamEntriesByStreamAsync(GroupConstants.All, null, streamName, minRevision, maxRevision, payloadTypes, ascending, take);
@@ -86,7 +85,7 @@ streamRevision >= @minRevision AND streamRevision <= @maxRevision ");
                         cmd.Bind("@streamName", streamName);
                     }
 
-                    if (payloadPredicate is string)
+                    if (payloadPredicate is not null)
                     {
                         commandText.Append(payloadPredicate);
                     }
@@ -135,7 +134,7 @@ streamRevision >= @minRevision AND streamRevision <= @maxRevision ");
                 if (ascending)
                 {
                     minRevision = rawStreamEntries
-                        [rawStreamEntries.Count - 1]
+                        [^1]
                         .StreamRevision + 1;
                 }
                 else
@@ -171,12 +170,11 @@ streamRevision >= @minRevision AND streamRevision <= @maxRevision ");
                 {
                     var cmd = connection.CreateCommand("");
 
-
                     var commandText = new StringBuilder();
                     commandText.Append(@"select streamName, commitId, messageId, streamRevision, payloadType, payload, headers, checkpointNumber, [group], category, dateTime from commits
 where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheckpointNumber ");
 
-                    if (payloadPredicate is string)
+                    if (payloadPredicate is not null)
                     {
                         commandText.Append(payloadPredicate);
                     }
@@ -238,7 +236,7 @@ where checkpointNumber >= @minCheckpointNumber and checkpointNumber <= @maxCheck
 
                 if (ascending)
                 {
-                    minCheckpointNumber = rawStreamEntries[rawStreamEntries.Count - 1].CheckpointNumber + 1;
+                    minCheckpointNumber = rawStreamEntries[^1].CheckpointNumber + 1;
                 }
                 else
                 {

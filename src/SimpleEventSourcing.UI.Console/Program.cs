@@ -1,7 +1,9 @@
 ﻿using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
+using SimpleEventSourcing.Newtonsoft.WriteModel;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.SQLite;
 using SimpleEventSourcing.SQLite.ReadModel;
 using SimpleEventSourcing.SQLite.Storage;
 using SimpleEventSourcing.SQLite.WriteModel;
@@ -109,7 +111,6 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             agg.Rename("Hi!");
 
-
             await repo.SaveAsync(agg).ConfigureAwait(false);
 
             agg = await repo.GetAsync<TestAggregate>(agg.Id).ConfigureAwait(false);
@@ -130,7 +131,6 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             Console.WriteLine("Name: " + projection2.Name);
 
             // Console.WriteLine("Change-count: " + AlternateState.LoadState((AlernateState)null, agg.ev).ChangeCount);
-
 
             //SQLite3.Config(ConfigOption.Serialized);
 
@@ -229,7 +229,6 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
             await repository.SaveAsync(list).ConfigureAwait(false);
 
             list.Clear();
-
 
             var loadedEntity = await repository.GetAsync<TestAggregate>(entityId).ConfigureAwait(false);
 
@@ -336,6 +335,7 @@ PRAGMA journal_mode = WAL;", Array.Empty<object>()).ExecuteScalar<int>();
             {
                 disp.Dispose();
             }
+
             observer.Dispose();
         }
 

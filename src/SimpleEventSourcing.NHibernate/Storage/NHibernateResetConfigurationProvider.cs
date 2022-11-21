@@ -25,15 +25,13 @@ namespace SimpleEventSourcing.NHibernate.Storage
 
         protected Configuration CloneConfiguration(Configuration configuration)
         {
-            using (var ms = new MemoryStream())
-            {
-                var bf = new BinaryFormatter();
-                bf.Serialize(ms, configuration);
+            using var ms = new MemoryStream();
+            var bf = new BinaryFormatter();
+            bf.Serialize(ms, configuration);
 
-                ms.Seek(0, SeekOrigin.Begin);
+            ms.Seek(0, SeekOrigin.Begin);
 
-                return (Configuration)bf.Deserialize(ms);
-            }
+            return (Configuration)bf.Deserialize(ms);
         }
 
         protected IEnumerable<Type> GetClassMappingTypesForEntityTypes(params Type[] entityTypes)

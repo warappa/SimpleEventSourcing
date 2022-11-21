@@ -2,7 +2,7 @@
 using SimpleEventSourcing.WriteModel;
 using System;
 
-namespace SimpleEventSourcing.Tests
+namespace SimpleEventSourcing.Tests.Domain.TestData
 {
     public class TestProcessManagerRouter : ProcessManagerRouter
     {

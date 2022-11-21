@@ -17,9 +17,6 @@ namespace SimpleEventSourcing.Benchmarking.Domain
             NewName = newName;
         }
 
-        public string Name
-        {
-            get { return NewName; }
-        }
+        public string Name => NewName;
     }
 }

@@ -2,15 +2,16 @@
 using Shop.Core.Domain.ShoppingCarts;
 using Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles;
 using Shop.ReadModel.Customers;
-using Shop.ReadModel.ShoppingCarts;
-using Shop.Web.UI.Commands.Customers;
+using Shop.UI.Web.AspNet.Commands.Customers;
+using Shop.UI.Web.Shared.ReadModels.Customers;
+using Shop.UI.Web.Shared.ReadModels.ShoppingCarts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace Shop.Web.UI.Controllers
+namespace Shop.UI.Web.AspNet.Controllers
 {
     [RoutePrefix("api/customers")]
     public class CustomersController : ApiController

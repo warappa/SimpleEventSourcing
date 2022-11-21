@@ -6,6 +6,7 @@ using SimpleEventSourcing.EntityFramework.ReadModel;
 using SimpleEventSourcing.EntityFramework.Storage;
 using SimpleEventSourcing.EntityFramework.WriteModel;
 using SimpleEventSourcing.Messaging;
+using SimpleEventSourcing.Newtonsoft.WriteModel;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.WriteModel;
 using System;
@@ -96,8 +97,6 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 persistenceEngine,
                 new RawStreamEntryFactory());
 
-
-
             // let bus subscribe to repository and publish its committed events
             repo.SubscribeTo<IMessage<IEvent>>()
                 .Subscribe((e) => bus.Publish(e));
@@ -174,7 +173,6 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             agg.Rename("Hi!");
 
-
             await repo.SaveAsync(agg).ConfigureAwait(false);
 
             agg = await repo.GetAsync<TestAggregate>(agg.Id).ConfigureAwait(false);
@@ -197,8 +195,6 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             Console.WriteLine("-------");
             Console.WriteLine("Database Persistence");
             Console.WriteLine("-------");
-
-
 
             var engine = new PersistenceEngine<WriteModelDbContext>(dbContextScopeFactory, serializer);
 
@@ -326,7 +322,6 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             Console.WriteLine("o: " + live2.State.OCount);
             Console.WriteLine("u: " + live2.State.UCount);
             */
-
 
             Console.ReadKey();
         }

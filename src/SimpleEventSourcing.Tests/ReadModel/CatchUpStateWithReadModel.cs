@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using SimpleEventSourcing.ReadModel;
+using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.ReadModel.Tests
+namespace SimpleEventSourcing.Tests.ReadModel
 {
     [ControlsReadModels(new[] { typeof(CatchUpReadModel) })]
     public class CatchUpStateWithReadModel : ReadRepositoryProjector<CatchUpStateWithReadModel>

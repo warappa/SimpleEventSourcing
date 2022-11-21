@@ -1,12 +1,12 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.Storage;
+using SimpleEventSourcing.Tests.ReadModel;
 using SimpleEventSourcing.WriteModel;
 using SimpleEventSourcing.WriteModel.InMemory;
 using System;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.Tests
+namespace SimpleEventSourcing.Tests.WriteModel
 {
     public abstract class TestsBaseConfig
     {

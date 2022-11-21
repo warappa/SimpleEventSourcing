@@ -1,5 +1,5 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -27,7 +27,7 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Tests.Storage
         {
             var other = obj as CompoundKeyTestEntity;
 
-            if (ReferenceEquals(other, null))
+            if (other is null)
             {
                 return false;
             }

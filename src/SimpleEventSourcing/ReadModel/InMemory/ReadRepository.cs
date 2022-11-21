@@ -34,7 +34,7 @@ namespace SimpleEventSourcing.ReadModel.InMemory
         public async Task<T> GetAsync<T>(object id)
             where T : class, IReadModelBase, new()
         {
-            return (T)(await GetAsync(typeof(T), id).ConfigureAwait(false));
+            return (T)await GetAsync(typeof(T), id).ConfigureAwait(false);
         }
 
         public Task<object> GetAsync(Type entityType, object id)
@@ -55,7 +55,7 @@ namespace SimpleEventSourcing.ReadModel.InMemory
         public async Task<T> GetByStreamnameAsync<T>(object streamname)
              where T : class, IStreamReadModel, new()
         {
-            return (T)(await GetByStreamnameAsync(typeof(T), streamname).ConfigureAwait(false));
+            return (T)await GetByStreamnameAsync(typeof(T), streamname).ConfigureAwait(false);
         }
 
         public Task<object> GetByStreamnameAsync(Type entityType, object streamname)

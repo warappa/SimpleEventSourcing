@@ -1,14 +1,14 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SimpleEventSourcing.Messaging;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.Tests.WriteModel;
 using SimpleEventSourcing.WriteModel;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.ReadModel.Tests
+namespace SimpleEventSourcing.Tests.ReadModel
 {
     [TestFixture]
     public abstract class CatchUpProjectorWithAutoReadModelResetTests : TransactedTest
@@ -57,10 +57,8 @@ namespace SimpleEventSourcing.ReadModel.Tests
 
         private async Task<CatchUpReadModel> Load()
         {
-            using (var scope = (readRepository as IDbScopeAware).OpenScope())
-            {
-                return (await readRepository.QueryAsync<CatchUpReadModel>(x => true).ConfigureAwait(false)).FirstOrDefault();
-            }
+            using var scope = (readRepository as IDbScopeAware).OpenScope();
+            return (await readRepository.QueryAsync<CatchUpReadModel>(x => true).ConfigureAwait(false)).FirstOrDefault();
         }
 
         [Test]

@@ -6,7 +6,7 @@ namespace Shop.Core.BusinessRules
     public class BusinessRuleException : BusinessException
     {
         public string Name { get; protected set; }
-        public IEnumerable<BusinessRuleValidationError> Errors { get { return errors.ToArray(); } }
+        public IEnumerable<BusinessRuleValidationError> Errors => errors.ToArray();
 
         protected IEnumerable<BusinessRuleValidationError> errors;
 
@@ -19,10 +19,7 @@ namespace Shop.Core.BusinessRules
 
         protected static string GetMessage(string name, IEnumerable<BusinessRuleValidationError> errors)
         {
-            if (errors == null)
-            {
-                errors = Enumerable.Empty<BusinessRuleValidationError>();
-            }
+            errors ??= Enumerable.Empty<BusinessRuleValidationError>();
 
             return "Business rules were violated: " + name + "\n - " + string.Join("\n - ", errors.Select(x => (x.Key != "" ? x.Key + ": " : "") + x.Message));
         }

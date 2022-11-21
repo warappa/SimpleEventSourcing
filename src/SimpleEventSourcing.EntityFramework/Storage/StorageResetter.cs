@@ -1,5 +1,6 @@
 ﻿using EntityFramework.DbContextScope.Interfaces;
 using SimpleEventSourcing.Storage;
+using SimpleEventSourcing.Utils;
 using System;
 using System.Data;
 using System.Data.Entity;
@@ -24,64 +25,60 @@ namespace SimpleEventSourcing.EntityFramework.Storage
 
         public async Task ResetAsync(Type[] entityTypes, bool justDrop = false)
         {
-            using (var scope = dbContextScopeFactory.Create())
+            using var scope = dbContextScopeFactory.Create();
+            var originalDbContext = scope.DbContexts.Get<TDbContext>();
+
+            var dbContext = DynamicDbContext.Create(originalDbContext, originalDbContext.Database.Connection, false, entityTypes);
+
+            using var transaction = new AsyncTransactionScope(TransactionScopeOption.Required);
+            try
             {
-                var originalDbContext = scope.DbContexts.Get<TDbContext>();
+                var tablenames = entityTypes
+                    .Reverse()
+                    .Select(x => GetTablenameForType(dbContext, x))
+                    .ToList();
 
-                var dbContext = DynamicDbContext.Create(originalDbContext, originalDbContext.Database.Connection, false, entityTypes);
-
-                using (var transaction = new AsyncTransactionScope(TransactionScopeOption.Required))
+                foreach (var tablename in tablenames)
                 {
                     try
                     {
-                        var tablenames = entityTypes
-                            .Reverse()
-                            .Select(x => GetTablenameForType(dbContext, x))
-                            .ToList();
-
-                        foreach (var tablename in tablenames)
-                        {
-                            try
-                            {
-                                dbContext.Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, $"drop table [{tablename}]");
-                            }
-                            catch
-                            {
-                                // TODO: error handling
-                            }
-                        }
-
-                        if (!justDrop)
-                        {
-                            var creationScript = ((IObjectContextAdapter)dbContext).ObjectContext.CreateDatabaseScript();
-
-                            var creationSteps = creationScript.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
-
-                            foreach (var step in creationSteps)
-                            {
-                                if (string.IsNullOrWhiteSpace(step))
-                                {
-                                    continue;
-                                }
-
-                                try
-                                {
-                                    dbContext.Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, step);
-                                }
-                                catch
-                                {
-                                    // TODO: error handling
-                                }
-                            }
-                        }
-
-                        transaction.Complete();
+                        dbContext.Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, $"drop table [{tablename}]");
                     }
                     catch
                     {
-                        // transaction.Rollback();
+                        // TODO: error handling
                     }
                 }
+
+                if (!justDrop)
+                {
+                    var creationScript = ((IObjectContextAdapter)dbContext).ObjectContext.CreateDatabaseScript();
+
+                    var creationSteps = creationScript.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (var step in creationSteps)
+                    {
+                        if (string.IsNullOrWhiteSpace(step))
+                        {
+                            continue;
+                        }
+
+                        try
+                        {
+                            dbContext.Database.ExecuteSqlCommand(TransactionalBehavior.DoNotEnsureTransaction, step);
+                        }
+                        catch
+                        {
+                            // TODO: error handling
+                        }
+                    }
+                }
+
+                transaction.Complete();
+            }
+            catch
+            {
+                // transaction.Rollback();
             }
         }
 
@@ -90,7 +87,7 @@ namespace SimpleEventSourcing.EntityFramework.Storage
             var metadata = ((IObjectContextAdapter)dbContext).ObjectContext.MetadataWorkspace;
 
             // Get the part of the model that contains info about the actual CLR types
-            var objectItemCollection = ((ObjectItemCollection)metadata.GetItemCollection(DataSpace.OSpace));
+            var objectItemCollection = (ObjectItemCollection)metadata.GetItemCollection(DataSpace.OSpace);
 
             // Get the entity type from the model that maps to the CLR type
             var entityType = metadata

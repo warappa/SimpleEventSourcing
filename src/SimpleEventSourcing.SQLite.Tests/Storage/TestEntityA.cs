@@ -1,11 +1,10 @@
 ﻿using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System.Collections.Generic;
-using System.Security.Principal;
 
-namespace SimpleEventSourcing.SQLite.WriteModel.Tests
+namespace SimpleEventSourcing.SQLite.Tests.Storage
 {
     [Table("TestEntityA")]
     public class TestEntityA : ITestEntityA
@@ -32,7 +31,7 @@ namespace SimpleEventSourcing.SQLite.WriteModel.Tests
         {
             SubValue = "sub value"
         };
-        ITestEntityASubEntity ITestEntityA.SubEntity { get => SubEntity; }
+        ITestEntityASubEntity ITestEntityA.SubEntity => SubEntity;
         [OneToMany(CascadeOperations = CascadeOperation.All)]
         public virtual List<TestEntityASubItem> SubItems { get; set; } = new List<TestEntityASubItem>();
     }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>SimpleEventSourcing.UI.ConsoleUI</RootNamespace>
+    <RootNamespace>SimpleEventSourcing.UI.ConsoleCore</RootNamespace>
     <AssetTargetFallback>net45</AssetTargetFallback>
     <!--<StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramEFCore</StartupObject>-->
     <!--<StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramNH</StartupObject>-->

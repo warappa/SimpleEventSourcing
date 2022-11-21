@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using SimpleEventSourcing;
+using SimpleEventSourcing.System.Text.Json.WriteModel;
 using SimpleEventSourcing.WriteModel;
 
 namespace Microsoft.Extensions.DependencyInjection

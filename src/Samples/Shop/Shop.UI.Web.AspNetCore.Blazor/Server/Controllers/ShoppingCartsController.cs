@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Core.Domain.ShoppingCarts;
 using Shop.Core.Domain.ShoppingCarts.ShoppingCartArticles;
-using Shop.Core.Reports.ShoppingCarts.Transient;
 using Shop.ReadModel.ShoppingCarts;
+using Shop.Reports.ShoppingCarts.Transient;
 using Shop.UI.Web.Shared.Commands.ShoppingCarts;
 using Shop.UI.Web.Shared.ReadModels.ShoppingCarts;
 using SimpleEventSourcing.ReadModel;

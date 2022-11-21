@@ -28,7 +28,7 @@ namespace Shop.Core.Specifications
 
         public virtual bool IsSatisfiedBy(T obj)
         {
-            return (compiledExpression ?? (compiledExpression = Predicate.Compile()))
+            return (compiledExpression ??= Predicate.Compile())
                 .Invoke(obj);
         }
     }

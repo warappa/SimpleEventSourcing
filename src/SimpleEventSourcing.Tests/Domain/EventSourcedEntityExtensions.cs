@@ -1,11 +1,12 @@
 ﻿using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.State;
+using SimpleEventSourcing.Tests.Domain.TestData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SimpleEventSourcing.Tests
+namespace SimpleEventSourcing.Tests.Domain
 {
     public static class EventSourcedEntityExtensions
     {

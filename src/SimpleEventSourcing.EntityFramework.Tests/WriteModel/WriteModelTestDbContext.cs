@@ -2,7 +2,7 @@
 using SimpleEventSourcing.EntityFramework.WriteModel;
 using System.Data.Entity;
 
-namespace SimpleEventSourcing.EntityFramework.Tests
+namespace SimpleEventSourcing.EntityFramework.Tests.WriteModel
 {
     public class WriteModelTestDbContext : DbContext, IDbContext
     {

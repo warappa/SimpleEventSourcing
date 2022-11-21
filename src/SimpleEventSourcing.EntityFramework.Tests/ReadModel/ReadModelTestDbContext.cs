@@ -1,11 +1,11 @@
 ﻿using EntityFramework.DbContextScope.Interfaces;
 using SimpleEventSourcing.EntityFramework.ReadModel;
-using SimpleEventSourcing.EntityFramework.WriteModel.Tests;
-using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.EntityFramework.Tests.Storage;
+using SimpleEventSourcing.Tests.ReadModel;
 using System.Data.Entity;
 using System.Diagnostics;
 
-namespace SimpleEventSourcing.EntityFramework.Tests
+namespace SimpleEventSourcing.EntityFramework.Tests.ReadModel
 {
     public class ReadModelTestDbContext : DbContext, IDbContext
     {

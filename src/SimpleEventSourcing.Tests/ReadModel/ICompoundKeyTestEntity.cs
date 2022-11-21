@@ -1,6 +1,7 @@
-﻿using System;
+﻿using SimpleEventSourcing.ReadModel;
+using System;
 
-namespace SimpleEventSourcing.ReadModel.Tests
+namespace SimpleEventSourcing.Tests.ReadModel
 {
     public interface ICompoundKeyTestEntity : IStreamReadModel
     {

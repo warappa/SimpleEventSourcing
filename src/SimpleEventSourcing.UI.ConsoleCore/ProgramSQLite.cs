@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.ReadModel;
 using SimpleEventSourcing.SQLite;
+using SimpleEventSourcing.System.Text.Json;
 using SQLite;
 using System;
 using System.Threading.Tasks;
@@ -22,8 +23,8 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 //.AddNewtonsoftJson()
                 .AddSystemTextJson()
                 ;
-            services.AddCatchupProjector<TestState>(new TestState());
-            services.AddCatchupProjector<PersistentState>(
+            services.AddCatchupProjector(new TestState());
+            services.AddCatchupProjector(
                 sp => new PersistentState(sp.GetRequiredService<IReadRepository>()));
             services.AddBus();
 

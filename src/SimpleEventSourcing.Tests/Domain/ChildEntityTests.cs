@@ -2,10 +2,11 @@
 using NUnit.Framework;
 using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
+using SimpleEventSourcing.Tests.Domain.TestData;
 using System;
 using System.Linq;
 
-namespace SimpleEventSourcing.Tests
+namespace SimpleEventSourcing.Tests.Domain
 {
     [TestFixture]
     public class ChildEntityTests

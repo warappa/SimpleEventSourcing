@@ -19,16 +19,12 @@ namespace SimpleEventSourcing.NHibernate.Storage
         {
             var configuration = nHibernateResetConfigurationProvider.GetConfigurationForTypes(entityTypes);
 
-            using (var sessionFactory = configuration.BuildSessionFactory())
-            using (var session = sessionFactory.OpenSession())
-            {
-                var schemaExport = new SchemaExport(configuration);
+            using var sessionFactory = configuration.BuildSessionFactory();
+            using var session = sessionFactory.OpenSession();
+            var schemaExport = new SchemaExport(configuration);
 
-                using (var tw = new StringWriter())
-                {
-                    schemaExport.Execute(true, true, justDrop, session.Connection, tw);
-                }
-            }
+            using var tw = new StringWriter();
+            schemaExport.Execute(true, true, justDrop, session.Connection, tw);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using SimpleEventSourcing.Messaging;
 using System;
 
-namespace SimpleEventSourcing.NHibernate.Tests
+namespace SimpleEventSourcing.NHibernate.Tests.WriteModel
 {
     public class TestEvent : IEvent
     {

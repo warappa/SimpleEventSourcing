@@ -3,15 +3,17 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using SimpleEventSourcing.EntityFrameworkCore.ReadModel;
 using SimpleEventSourcing.EntityFrameworkCore.Tests.Storage;
-using SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests;
-using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 
-namespace SimpleEventSourcing.EntityFrameworkCore.Tests
+namespace SimpleEventSourcing.EntityFrameworkCore.Tests.ReadModel
 {
     public class ReadModelTestDbContext : DbContext
     {
         public ReadModelTestDbContext()
-            : base(new DbContextOptionsBuilder().UseSqlServer(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("integrationtest")).ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning)).Options)
+            : base(new DbContextOptionsBuilder()
+                  .UseSqlServer(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("integrationtest"))
+                  .ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning))
+                  .Options)
         {
             //Database.SetInitializer<ReadModelTestDbContext>(null);
 

@@ -9,7 +9,7 @@ namespace Shop.Reports.Customers.Transient
     [Versioned("CustomerRenameHistory", 0)]
     public class CustomerRenameHistory : SynchronousEventSourcedState<CustomerRenameHistory>
     {
-        public IEnumerable<string> Names { get { return names.ToList(); } }
+        public IEnumerable<string> Names => names.ToList();
         public string RenameHistory => string.Join(" -> ", names);
 
         protected List<string> names = new List<string>();

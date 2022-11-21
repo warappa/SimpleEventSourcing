@@ -1,13 +1,13 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.WriteModel.Tests
+namespace SimpleEventSourcing.Tests.WriteModel
 {
     [TestFixture]
     public abstract class PersistenceEngineBulkCheckpointNumberTestsBase : PersistenceEngineTestsBase
@@ -68,28 +68,6 @@ namespace SimpleEventSourcing.WriteModel.Tests
                 var entry = config.WriteModel.GenerateRawStreamEntry();
                 entry.StreamRevision = i + 1;
                 entries.Add(entry);
-
-                /* Unmerged change from project 'SimpleEventSourcing.Tests (net6.0)'
-                Before:
-                            }
-
-                            Console.WriteLine("start");
-                After:
-                            }
-
-                            Console.WriteLine("start");
-                */
-
-                /* Unmerged change from project 'SimpleEventSourcing.Tests (net5.0)'
-                Before:
-                            }
-
-                            Console.WriteLine("start");
-                After:
-                            }
-
-                            Console.WriteLine("start");
-                */
             }
 
             Console.WriteLine("start");
@@ -115,6 +93,5 @@ namespace SimpleEventSourcing.WriteModel.Tests
 
             actual.Should().BeEquivalentTo(expected, "Checkpoint order not preserved");
         }
-
     }
 }

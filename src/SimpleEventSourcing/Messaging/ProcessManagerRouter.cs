@@ -15,18 +15,8 @@ namespace SimpleEventSourcing.Messaging
 
         protected ProcessManagerRouter(IProcessManagerRepository processManagerRepository, Func<IMessage, string> processIdExtractor)
         {
-            if (processManagerRepository == null)
-            {
-                throw new ArgumentNullException(nameof(processManagerRepository));
-            }
-
-            if (processIdExtractor == null)
-            {
-                throw new ArgumentNullException(nameof(processIdExtractor));
-            }
-
-            this.processManagerRepository = processManagerRepository;
-            this.processIdExtractor = processIdExtractor;
+            this.processManagerRepository = processManagerRepository ?? throw new ArgumentNullException(nameof(processManagerRepository));
+            this.processIdExtractor = processIdExtractor ?? throw new ArgumentNullException(nameof(processIdExtractor));
         }
 
         public void Register<T>()

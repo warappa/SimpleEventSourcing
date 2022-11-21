@@ -1,9 +1,8 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.EntityFrameworkCore.Tests;
-using SimpleEventSourcing.WriteModel.Tests;
+using SimpleEventSourcing.Tests.WriteModel;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
+namespace SimpleEventSourcing.EntityFrameworkCore.Tests.WriteModel
 {
     [TestFixture]
     public class PersistenceEngineBasicTests : PersistenceEngineBasicTestsBase
@@ -15,18 +14,17 @@ namespace SimpleEventSourcing.EntityFrameworkCore.WriteModel.Tests
         }
 
         [Test]
-        public async Task Can_initializeAsync()
+        public new async Task Can_initializeAsync()
         {
             await InitializeAsync().ConfigureAwait(false);
         }
 
         [Test]
-        public async Task Can_save_streamEntriesAsync()
+        public new async Task Can_save_streamEntriesAsync()
         {
             await InitializeAsync().ConfigureAwait(false);
 
             await SaveStreamEntryAsync().ConfigureAwait(false);
         }
     }
-
 }

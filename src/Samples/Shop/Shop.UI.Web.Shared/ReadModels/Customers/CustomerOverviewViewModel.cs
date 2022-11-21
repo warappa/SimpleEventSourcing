@@ -1,7 +1,6 @@
-﻿using Shop.ReadModel.Shared;
-using SQLite;
+﻿using SQLite;
 
-namespace Shop.ReadModel.Customers
+namespace Shop.UI.Web.Shared.ReadModels.Customers
 {
     [Table(nameof(CustomerOverviewViewModel))]
     public class CustomerOverviewViewModel : BaseAggregateReadModel

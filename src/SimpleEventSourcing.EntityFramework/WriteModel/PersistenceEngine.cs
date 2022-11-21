@@ -1,6 +1,7 @@
 ﻿using EntityFramework.BulkInsert.Extensions;
 using EntityFramework.DbContextScope.Interfaces;
 using SimpleEventSourcing.State;
+using SimpleEventSourcing.Utils;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Collections.Generic;
@@ -35,29 +36,27 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
         public async Task InitializeAsync()
         {
-            using (var scope = dbContextScopeFactory.Create())
+            using var scope = dbContextScopeFactory.Create();
+            try
             {
-                try
+                var dbContext = scope.DbContexts.Get<TDbContext>();
+                if (!CheckTableExists<RawStreamEntry>(dbContext))
                 {
-                    var dbContext = scope.DbContexts.Get<TDbContext>();
-                    if (!CheckTableExists<RawStreamEntry>(dbContext))
+                    var script = dbContext.ObjectContext.CreateDatabaseScript();
+                    var steps = script.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (var step in steps)
                     {
-                        var script = dbContext.ObjectContext.CreateDatabaseScript();
-                        var steps = script.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
-
-                        foreach (var step in steps)
-                        {
-                            await dbContext.Database.ExecuteSqlCommandAsync(step).ConfigureAwait(false);
-                        }
+                        await dbContext.Database.ExecuteSqlCommandAsync(step).ConfigureAwait(false);
                     }
+                }
 
-                    await scope.SaveChangesAsync().ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.ToString());
-                    throw;
-                }
+                await scope.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+                throw;
             }
         }
 
@@ -105,7 +104,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                             query = query.Where(x => x.StreamName == streamName);
                         }
 
-                        if (payloadValues is object)
+                        if (payloadValues is not null)
                         {
                             query = query.Where(x => payloadValues.Contains(x.PayloadType));
                         }
@@ -140,7 +139,6 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
                     {
                         transaction.Complete();
                     }
-
                 }
 
                 if (rawStreamEntries.Count == 0)
@@ -162,7 +160,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                 if (ascending)
                 {
-                    minRevision = rawStreamEntries[rawStreamEntries.Count - 1].StreamRevision + 1;
+                    minRevision = rawStreamEntries[^1].StreamRevision + 1;
                 }
                 else
                 {
@@ -200,7 +198,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                     query = query.Where(x => x.CheckpointNumber >= minCheckpointNumber && x.CheckpointNumber <= maxCheckpointNumber);
 
-                    if (payloadValues is object)
+                    if (payloadValues is not null)
                     {
                         query = query.Where(x => payloadValues.Contains(x.PayloadType));
                     }
@@ -262,7 +260,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
                 if (ascending)
                 {
-                    minCheckpointNumber = rawStreamEntries[rawStreamEntries.Count - 1].CheckpointNumber + 1;
+                    minCheckpointNumber = rawStreamEntries[^1].CheckpointNumber + 1;
                 }
                 else
                 {
@@ -329,22 +327,20 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
         {
             int result;
 
-            using (var scope = dbContextScopeFactory.Create())
+            using var scope = dbContextScopeFactory.Create();
+            var dbContext = scope.DbContexts.Get<TDbContext>();
+
+            try
             {
-                var dbContext = scope.DbContexts.Get<TDbContext>();
-
-                try
-                {
-                    result = await GetCurrentEventStoreCheckpointNumberInternalAsync(dbContext).ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.ToString());
-                    throw;
-                }
-
-                return result;
+                result = await GetCurrentEventStoreCheckpointNumberInternalAsync(dbContext).ConfigureAwait(false);
             }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+                throw;
+            }
+
+            return result;
         }
 
         private List<string> GetPayloadValues(Type[] payloadTypes)
@@ -360,25 +356,23 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
         public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier, int maxRevision = int.MaxValue)
         {
-            using (var scope = dbContextScopeFactory.Create())
-            {
-                var dbContext = scope.DbContexts.Get<TDbContext>();
+            using var scope = dbContextScopeFactory.Create();
+            var dbContext = scope.DbContexts.Get<TDbContext>();
 
-                try
-                {
-                    return dbContext.Set<RawSnapshot>()
-                        .Where(x =>
-                            x.StreamName == streamName &&
-                            x.StateIdentifier == stateIdentifier &&
-                            x.StreamRevision <= maxRevision)
-                        .OrderByDescending(x => x.StreamRevision)
-                        .FirstOrDefault();
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.ToString());
-                    throw;
-                }
+            try
+            {
+                return dbContext.Set<RawSnapshot>()
+                    .Where(x =>
+                        x.StreamName == streamName &&
+                        x.StateIdentifier == stateIdentifier &&
+                        x.StreamRevision <= maxRevision)
+                    .OrderByDescending(x => x.StreamRevision)
+                    .FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+                throw;
             }
         }
 
@@ -396,21 +390,19 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
 
         private async Task SaveSnapshot(RawSnapshot snapshot)
         {
-            using (var scope = dbContextScopeFactory.Create())
-            {
-                var dbContext = scope.DbContexts.Get<TDbContext>();
+            using var scope = dbContextScopeFactory.Create();
+            var dbContext = scope.DbContexts.Get<TDbContext>();
 
-                try
-                {
-                    dbContext.Set<RawSnapshot>()
-                        .Add(snapshot);
-                    await dbContext.SaveChangesAsync().ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.ToString());
-                    throw;
-                }
+            try
+            {
+                dbContext.Set<RawSnapshot>()
+                    .Add(snapshot);
+                await dbContext.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+                throw;
             }
         }
     }

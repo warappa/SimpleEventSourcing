@@ -1,8 +1,9 @@
+using Shop.UI.Web.AspNet.App_Start;
 using System.Web.Optimization;
 
-[assembly: WebActivatorEx.PostApplicationStartMethod(typeof(Shop.UI.Web.App_Start.MetroUICSSBundleConfig), "RegisterBundles")]
+[assembly: WebActivatorEx.PostApplicationStartMethod(typeof(MetroUICSSBundleConfig), "RegisterBundles")]
 
-namespace Shop.UI.Web.App_Start
+namespace Shop.UI.Web.AspNet.App_Start
 {
     public class MetroUICSSBundleConfig
     {

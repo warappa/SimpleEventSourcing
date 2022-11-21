@@ -63,10 +63,7 @@ namespace SimpleEventSourcing.WriteModel
 
             public async Task StartAsync()
             {
-                if (tokenSource != null)
-                {
-                    tokenSource.Cancel();
-                }
+                tokenSource?.Cancel();
 
                 tokenSource = new CancellationTokenSource();
 
@@ -92,7 +89,7 @@ namespace SimpleEventSourcing.WriteModel
                     if (!instant)
                     {
 
-                        await Task.Delay(random.Next(intervalInMilliseconds / 2 + 1, intervalInMilliseconds)).ConfigureAwait(false);
+                        await Task.Delay(random.Next((intervalInMilliseconds / 2) + 1, intervalInMilliseconds)).ConfigureAwait(false);
                     }
 
                     instant = await DoPoll(false).ConfigureAwait(false);

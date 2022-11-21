@@ -1,6 +1,6 @@
 ﻿using SimpleEventSourcing.Messaging;
 
-namespace SimpleEventSourcing.Tests
+namespace SimpleEventSourcing.Tests.Domain.TestData
 {
     public interface IEventWithId : IEvent
     {

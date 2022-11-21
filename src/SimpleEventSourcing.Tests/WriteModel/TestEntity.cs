@@ -2,7 +2,7 @@
 using SimpleEventSourcing.Messaging;
 using System.Linq;
 
-namespace SimpleEventSourcing.WriteModel.Tests
+namespace SimpleEventSourcing.Tests.WriteModel
 {
     public class TestEntity : AggregateRoot<TestEntityState, string>
     {

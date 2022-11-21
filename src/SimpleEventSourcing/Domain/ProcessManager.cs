@@ -12,9 +12,7 @@ namespace SimpleEventSourcing.Domain
 
         protected List<ICommand> uncommittedCommands = new();
 
-#pragma warning disable S2365 // Properties should not make collection or array copies
         IEnumerable<ICommand> IProcessManager.UncommittedCommands => uncommittedCommands.ToList();
-#pragma warning restore S2365 // Properties should not make collection or array copies
 
         protected ProcessManager(IEnumerable<IProcessManagerHandledEvent> events)
             : base(events)

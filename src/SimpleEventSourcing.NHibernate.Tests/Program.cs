@@ -1,4 +1,4 @@
-﻿using SimpleEventSourcing.NHibernate.WriteModel.Tests;
+﻿using SimpleEventSourcing.NHibernate.Tests.WriteModel;
 using System;
 using System.Threading.Tasks;
 

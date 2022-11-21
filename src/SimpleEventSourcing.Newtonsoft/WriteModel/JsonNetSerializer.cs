@@ -1,22 +1,23 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using SimpleEventSourcing.WriteModel;
 using System;
 using System.Reflection;
 
-namespace SimpleEventSourcing.WriteModel
+namespace SimpleEventSourcing.Newtonsoft.WriteModel
 {
     public class JsonNetSerializer : ISerializer
     {
         private readonly JsonSerializerSettings settings;
 
-        public ISerializationBinder Binder => (settings.SerializationBinder as BinderWrapper).Binder;
+        public SimpleEventSourcing.WriteModel.ISerializationBinder Binder => (settings.SerializationBinder as BinderWrapper).Binder;
 
         public JsonNetSerializer(JsonSerializerSettings settings)
         {
-            this.settings = settings;
+            this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
-        public JsonNetSerializer(ISerializationBinder binder)
+        public JsonNetSerializer(SimpleEventSourcing.WriteModel.ISerializationBinder binder)
             : this(CreateDefaultSettings(binder))
         {
 
@@ -72,7 +73,7 @@ namespace SimpleEventSourcing.WriteModel
             return JsonConvert.DeserializeObject<T>(value, settings);
         }
 
-        private static JsonSerializerSettings CreateDefaultSettings(ISerializationBinder binder)
+        private static JsonSerializerSettings CreateDefaultSettings(SimpleEventSourcing.WriteModel.ISerializationBinder binder)
         {
             return new JsonSerializerSettings()
             {
@@ -97,7 +98,6 @@ namespace SimpleEventSourcing.WriteModel
             };
         }
 
-
         public class NonPublicPropertiesResolver : DefaultContractResolver
         {
             protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
@@ -105,9 +105,10 @@ namespace SimpleEventSourcing.WriteModel
                 var prop = base.CreateProperty(member, memberSerialization);
                 if (member is PropertyInfo pi)
                 {
-                    prop.Readable = (pi.GetMethod != null);
-                    prop.Writable = (pi.SetMethod != null);
+                    prop.Readable = pi.GetMethod != null;
+                    prop.Writable = pi.SetMethod != null;
                 }
+
                 return prop;
             }
         }

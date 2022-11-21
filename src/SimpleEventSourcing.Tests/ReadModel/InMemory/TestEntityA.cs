@@ -1,7 +1,6 @@
-﻿using SimpleEventSourcing.ReadModel.Tests;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using SimpleEventSourcing.ReadModel;
 
-namespace SimpleEventSourcing.ReadModel.InMemory.Tests
+namespace SimpleEventSourcing.Tests.ReadModel.InMemory
 {
     public class TestEntityA : ITestEntityA
     {
@@ -15,7 +14,7 @@ namespace SimpleEventSourcing.ReadModel.InMemory.Tests
         {
             SubValue = "sub value"
         };
-        ITestEntityASubEntity ITestEntityA.SubEntity { get => SubEntity; }
+        ITestEntityASubEntity ITestEntityA.SubEntity => SubEntity;
     }
 
     public class TestEntityASubEntity : ITestEntityASubEntity

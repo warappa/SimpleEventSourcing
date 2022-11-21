@@ -4,7 +4,7 @@ using SimpleEventSourcing.WriteModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.Tests
+namespace SimpleEventSourcing.Tests.WriteModel
 {
     [TestFixture]
     public abstract class PersistenceEngineTests : TransactedTest
@@ -35,7 +35,6 @@ namespace SimpleEventSourcing.Tests
         {
             await config.WriteModel.CleanupWriteDatabaseAsync().ConfigureAwait(false);
         }
-
 
         [Test]
         public async Task Can_save_stream_entry()

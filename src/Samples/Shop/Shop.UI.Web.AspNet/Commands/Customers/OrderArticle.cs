@@ -1,4 +1,4 @@
-﻿namespace Shop.Web.UI.Commands.Customers
+﻿namespace Shop.UI.Web.AspNet.Commands.Customers
 {
     public class OrderArticle
     {

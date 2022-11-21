@@ -82,7 +82,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
                             query = query.Where(x => x.StreamName == streamName);
                         }
 
-                        if (payloadValues is object)
+                        if (payloadValues is not null)
                         {
                             query = query.Where(x => payloadValues.Contains(x.PayloadType));
                         }
@@ -138,7 +138,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
                 if (ascending)
                 {
-                    minRevision = rawStreamEntries[rawStreamEntries.Count - 1].StreamRevision + 1;
+                    minRevision = rawStreamEntries[^1].StreamRevision + 1;
                 }
                 else
                 {
@@ -190,7 +190,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
                     query = query.Where(x => x.CheckpointNumber >= minCheckpointNumber && x.CheckpointNumber <= maxCheckpointNumber);
 
-                    if (payloadValues is object)
+                    if (payloadValues is not null)
                     {
                         query = query.Where(x => payloadValues.Contains(x.PayloadType));
                     }
@@ -253,7 +253,7 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
                 if (ascending)
                 {
-                    minCheckpointNumber = rawStreamEntries[rawStreamEntries.Count - 1].CheckpointNumber + 1;
+                    minCheckpointNumber = rawStreamEntries[^1].CheckpointNumber + 1;
                 }
                 else
                 {
@@ -314,22 +314,20 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
         {
             var result = CheckpointDefaults.NoCheckpoint;
 
-            using (var statelessSession = sessionFactory.OpenStatelessSession())
-            using (var transaction = statelessSession.BeginTransaction())
+            using var statelessSession = sessionFactory.OpenStatelessSession();
+            using var transaction = statelessSession.BeginTransaction();
+            try
             {
-                try
-                {
-                    result = await GetCurrentEventStoreCheckpointNumberInternalAsync(statelessSession).ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.ToString());
-                    throw;
-                }
-
-                transaction.Commit();
-                return result;
+                result = await GetCurrentEventStoreCheckpointNumberInternalAsync(statelessSession).ConfigureAwait(false);
             }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+                throw;
+            }
+
+            transaction.Commit();
+            return result;
         }
 
         private List<string> GetPayloadValues(Type[] payloadTypes)
@@ -345,28 +343,26 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
         public async Task<IRawSnapshot> LoadLatestSnapshotAsync(string streamName, string stateIdentifier, int maxRevision = int.MaxValue)
         {
-            using (var statelessSession = sessionFactory.OpenStatelessSession())
-            using (var transaction = statelessSession.BeginTransaction())
-            {
+            using var statelessSession = sessionFactory.OpenStatelessSession();
+            using var transaction = statelessSession.BeginTransaction();
 
-                try
-                {
-                    return statelessSession.Query<RawSnapshot>().Where(x =>
-                            x.StreamName == streamName &&
-                            x.StateIdentifier == stateIdentifier &&
-                            x.StreamRevision <= maxRevision)
-                        .OrderByDescending(x => x.StreamRevision)
-                        .FirstOrDefault();
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.ToString());
-                    throw;
-                }
-                finally
-                {
-                    transaction.Commit();
-                }
+            try
+            {
+                return statelessSession.Query<RawSnapshot>().Where(x =>
+                        x.StreamName == streamName &&
+                        x.StateIdentifier == stateIdentifier &&
+                        x.StreamRevision <= maxRevision)
+                    .OrderByDescending(x => x.StreamRevision)
+                    .FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+                throw;
+            }
+            finally
+            {
+                transaction.Commit();
             }
         }
 
@@ -384,23 +380,21 @@ namespace SimpleEventSourcing.NHibernate.WriteModel
 
         private async Task SaveSnapshot(RawSnapshot snapshot)
         {
-            using (var statelessSession = sessionFactory.OpenStatelessSession())
-            using (var transaction = statelessSession.BeginTransaction())
-            {
+            using var statelessSession = sessionFactory.OpenStatelessSession();
+            using var transaction = statelessSession.BeginTransaction();
 
-                try
-                {
-                    statelessSession.Insert(snapshot);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.ToString());
-                    throw;
-                }
-                finally
-                {
-                    transaction.Commit();
-                }
+            try
+            {
+                statelessSession.Insert(snapshot);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.ToString());
+                throw;
+            }
+            finally
+            {
+                transaction.Commit();
             }
         }
     }

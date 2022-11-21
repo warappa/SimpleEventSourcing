@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace Shop.UI.Web
+namespace Shop.UI.Web.AspNet.App_Start
 {
     public class FilterConfig
     {

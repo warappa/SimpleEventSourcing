@@ -1,7 +1,7 @@
 ﻿using SimpleEventSourcing.Messaging;
 using SimpleEventSourcing.WriteModel;
 
-namespace SimpleEventSourcing.SQLite.WriteModel.Tests
+namespace SimpleEventSourcing.SQLite.Tests.WriteModel
 {
     [Versioned("TestEvent", 0)]
     public class TestEvent : IEvent

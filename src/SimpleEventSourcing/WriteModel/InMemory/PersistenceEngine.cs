@@ -72,7 +72,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 
                 query = query.Where(x => x.CheckpointNumber >= minCheckpointNumber && x.CheckpointNumber <= maxCheckpointNumber);
 
-                if (payloadValues is object)
+                if (payloadValues is not null)
                 {
                     query = query.Where(x => payloadValues.Contains(x.PayloadType));
                 }
@@ -132,7 +132,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 
                 if (ascending)
                 {
-                    minCheckpointNumber = rawStreamEntries[rawStreamEntries.Count - 1].CheckpointNumber + 1;
+                    minCheckpointNumber = rawStreamEntries[^1].CheckpointNumber + 1;
                 }
                 else
                 {
@@ -169,7 +169,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
                     query = query.Where(x => x.StreamName == streamName);
                 }
 
-                if (payloadValues is object)
+                if (payloadValues is not null)
                 {
                     query = query.Where(x => payloadValues.Contains(x.PayloadType));
                 }
@@ -219,7 +219,7 @@ namespace SimpleEventSourcing.WriteModel.InMemory
 
                 if (ascending)
                 {
-                    minRevision = rawStreamEntries[rawStreamEntries.Count - 1].StreamRevision + 1;
+                    minRevision = rawStreamEntries[^1].StreamRevision + 1;
                 }
                 else
                 {

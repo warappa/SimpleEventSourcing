@@ -1,4 +1,7 @@
-﻿namespace System.Transactions
+﻿using System;
+using System.Transactions;
+
+namespace SimpleEventSourcing.Utils
 {
     public class AsyncTransactionScope : IDisposable
     {

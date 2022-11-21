@@ -4,6 +4,7 @@ using NHibernate.Cfg;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.Domain;
 using SimpleEventSourcing.Messaging;
+using SimpleEventSourcing.Newtonsoft.WriteModel;
 using SimpleEventSourcing.NHibernate.Context;
 using SimpleEventSourcing.NHibernate.ReadModel;
 using SimpleEventSourcing.NHibernate.Storage;
@@ -25,19 +26,17 @@ namespace SimpleEventSourcing.UI.ConsoleUI
         {
             var cfg = GetBaseConfigurationWithoutDb();
 
-            using (var session = cfg.BuildSessionFactory().OpenSession())
-            using (var conn = session.Connection)
+            using var session = cfg.BuildSessionFactory().OpenSession();
+            using var conn = session.Connection;
+            using var cmd = conn.CreateCommand();
+
+            cmd.CommandText = "create database nhDatabase";
+
+            try
             {
-                using var cmd = conn.CreateCommand();
-
-                cmd.CommandText = "create database nhDatabase";
-
-                try
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                catch { }
+                cmd.ExecuteNonQuery();
             }
+            catch { }
         }
 
         public static Configuration GetBaseConfiguration()
@@ -110,11 +109,8 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                     typeof(CheckpointInfo).Assembly
                 });
 
-
-
             var configuration = nHibernateResetConfigurationProvider.GetConfigurationForTypes(typeof(RawStreamEntry), typeof(CheckpointInfo), typeof(PersistentEntity));
             var sessionFactory = configuration.BuildSessionFactory();
-
 
             var bus = new ObservableMessageBus();
             var persistenceEngine = new PersistenceEngine(sessionFactory, configuration, serializer);
@@ -125,8 +121,6 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                 new DefaultInstanceProvider(),
                 persistenceEngine,
                 new RawStreamEntryFactory());
-
-
 
             // let bus subscribe to repository and publish its committed events
             repo.SubscribeTo<IMessage<IEvent>>()
@@ -205,7 +199,6 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
             agg.Rename("Hi!");
 
-
             await repo.SaveAsync(agg).ConfigureAwait(false);
 
             agg = await repo.GetAsync<TestAggregate>(agg.Id).ConfigureAwait(false);
@@ -228,8 +221,6 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             Console.WriteLine("-------");
             Console.WriteLine("Database Persistence");
             Console.WriteLine("-------");
-
-
 
             //var engine = new PersistenceEngine(sessionFactory, configuration, serializer);
 
@@ -264,6 +255,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
 
                 list.Add(entity);
             }
+
             await repository.SaveAsync(list).ConfigureAwait(false);
 
             list.Clear();
@@ -356,7 +348,6 @@ namespace SimpleEventSourcing.UI.ConsoleUI
             Console.WriteLine("o: " + live2.State.OCount);
             Console.WriteLine("u: " + live2.State.UCount);
             */
-
 
             Console.ReadKey();
         }

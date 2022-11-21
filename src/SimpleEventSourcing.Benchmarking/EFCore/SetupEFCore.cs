@@ -4,7 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleEventSourcing.Benchmarking.ReadModel;
 using SimpleEventSourcing.Bus;
 using SimpleEventSourcing.EntityFrameworkCore;
+using SimpleEventSourcing.Newtonsoft;
 using SimpleEventSourcing.ReadModel;
+using SimpleEventSourcing.System.Text.Json;
 
 namespace SimpleEventSourcing.Benchmarking.EFCore
 {

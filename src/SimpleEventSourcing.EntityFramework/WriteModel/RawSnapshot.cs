@@ -30,7 +30,7 @@ namespace SimpleEventSourcing.EntityFramework.WriteModel
         public string StateSerialized { get; set; }
 
         [NotMapped]
-        public DateTime CreatedAt { get { return CreatedAt2; } set { CreatedAt2 = value; } }
+        public DateTime CreatedAt { get => CreatedAt2; set => CreatedAt2 = value; }
 
         // workaround EF datetime precision problem
         [Column("CreatedAt", TypeName = "datetime2")]

@@ -2,18 +2,22 @@
 using EntityFramework.DbContextScope.Interfaces;
 using SimpleEventSourcing.EntityFramework.ReadModel;
 using SimpleEventSourcing.EntityFramework.Storage;
+using SimpleEventSourcing.EntityFramework.Tests.ReadModel;
+using SimpleEventSourcing.EntityFramework.Tests.Storage;
+using SimpleEventSourcing.EntityFramework.Tests.WriteModel;
 using SimpleEventSourcing.EntityFramework.WriteModel;
-using SimpleEventSourcing.EntityFramework.WriteModel.Tests;
+using SimpleEventSourcing.Newtonsoft.WriteModel;
 using SimpleEventSourcing.ReadModel;
-using SimpleEventSourcing.ReadModel.Tests;
 using SimpleEventSourcing.Storage;
-using SimpleEventSourcing.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
+using SimpleEventSourcing.Tests.WriteModel;
 using SimpleEventSourcing.WriteModel;
 using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using TestEvent = SimpleEventSourcing.EntityFramework.Tests.WriteModel.TestEvent;
 
 namespace SimpleEventSourcing.EntityFramework.Tests
 {
@@ -59,12 +63,10 @@ namespace SimpleEventSourcing.EntityFramework.Tests
 
             public override async Task EnsureWriteDatabaseAsync()
             {
-                using (var dbContext = new EmptyDbContext("integrationtest"))
-                {
-                    dbContext.Database.CreateIfNotExists();
+                using var dbContext = new EmptyDbContext("integrationtest");
+                dbContext.Database.CreateIfNotExists();
 
-                    dbContext.Database.Connection.Close();
-                }
+                dbContext.Database.Connection.Close();
 
                 //await GetStorageResetter().ResetAsync(new[] { typeof(RawStreamEntry), typeof(RawSnapshot) }).ConfigureAwait(false);
             }
@@ -120,7 +122,6 @@ namespace SimpleEventSourcing.EntityFramework.Tests
             {
                 return new StorageResetter<WriteModelTestDbContext>(parent.GetDbContextScopeFactory());
             }
-
 
             public static WriteModelTestDbContext GetDbContext()
             {
@@ -235,19 +236,16 @@ namespace SimpleEventSourcing.EntityFramework.Tests
 
             public override async Task EnsureReadDatabaseAsync()
             {
-                using (var dbContext = new EmptyDbContext("integrationtest"))
-                {
-                    dbContext.Database.CreateIfNotExists();
+                using var dbContext = new EmptyDbContext("integrationtest");
+                dbContext.Database.CreateIfNotExists();
 
-                    dbContext.Database.Connection.Close();
-                }
+                dbContext.Database.Connection.Close();
             }
 
             public static ReadModelTestDbContext GetDbContext()
             {
                 return new ReadModelTestDbContext();
             }
-
 
             public override bool IsTableInDatabase(Type type)
             {

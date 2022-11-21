@@ -1,14 +1,15 @@
 ﻿using Shop.Core.Domain.Articles;
 using Shop.Core.Domain.Shared;
 using Shop.ReadModel.Articles;
-using Shop.Web.UI.Commands.Articles;
+using Shop.UI.Web.AspNet.Commands.Articles;
+using Shop.UI.Web.Shared.ReadModels.Articles;
 using SimpleEventSourcing.State;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace Shop.Web.UI.Controllers
+namespace Shop.UI.Web.AspNet.Controllers
 {
     [RoutePrefix("api/articles")]
     public partial class ArticlesController : ApiController

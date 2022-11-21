@@ -1,7 +1,7 @@
 ﻿using NHibernate.Mapping.ByCode.Conformist;
-using SimpleEventSourcing.ReadModel.Tests;
+using SimpleEventSourcing.Tests.ReadModel;
 
-namespace SimpleEventSourcing.NHibernate.ReadModel.Tests
+namespace SimpleEventSourcing.NHibernate.Tests.ReadModel
 {
     public class CatchUpReadModelMapping : ClassMapping<CatchUpReadModel>
     {

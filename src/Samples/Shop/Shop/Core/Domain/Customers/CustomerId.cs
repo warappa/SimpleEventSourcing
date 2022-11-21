@@ -25,7 +25,7 @@ namespace Shop.Core.Domain.Customers
         public override bool Equals(object obj)
         {
             var other = obj as CustomerId;
-            if (ReferenceEquals(other, null))
+            if (other is null)
             {
                 return false;
             }

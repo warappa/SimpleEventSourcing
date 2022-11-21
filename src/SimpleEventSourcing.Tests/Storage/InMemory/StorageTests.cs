@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using SimpleEventSourcing.Tests.Storage;
+using SimpleEventSourcing.Tests.WriteModel.InMemory;
 using System.Threading.Tasks;
 
-namespace SimpleEventSourcing.WriteModel.InMemory.Tests
+namespace SimpleEventSourcing.Tests.Storage.InMemory
 {
     [TestFixture]
     public class StorageTests : StorageResetterTests

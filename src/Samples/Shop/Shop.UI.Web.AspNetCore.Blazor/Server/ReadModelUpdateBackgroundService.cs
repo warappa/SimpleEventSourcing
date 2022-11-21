@@ -20,31 +20,29 @@ namespace Shop.UI.Web.AspNetCore.Blazor.Server
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using (var scope = serviceProvider.CreateScope())
+            using var scope = serviceProvider.CreateScope();
+            var engine = scope.ServiceProvider.GetRequiredService<IPersistenceEngine>();
+            await engine.InitializeAsync();
+
+            var projectors = scope.ServiceProvider.GetRequiredService<IEnumerable<IProjectionManager>>();
+            foreach (var projector in projectors)
             {
-                var engine = scope.ServiceProvider.GetRequiredService<IPersistenceEngine>();
-                await engine.InitializeAsync();
+                await projector.StartAsync();
+            }
 
-                var projectors = scope.ServiceProvider.GetRequiredService<IEnumerable<IProjectionManager>>();
-                foreach (var projector in projectors)
+            while (true)
+            {
+                try
                 {
-                    await projector.StartAsync();
-                }
-
-                while (true)
-                {
-                    try
-                    {
-                        await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
-                        if (stoppingToken.IsCancellationRequested)
-                        {
-                            break;
-                        }
-                    }
-                    catch (TaskCanceledException)
+                    await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                    if (stoppingToken.IsCancellationRequested)
                     {
                         break;
                     }
+                }
+                catch (TaskCanceledException)
+                {
+                    break;
                 }
             }
         }
