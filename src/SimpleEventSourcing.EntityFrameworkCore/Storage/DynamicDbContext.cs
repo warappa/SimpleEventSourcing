@@ -58,8 +58,11 @@ namespace SimpleEventSourcing.EntityFrameworkCore.Storage
             var modelCreationDependencies = dbContextServices.InternalServiceProvider.GetService<ModelCreationDependencies>();
 
             var conventionSetBuilder = modelCreationDependencies.ConventionSetBuilder;
+#if NET7_0_OR_GREATER
+            var modelConfigurationBuilder = new ModelConfigurationBuilder(conventionSetBuilder.CreateConventionSet(), dbContextServices.InternalServiceProvider);
+#else
             var modelConfigurationBuilder = new ModelConfigurationBuilder(conventionSetBuilder.CreateConventionSet());
-
+#endif
             //dbContext.ConfigureConventions(modelConfigurationBuilder);
 
             var modelDependencies = modelCreationDependencies.ModelDependencies;

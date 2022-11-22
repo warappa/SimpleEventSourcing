@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net5.0;net6.0;net7.0</TargetFrameworks>
 	<!--<TargetFramework>net462</TargetFramework>-->
     <AssetTargetFallback>$(AssetTargetFallback);net472;net461</AssetTargetFallback>
     <OutputType>Exe</OutputType>
