@@ -10,12 +10,12 @@
     <ProjectReference Include="..\SimpleEventSourcing.Tests\SimpleEventSourcing.Tests.csproj" />
     <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.4.4" />
-    <PackageReference Include="EntityFramework.DbContextScope" Version="1.0.0" />
-    <PackageReference Include="FluentAssertions" Version="6.7.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="EntityFramework" />
+    <PackageReference Include="EntityFramework.DbContextScope" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NUnit" />
   </ItemGroup>
 </Project>

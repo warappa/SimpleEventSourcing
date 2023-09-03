@@ -1,28 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461;net5.0;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net462;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />
     <ProjectReference Include="..\SimpleEventSourcing.System.Text.Json\SimpleEventSourcing.System.Text.Json.csproj" />
     <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="FakeItEasy" Version="7.3.1" />
-    <PackageReference Include="FluentAssertions" Version="6.7.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NUnit" Version="3.13.3" />
-	<PackageReference Include="NUnit3TestAdapter" Version="4.3.0-alpha-net7.4" />
-	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
-    <PackageReference Include="System.Linq.Async" Version="5.0.0" />
-    <PackageReference Include="System.Text.Json" Version="5.0.0" />
+    <PackageReference Include="FakeItEasy" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="System.Linq.Async" />
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework) == 'net461'">
+  <ItemGroup Condition="$(TargetFramework) == 'net462'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Transactions" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
   </ItemGroup>
 </Project>

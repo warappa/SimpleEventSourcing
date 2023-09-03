@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp2.1;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
-      <IsPackable>true</IsPackable>
-      <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworks>netstandard2.0;netcoreapp2.1;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
+    <IsPackable>true</IsPackable>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,45 +11,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DoJo.EntityFrameworkCore.DbContextScope" Version="2.1.0" />
+    <PackageReference Include="DoJo.EntityFrameworkCore.DbContextScope" />
+    <PackageReference Include="EFCore.BulkExtensions" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
   </ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-		<PackageReference Include="EFCore.BulkExtensions" Version="3.6.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.25" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.25" />
-		<PackageReference Include="Contrib.Bcl.Ranges" Version="1.0.0" />
-	</ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Contrib.Bcl.Ranges" />
+  </ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
-		<PackageReference Include="EFCore.BulkExtensions" Version="3.6.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.25" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.25" />
-		<PackageReference Include="Contrib.Bcl.Ranges" Version="1.0.0" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-		<PackageReference Include="EFCore.BulkExtensions" Version="3.6.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.17" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-		<PackageReference Include="EFCore.BulkExtensions" Version="5.4.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.17" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-		<PackageReference Include="EFCore.BulkExtensions" Version="6.5.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.7" />
-	</ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="EFCore.BulkExtensions" Version="6.5.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
+    <PackageReference Include="Contrib.Bcl.Ranges" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,49 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;netcoreapp2.1;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
-		<IsPackable>true</IsPackable>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netcoreapp2.1;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
-      <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
-      <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.0" />
-      <!--<PackageReference Include="SQLitePCLRaw.core" Version="2.0.7" />
-      <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.0.7" />-->
-      <!--<PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" Version="2.0.7" />-->
-    </ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.0" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-	</ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" />
   </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="sqlite-net-pcl" />
+    <PackageReference Include="SQLiteNetExtensions" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" />
+    <!--<PackageReference Include="SQLitePCLRaw.core" />
+      <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" />-->
+    <!--<PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
+  </ItemGroup>
 
 </Project>

@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5.0;net6.0;net7.0</TargetFrameworks>
-	<!--<TargetFramework>net462</TargetFramework>-->
-    <AssetTargetFallback>$(AssetTargetFallback);net472;net461</AssetTargetFallback>
+    <TargetFrameworks>netstandard2.0;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
+    <!--<TargetFramework>net462</TargetFramework>-->
+    <AssetTargetFallback>$(AssetTargetFallback);net472;net462;net461</AssetTargetFallback>
     <OutputType>Exe</OutputType>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
@@ -10,7 +10,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\SimpleEventSourcing.Bus\SimpleEventSourcing.Bus.csproj" />
     <ProjectReference Include="..\..\..\SimpleEventSourcing.Newtonsoft\SimpleEventSourcing.Newtonsoft.csproj" />
@@ -18,16 +18,16 @@
     <ProjectReference Include="..\..\..\SimpleEventSourcing\SimpleEventSourcing.csproj" />
     <ProjectReference Include="..\Shop.UI.Web.Shared\Shop.UI.Web.Shared.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\typings\knockout\knockout.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout\tests\jasmine.extensions.d.ts" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.0" />
-    <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
-    <PackageReference Include="System.Reactive.PlatformServices" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" />
+    <PackageReference Include="System.Reactive.Linq" />
+    <PackageReference Include="System.Reactive.PlatformServices" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@
     <OutputPath>bin</OutputPath>
     <OutputType>Library</OutputType>
     <TargetFramework>net472</TargetFramework>
-	  <AssetTargetFallback>$(AssetTargetFallback);net461</AssetTargetFallback>
+    <AssetTargetFallback>$(AssetTargetFallback);net462;net461</AssetTargetFallback>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppConfig>Web.config</AppConfig>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,46 +43,47 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
+  
   <ItemGroup>
-    <PackageReference Include="crossroads.TypeScript.DefinitelyTyped" Version="1.5.2" />
-    <PackageReference Include="FontAwesome" Version="4.7.0" />
-    <PackageReference Include="jQuery" Version="3.6.0" />
-    <PackageReference Include="jquery.TypeScript.DefinitelyTyped" Version="3.1.2" />
-    <PackageReference Include="js-signals.TypeScript.DefinitelyTyped" Version="0.1.3" />
-    <PackageReference Include="knockout.punches" Version="0.5.1" />
-    <PackageReference Include="knockout.TypeScript.DefinitelyTyped" Version="1.1.6" />
-    <PackageReference Include="knockoutjs" Version="3.5.1" />
-    <PackageReference Include="Metro-UI-CSS" Version="2.0.31.1" />
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
-    <PackageReference Include="Microsoft.AspNet.Razor" Version="3.2.9" />
-    <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
-    <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.9" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.WebHost" Version="5.2.9" />
-    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.9" />
-    <PackageReference Include="Microsoft.Owin" Version="4.2.2" />
-    <PackageReference Include="Microsoft.Owin.Security" Version="4.2.2" />
-    <PackageReference Include="Microsoft.Owin.Security.Cookies" Version="4.2.2" />
-    <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
-    <PackageReference Include="Moment.js" Version="2.29.4" />
-    <PackageReference Include="moment.TypeScript.DefinitelyTyped" Version="1.8.3" />
+    <PackageReference Include="crossroads.TypeScript.DefinitelyTyped" />
+    <PackageReference Include="FontAwesome" />
+    <PackageReference Include="jQuery" />
+    <PackageReference Include="jquery.TypeScript.DefinitelyTyped" />
+    <PackageReference Include="js-signals.TypeScript.DefinitelyTyped" />
+    <PackageReference Include="knockout.punches" />
+    <PackageReference Include="knockout.TypeScript.DefinitelyTyped" />
+    <PackageReference Include="knockoutjs" />
+    <PackageReference Include="Metro-UI-CSS" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" />
+    <PackageReference Include="Microsoft.AspNet.Razor" />
+    <PackageReference Include="Microsoft.AspNet.Web.Optimization" />
+    <PackageReference Include="Microsoft.AspNet.WebApi" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.WebHost" />
+    <PackageReference Include="Microsoft.AspNet.WebPages" />
+    <PackageReference Include="Microsoft.Owin" />
+    <PackageReference Include="Microsoft.Owin.Security" />
+    <PackageReference Include="Microsoft.Owin.Security.Cookies" />
+    <PackageReference Include="Microsoft.Web.Infrastructure" />
+    <PackageReference Include="Moment.js" />
+    <PackageReference Include="moment.TypeScript.DefinitelyTyped" />
 
-    <PackageReference Include="Owin" Version="1.0" />
-    <PackageReference Include="RequireJS" Version="2.3.6" />
-    <PackageReference Include="requirejs.TypeScript.DefinitelyTyped" Version="0.4.4" />
+    <PackageReference Include="Owin" />
+    <PackageReference Include="RequireJS" />
+    <PackageReference Include="requirejs.TypeScript.DefinitelyTyped" />
 
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
-    <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
-    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.0" />
-    <PackageReference Include="SQLitePCLRaw.core" Version="2.1.0" />
-    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.0" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="sqlite-net-pcl" />
+    <PackageReference Include="SQLiteNetExtensions" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" />
+    <PackageReference Include="SQLitePCLRaw.core" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" />
 
-    <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
-    <PackageReference Include="System.Reactive.PlatformServices" Version="5.0.0" />
-    <PackageReference Include="WebActivatorEx" Version="2.2.0" />
-    <PackageReference Include="WebGrease" Version="1.6.0" />
+    <PackageReference Include="System.Reactive.Linq" />
+    <PackageReference Include="System.Reactive.PlatformServices" />
+    <PackageReference Include="WebActivatorEx" />
+    <PackageReference Include="WebGrease" />
   </ItemGroup>
 
   <ItemGroup>

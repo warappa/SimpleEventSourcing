@@ -2,7 +2,8 @@
   <PropertyGroup>
     <NoWarn>$(NoWarn);CS1998;CS0168;CS0169</NoWarn>
     <LangVersion>latest</LangVersion>
-	<ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
+    <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet Packaging">
@@ -18,7 +19,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>Library for simple event sourcing</Description>
   </PropertyGroup>
-  
+
   <PropertyGroup Label="NuGet Debugging Support">
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
