@@ -109,7 +109,7 @@ namespace SimpleEventSourcing.UI.ConsoleUI
                     typeof(CheckpointInfo).Assembly
                 });
 
-            var configuration = nHibernateResetConfigurationProvider.GetConfigurationForTypes(typeof(RawStreamEntry), typeof(CheckpointInfo), typeof(PersistentEntity));
+            var configuration = nHibernateResetConfigurationProvider.GetConfigurationForTypes(typeof(RawStreamEntry), typeof(RawSnapshot), typeof(CheckpointInfo), typeof(PersistentEntity));
             var sessionFactory = configuration.BuildSessionFactory();
 
             var bus = new ObservableMessageBus();

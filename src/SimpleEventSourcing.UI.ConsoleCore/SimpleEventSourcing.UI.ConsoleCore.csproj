@@ -7,6 +7,7 @@
     <AssetTargetFallback>net45</AssetTargetFallback>
     <!--<StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramEFCore</StartupObject>-->
     <StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramNH</StartupObject>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
     <!--<StartupObject>SimpleEventSourcing.UI.ConsoleCore.ProgramSQLite</StartupObject>-->
   </PropertyGroup>
 

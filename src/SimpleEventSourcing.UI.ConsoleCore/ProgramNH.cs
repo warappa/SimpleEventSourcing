@@ -70,6 +70,7 @@ namespace SimpleEventSourcing.UI.ConsoleCore
                 new[]
                 {
                     typeof(RawStreamEntry),
+                    typeof(RawSnapshot),
                     typeof(CheckpointInfo),
                     typeof(PersistentEntity)
                 })
